@@ -1,7 +1,9 @@
-function out = G2X(x, a0, r)
+function out = G2X(x, params)
 % The function calculates the ratio G(X)/X
-
-g0 = 1-r +r/a0;
+r = params.r;
+a0 = params.a0;
+g0 = params.g0;
+g1 = params.g1;
 
 out = zeros(size(x));
 for i = 1:numel(x)
@@ -10,7 +12,7 @@ for i = 1:numel(x)
     elseif(x(i) < a0)
         out(i) = g0;
     elseif(x(i) < 1)
-        out(i) = r/x(i)+1-r;
+        out(i) = r/x(i)+g1;
     else
         out(i) = 1/x(i);
     end    
