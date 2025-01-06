@@ -2,7 +2,7 @@ clc
 clear all
 close all
 
-params.a0 = 0.1;
+params.a0 = 0.02;
 params.r = 0.5;
 params.g1 = 1-params.r;
 params.g0 = params.g1 + params.r/params.a0;
@@ -58,5 +58,22 @@ for i = 1:numel(t)
     plot(params.z2, 1, 'sk', 'MarkerFaceColor', 'black')
 end
 
+%% verify G(x)/x
+figure(300)
+hold on
+axis([0 2 0 params.g0])
+box on
+xlabel('x')
+ylabel('G(x)/x')
+
+params.t = 2;
+params.a = sqrt(2*params.t);
+
+x = x_grid(params, 0.0001);
+out = G2X(x, params);
+
+plot(x, out, 'k-', 'LineWidth', 1)
+plot(params.a0*[1 1], [0 params.g0], 'k--')
+plot([1 1], [0 params.g0], 'k--')
 
 
