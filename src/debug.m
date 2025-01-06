@@ -1,3 +1,6 @@
+clc
+clear all
+close all
 
 params.a0 = 0.05;
 params.r = 0.5;
