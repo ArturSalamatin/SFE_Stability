@@ -9,9 +9,9 @@ out = zeros(size(x));
 for i = 1:numel(x)
     if(x(i) < 0)
         error('X must not be negative!');
-    elseif(x(i) < a0)
+    elseif(x(i) <= a0)
         out(i) = g0;
-    elseif(x(i) < 1)
+    elseif(x(i) <= 1)
         out(i) = r/x(i)+g1;
     else
         out(i) = 1/x(i);
