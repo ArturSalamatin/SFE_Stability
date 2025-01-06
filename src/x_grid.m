@@ -14,13 +14,13 @@ if(nargin == 1)
 end
 
 a = sqrt(2*t);
-if(a < a0)
+if(a <= a0)
     n = max(10, ceil(a/step));
     out = linspace(0, a, n);
 else
     n = max(10, ceil(a0/step));
     out = linspace(0, a0, n);
-    if(a < 1)
+    if(a <= 1)
         step = a0/n;
         n = ceil((a-a0)/step);
         out = [out(1:end-1), linspace(a0, a, n)];
