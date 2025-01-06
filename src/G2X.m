@@ -3,7 +3,7 @@ function out = G2X(x, a0, r)
 
 g0 = 1-r +r/a0;
 
-out = size(x);
+out = zeros(size(x));
 for i = 1:numel(x)
     if(x(i) < 0)
         error('X must not be negative!');
