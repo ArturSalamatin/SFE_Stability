@@ -11,10 +11,10 @@ a = sqrt(2*t);
 if(a < a0)
     out = (a-x)/g0;
 else
-out = zeros(size(x));
+    out = zeros(size(x));
     mask = x <= a0;
     out(mask) = (a0 - x(mask))/g0 + ...
-        (a - a0 + r/(1-r)*log((r+(1-r)*a)/(r+(1-r)*a0)))/g1;
+        (a - a0 + r/(1-r)*log((r+(1-r)*a0)/(r+(1-r)*a)))/g1;
     
     mask = (x > a0) & (x <= 1);
     out(mask) = (a-x(mask)+...
