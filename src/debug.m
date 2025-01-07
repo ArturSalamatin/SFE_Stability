@@ -27,7 +27,13 @@ for i = 1:numel(t)
     x = x_grid(params);
     z = z_of_x(x, params);
     
+    params.x = x;
+    params.z = z;
+    
+    x_inv = x_of_z(z, params);
+    
     plot(z, x, 'k-', 'LineWidth', 1)
+    plot(z, x_inv, 'r--', 'LineWidth', 2)
     plot(params.z0, params.a0, 'ok', 'MarkerFaceColor', 'black')
     plot(params.z2, 0, 'sk', 'MarkerFaceColor', 'black')
 end
@@ -76,4 +82,26 @@ plot(x, out, 'k-', 'LineWidth', 1)
 plot(params.a0*[1 1], [0 params.g0], 'k--')
 plot([1 1], [0 params.g0], 'k--')
 
+%%
 
+params.a0 = 0.02;
+params.r = 0.5;
+params.g1 = 1-params.r;
+params.g0 = params.g1 + params.r/params.a0;
+
+params.t = 0.5;
+params.a = sqrt(2*params.t);
+
+params.x = x_grid(params, 1e-3);
+params.z = z_of_x(params.x, params);
+params.c = c_of_x(params.x, params);
+
+params.z0 = z0(params);
+params.z2 = z2(params);
+
+
+params.R = 1;
+params.alpha = 5;
+sigma = 0;
+
+out = Jac(z(5), [], params, sigma);
