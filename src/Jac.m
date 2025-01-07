@@ -1,4 +1,4 @@
-function out = Jac(z, y, params, sigma)
+function out = Jac(z, ~, params, sigma)
 
 if(nargin == 3)
     sigma = params.sigma;
