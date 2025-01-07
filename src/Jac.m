@@ -4,14 +4,10 @@ if(nargin == 3)
     sigma = params.sigma;
 end
 
-
-a = params.a;
 R = params.R;
 alpha = params.alpha;
 
-
 X0 = x_of_z(z, params);
-
 
 dxdt = dXdt(X0, params);
 dcdz = -g(X0, params)*dxdt;
