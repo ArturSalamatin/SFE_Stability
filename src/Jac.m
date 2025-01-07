@@ -1,14 +1,19 @@
-function out = Jac(z, y, sigma, params)
+function out = Jac(z, y, params, sigma)
+
+if(nargin == 3)
+    sigma = params.sigma;
+end
+
 
 a = params.a;
 R = params.R;
 alpha = params.alpha;
 
 
-X0 = x0(z, params);
+X0 = x_of_z(z, params);
 
 
-dxdt = 1/G(a)*G2X(X0, params);
+dxdt = 1/G_of_x(a, params)*G2X(X0, params);
 dcdz = -g(X0, params)*dxdt;
 
 out = zeros(3,3);
@@ -19,8 +24,4 @@ out(3,1) = alpha^2;
 out(3,2) = out(3,1)*R;
 out(3,3) = - R*dcdz;
 
-end
-
-function out = x0(z, params)
-out = 1/(1-r)*(G(sqrt(2*t), r)*exp(-xi*(1-r))-r);
 end
