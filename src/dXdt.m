@@ -1,5 +1,4 @@
-function out = dXdt(t, X, r)
-
-out = 1./X.*(r+(1-r)*X)./(r+(1-r)*sqrt(2*t));
-
+function out = dXdt(X, params)
+a = params.a;
+out = 1/G_of_x(a, params)*G2X(X, params);
 end

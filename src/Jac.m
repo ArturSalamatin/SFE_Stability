@@ -13,7 +13,7 @@ alpha = params.alpha;
 X0 = x_of_z(z, params);
 
 
-dxdt = 1/G_of_x(a, params)*G2X(X0, params);
+dxdt = dXdt(X0, params);
 dcdz = -g(X0, params)*dxdt;
 
 out = zeros(3,3);
