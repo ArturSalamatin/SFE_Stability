@@ -11,7 +11,7 @@ end
 if(x < a0)
     out = g0;
 elseif(x < 1)
-    out = g1
+    out = g1;
 else
     out = 0;
 end
