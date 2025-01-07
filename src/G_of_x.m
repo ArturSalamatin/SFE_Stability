@@ -3,7 +3,7 @@ a0 = params.a0;
 g0 = params.g0;
 g1 = params.g1;
 
-out= ones(size(x));
+out = ones(size(x));
 
 mask = x <= a0;
 out(mask) = g0*x(mask);
