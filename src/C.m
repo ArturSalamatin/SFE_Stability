@@ -1,3 +1,5 @@
-function out = C(t, X, r)
-out = 1 - G(X, r)/G(sqrt(2*t), r);
+function out = C(t, X, params)
+r = params.r;
+a = params.a;
+out = 1 - G_of_x(X, params)/G_of_x(a, params);
 end
