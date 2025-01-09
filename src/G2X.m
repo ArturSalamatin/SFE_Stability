@@ -1,18 +1,12 @@
-function out = G2X(x, params)
+function out = G2X(x)
 % The function calculates the ratio G(X)/X
-r = params.r;
-a0 = params.a0;
-g0 = params.g0;
-g1 = params.g1;
 
 out = zeros(size(x));
 for i = 1:numel(x)
     if(x(i) < 0)
         error('X must not be negative!');
-    elseif(x(i) <= a0)
-        out(i) = g0;
     elseif(x(i) <= 1)
-        out(i) = r/x(i)+g1;
+        out(i) = 1;
     else
         out(i) = 1/x(i);
     end    
