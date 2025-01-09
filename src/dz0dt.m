@@ -12,7 +12,4 @@ else
     % here z0 > 0, and popagates
     out = 1/(r+(1-r)*a);
 end
-
-
-
 end
