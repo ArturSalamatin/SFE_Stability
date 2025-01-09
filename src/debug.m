@@ -2,7 +2,7 @@ clc
 clear all
 close all
 
-params.a0 = 0.02;
+params.a0 = 0.4;
 params.r = 0.5;
 params.g1 = 1-params.r;
 params.g0 = params.g1 + params.r/params.a0;
@@ -16,7 +16,7 @@ xlabel('z')
 ylabel('X')
 plot([0 0.7], params.a0*[1 1], 'k--')
 
-t = linspace(1E-2, 0.5, 11);
+t = 0.454% linspace(1E-2, 0.5, 11);
 for i = 1:numel(t)
     params.t = t(i);
     params.a = sqrt(2*params.t);
@@ -47,7 +47,7 @@ xlabel('z')
 ylabel('C')
 % plot([0 0.7], params.a0*[1 1], 'k--')
 
-t = linspace(1E-2, 0.5, 11);
+% t = linspace(1E-2, 0.5, 11);
 for i = 1:numel(t)
     params.t = t(i);
     params.a = sqrt(2*params.t);
@@ -82,26 +82,3 @@ plot(x, out, 'k-', 'LineWidth', 1)
 plot(params.a0*[1 1], [0 params.g0], 'k--')
 plot([1 1], [0 params.g0], 'k--')
 
-%%
-
-params.a0 = 0.02;
-params.r = 0.5;
-params.g1 = 1-params.r;
-params.g0 = params.g1 + params.r/params.a0;
-
-params.t = 0.5;
-params.a = sqrt(2*params.t);
-
-params.x = x_grid(params, 1e-3);
-params.z = z_of_x(params.x, params);
-params.c = c_of_x(params.x, params);
-
-params.z0 = z0(params);
-params.z2 = z2(params);
-
-
-params.R = 1;
-params.alpha = 5;
-sigma = 0;
-
-out = Jac(z(5), [], params, sigma);
