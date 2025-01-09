@@ -14,10 +14,10 @@ dcdz = -g(X0, params)*dxdt;
 
 out = zeros(3,3);
 out(1,3) = 1;
-out(2,1) = dcdz;
-out(2,2) = -sigma*g(X0, params)./(sigma*X0 + dxdt);
+out(2,1) = -dcdz/sigma;
+out(2,2) = (dxdt./X0/sigma-1)*g(X0, params)./X0;
 out(3,1) = alpha^2;
-out(3,2) = out(3,1)*R;
+out(3,2) = out(3,1)*R*sigma;
 out(3,3) = - R*dcdz;
 
 end
