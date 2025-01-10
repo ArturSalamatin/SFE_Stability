@@ -21,7 +21,6 @@ for i = 1:numel(t)
     params.t = t(i);
     params.a = sqrt(2*params.t);
     
-    params.z0 = z0(params);
     params.z2 = z2(params);
     
     x = x_grid(params);
@@ -34,7 +33,6 @@ for i = 1:numel(t)
     
     plot(z, x, 'k-', 'LineWidth', 1)
     plot(z, x_inv, 'r--', 'LineWidth', 2)
-    plot(params.z0, params.a0, 'ok', 'MarkerFaceColor', 'black')
     plot(params.z2, 0, 'sk', 'MarkerFaceColor', 'black')
 end
 

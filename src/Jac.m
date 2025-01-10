@@ -9,7 +9,7 @@ alpha = params.alpha;
 
 X0 = x_of_z(z, params);
 
-dxdt = dXdt(X0);
+dxdt = dXdt(X0, params);
 dcdz = g(X0)*dxdt;
 
 out = zeros(3,3);

@@ -1,4 +1,4 @@
 function out = dXdt(X, params)
 a = params.a;
-out = 1/G_of_x(a)*G2X(X);
+out = G2X(X)/G_of_x(a);
 end
