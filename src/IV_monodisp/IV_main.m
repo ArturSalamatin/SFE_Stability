@@ -2,11 +2,11 @@ clc
 % close all
 clear all
 
-params.L = 1.2; % spatial dimension
-params.z_step = 0.001/2/2/2; % spatial grid step size
+params.L = 3.5; % spatial dimension
+params.z_step = 0.001/2/2; % spatial grid step size
 params.alpha = 100; % Bessel function eigenvalue
-params.R = 0.001; % viscosity increment parameter
-params.omega = 20; % perturbation frequency
+params.R = 0.5; % viscosity increment parameter
+params.omega = 23.346; % perturbation frequency
 
 
 % t = 0; % initial time moment
@@ -26,10 +26,10 @@ diff(out, 2);
 
 figure(101)
 hold on
-plot(params.z, out(1:params.m,1:200:end), 'b--')
+plot(params.z, out(1:params.m,1:100:end), 'k-')
 
 figure(201)
 hold on
-plot(params.z, out(params.m+1:end,1:200:end), 'b--')
+plot(params.z, out(params.m+1:end,1:100:end), 'k-')
 
 

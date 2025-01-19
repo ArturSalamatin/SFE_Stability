@@ -1,6 +1,6 @@
 function u = IVBP_solver(u0, params)
 
-t = linspace(1e-5, 0.5, 2001);
+t = linspace(1e-5,5, 3001);
 
 z = params.z;
 m = params.m;
@@ -21,6 +21,7 @@ for i = 2:numel(t)
 %     i
     % current time step
     tau = t(i) - t(i-1);
+    params.t = t(i);
     % matrix
     A = Matrix(tau, z, params);
     % rhs
