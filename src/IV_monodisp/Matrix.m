@@ -36,4 +36,6 @@ out(2*m,m)   = 1;
 out(2*m,m-1) = 0;
 out(2*m,2*m) = 0;
 
+% A = full(out);
+
 end

@@ -22,7 +22,7 @@ out(I1) = ...
     params.history);
 out(I2) = R*alpha2/tau*u(I2);
 % BC for phi
-out(I2(1)) = sin(2*pi*t*omega);
+out(I2(1)) = -sin(4*pi*t*omega);
 out(I2(end)) = 0;
 % BC for psi
 out(I1(1)) = 0;

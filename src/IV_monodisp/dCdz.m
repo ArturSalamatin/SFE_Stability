@@ -4,7 +4,7 @@ dcdz = g(X).*dxdt;
 end
 
 function out = dXdt(X, t)
-out = G2X(X)./G_of_x(a(t));
+out = G2X(X)/G_of_x(a(t));
 end
 
 function out = G2X(x)

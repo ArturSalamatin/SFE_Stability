@@ -1,14 +1,13 @@
 function u = IVBP_solver(u0, params)
 
-t = linspace(1e-5,5, 3001);
+t = params.t_grid; %linspace(1e-5,T, 1 + round(omega*(Nt-1)*T/period));
 
 z = params.z;
 m = params.m;
 %% base state solution
-x = zeros(m, numel(t));
+x = x_of_z(z, t);
 dcdz = zeros(size(x));
 for i = 1:numel(t)
-    x(:,i) = x_of_z(z, t(i));
     dcdz(:,i) = dCdz(x(:,i), t(i));
 end
 params.x = x;
