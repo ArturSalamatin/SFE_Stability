@@ -5,12 +5,11 @@ clear all
 
 params.t = 0.3;
 params.a = sqrt(2*params.t);
-params.z2 = z2(params);
 
 
 params.R = 0.1;
-params.alpha = 0.5;
-sigma = -1.4453e+04;
+params.alpha = 10;
+sigma = 0.4;
 
 
 global DEBUG

@@ -1,13 +1,12 @@
 function [z,y] = solver(sigma, params)
 
-
 options = odeset(...
     'RelTol', 1e-10 ...
     , 'AbsTol', 1e-10 ...
     , 'NormControl', 'on' ...
     ..., 'NonNegative', [1,3] ...
     ... , 'InitialStep', 1e-8 ...
-     , 'MaxStep', 1e-3 ...
+    , 'MaxStep', 1e-3 ...
     , 'Jacobian',@(z, y) Jac(z, y, params, sigma) ...
     , 'Mass', @(z, y) Mass(z, y, params, sigma) ...
     ..., 'Stats','on' ...
@@ -15,17 +14,11 @@ options = odeset(...
     ..., 'Events', @(z,y) events(z,y) ...
     );
 
-% a = params.a;
-% z_end = a + 1/(a*sigma);
-z2 = params.z2;
+z_end = 1;
 
-% if((z_end < 0) || (z_end > z2))
-    z_end = z2;
-% end
-
-[z,y] = ode23tb(...
+[z,y] = ode23t(...
     @(z, y) my_ode(z, y, params, sigma), ...
-    [0, z_end], [0;0;1], options);
+    [1e-8, z_end], [0;0;0;1], options);
 
 %% plot solutions
 global DEBUG
@@ -36,33 +29,30 @@ if(DEBUG)
     end
     
     figure(701)
-    plot(z/z2, y(:,1), '-k', 'LineWidth', 1)
-%     axis([0 1 -3 1])
+    plot(z, y(:,1), '-k', 'LineWidth', 1)
+    %     axis([0 1 -3 1])
     
     figure(702)
-    plot(z/z2, y(:,2), '-k', 'LineWidth', 1)
-%     axis([0 1 -0.1 10])
+    plot(z, y(:,2), '-k', 'LineWidth', 1)
+    %     axis([0 1 -0.1 10])
     
     figure(703)
-    plot(z/z2, y(:,3), '-k', 'LineWidth', 1)
-%     axis([0 1 -30 10])
+    plot(z, y(:,3), '-k', 'LineWidth', 1)
+    %     axis([0 1 -30 10])
+    
+    figure(704)
+    plot(z, y(:,4), '-k', 'LineWidth', 1)
+    %     axis([0 1 -30 10])
 end
-end
-
-function [value,isterminal,direction] = events(~,y)
-value = [y(2); abs(y(2)) - 15];     % Detect velocity = 0
-isterminal = [1; 1];   % Stop the integration
-direction = [0; 0];   % Negative direction only
 end
 
 function out = Mass(z, ~, params, sigma)
 
-x = x_of_z(z, params);
-dxdt = dXdt(x, params);
+a = params.a;
 
-out = eye(3,3);
-out(2,2) = (sigma*x+dxdt);
-
+out = eye(4,4);
+out(2,3) = z/a;
+out(3,3) = z*(1-z);
 end
 
 

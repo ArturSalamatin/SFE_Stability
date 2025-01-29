@@ -5,19 +5,20 @@ if(nargin == 3)
 end
 
 R = params.R;
+a = params.a;
 alpha2 = (params.alpha)^2;
 
-X0 = x_of_z(z, params);
+out = zeros(4,4);
+out(1,4) = 1;
 
-dxdt = dXdt(X0, params);
-dcdz = dCdz(X0, params);
+out(2,1) = -1;
+out(2,3) = a*sigma;
 
-out = zeros(3,3);
-out(1,3) = 1;
-out(2,1) = -dcdz.*(sigma*X0+dxdt);
-out(2,2) = -sigma;
-out(3,1) = alpha2;
-out(3,2) = out(3,1)*R;
-out(3,3) = - R*out(2,1);
+out(3,2) = a;
+out(3,3) = (2+a*a*sigma)*(1-z) + z;
+
+out(4,1) = a*a*alpha2;
+out(4,2) = out(4,1)*R;
+out(4,4) = -R;
 
 end
