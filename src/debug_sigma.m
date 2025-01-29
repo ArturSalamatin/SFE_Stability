@@ -3,28 +3,45 @@ clear all
 % close all
 
 
-params.t = 0.45;
+params.t = 0.3;
 params.a = sqrt(2*params.t);
 params.z2 = z2(params);
 
 
-params.R = 1;
-params.alpha = 5;
-% sigma = 100;
+params.R = 0.1;
+params.alpha = 0.5;
+sigma = -1.4453e+04;
 
-
-% sigma = linspace(-30, -20, 10);
-% psi0 = 5;
-% out = zeros(size(sigma));
-% for i = 1 :numel(sigma)
-%     out(i) = J([sigma(i), psi0], params);
-% end
-
-[out, val] = sigma(params);
 
 global DEBUG
 DEBUG = true;
-solver(out, params);
+% out = J(sigma, params);
+
+
+% sigma = linspace(-200, -100, 50);
+% out = zeros(size(sigma));
+% for i = 1 :numel(sigma)
+%     i
+%     out(i) = J(sigma(i), params);
+% end
+% % 
+% figure(2434)
+% hold on
+% plot(sigma, out)
+% 
+% return
+% 
+% 
+% [out, val] = sigma(params);
+% 
+% global DEBUG
+% DEBUG = true;
+% solver(out, params);
 
 % figure(1000)
 % plot(sigma, out)
+
+[out, val] = Sigma(params);
+
+
+

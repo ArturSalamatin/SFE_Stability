@@ -1,18 +1,14 @@
-function out = J(xx, params)
-h = 1E-10;
-[z, y] = solver(xx, params, h);
+function out = J(sigma, params)
+[z, y] = solver(sigma, params);
 
-z2 = params.z2;
-sigma = xx(1);
-psi0 = xx(2);
-gamma0 = xx(3);
+% z2 = params.z2;
 
-z_end = z2 - h;
-bc = BC(sigma, psi0, gamma0, z_end, params);
+% z_end = z2 - h;
+% bc = BC(sigma, psi0, gamma0, z_end, params);
 
 out = log10( ...
-    abs(z2 - z_end) + ...
-    sum(abs(y(end, :)./bc)));
+    ... abs(z2 - z_end) + ...
+    sum(abs(y(end, 2))));
 end
 
 

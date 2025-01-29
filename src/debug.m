@@ -50,7 +50,7 @@ for i = 1:numel(t)
     params.t = t(i);
     params.a = sqrt(2*params.t);
     
-    params.z0 = z0(params);
+%     params.z0 = z0(params);
     params.z2 = z2(params);
     
     x = x_grid(params);
@@ -58,7 +58,7 @@ for i = 1:numel(t)
     c = c_of_x(x, params);
     
     plot(z, c, 'k-', 'LineWidth', 1)
-    plot(params.z0, c_of_x(params.a0, params), 'ok', 'MarkerFaceColor', 'black')
+%     plot(params.z0, c_of_x(params.a0, params), 'ok', 'MarkerFaceColor', 'black')
     plot(params.z2, 1, 'sk', 'MarkerFaceColor', 'black')
 end
 
