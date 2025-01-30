@@ -18,7 +18,7 @@ z_end = 1;
 
 [z,y] = ode23t(...
     @(z, y) my_ode(z, y, params, sigma), ...
-    [1e-8, z_end], [0;0;0;1], options);
+    [1e-8, z_end], [0;1e-10;0;1], options);
 
 %% plot solutions
 global DEBUG
@@ -48,10 +48,8 @@ end
 
 function out = Mass(z, ~, params, sigma)
 
-a = params.a;
-
 out = eye(4,4);
-out(2,3) = z/a;
+out(2,3) = z;
 out(3,3) = z*(1-z);
 end
 

@@ -12,9 +12,9 @@ out = zeros(4,4);
 out(1,4) = 1;
 
 out(2,1) = -1;
-out(2,3) = a*sigma;
+out(2,3) = a*a*sigma+1;
 
-out(3,2) = a;
+out(3,2) = 1;
 out(3,3) = (2+a*a*sigma)*(1-z) + z;
 
 out(4,1) = a*a*alpha2;
