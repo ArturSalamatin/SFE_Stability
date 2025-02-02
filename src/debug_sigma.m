@@ -9,24 +9,24 @@ params.a = sqrt(2*params.t);
 
 params.R = 0.1;
 params.alpha = 100;
-sigma = -0.9;
+sigma = -0.0;
 
 
 global DEBUG
 DEBUG = true;
-% out = J(sigma, params);
+out = J([sigma, 0, 0, 0], params);
 
 
-sigma = linspace(-2, -0.5, 15);
-out = zeros(size(sigma));
-for i = 1 :numel(sigma)
-    i
-    out(i) = J(sigma(i), params);
-end
-% 
-figure(2434)
-hold on
-plot(sigma, out)
+% sigma = linspace(-2, -0.5, 15);
+% out = zeros(size(sigma));
+% for i = 1 :numel(sigma)
+%     i
+%     out(i) = J([sigma(i), 0, 0, 0], params);
+% end
+% % 
+% figure(2434)
+% hold on
+% plot(sigma, out)
 
 return
 % 

@@ -1,5 +1,5 @@
-function dy = my_ode(z, y, params, sigma)
-% y = (PHI; PSI; GAMMA)
+function dy = my_ode(z, y, params, sigma, Jac)
+% y = (PHI; PSI; CHI; GAMMA)
 
 dy = Jac(z, [], params, sigma)*y;
 

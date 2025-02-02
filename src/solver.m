@@ -1,7 +1,5 @@
-function [z,y] = solver(sigma, params)
+function [z,y] = solver(sigma, params, Jac, IC, A)
 
-a = params.a;
-alpha2 = (params.alpha)^2;
 
 options = odeset(...
     'RelTol', 1e-10 ...
@@ -11,31 +9,15 @@ options = odeset(...
     ... , 'InitialStep', 1e-8 ...
     , 'MaxStep', 1e-3 ...
     , 'Jacobian',@(z, y) Jac(z, y, params, sigma) ...
-    , 'Mass', @(z, y) Mass(z, y, params, sigma) ...
     ..., 'Stats','on' ...
     ... ,'OutputFcn', @odeplot ...
     ..., 'Events', @(z,y) events(z,y) ...
     );
 
-
-
-h = 1e-10;
-z_end = 1;
-
-gamma0 = 1;
-w = h;
-c = -1/2*h*h;
-x = -1/4/(2+sigma)*h*h;
-gamma = (1+a^2*alpha2/2*h*h);
-
-
-
 [z,y] = ode23t(...
-    @(z, y) my_ode(z, y, params, sigma), ...
-    [h, z_end], gamma0*[w;c;x;gamma], options);
+    @(z, y) my_ode(z, y, params, sigma, Jac), ...
+    [A, 0], IC, options);
 
-y = [0,0,0,1; y];
-z = [0;z];
 
 %% plot solutions
 global DEBUG
@@ -63,11 +45,5 @@ if(DEBUG)
 end
 end
 
-function out = Mass(z, ~, params, sigma)
-
-out = eye(4,4);
-out(2,3) = z;
-out(3,3) = z*(1-z);
-end
 
 
