@@ -17,7 +17,7 @@ out(2,2) = -1/(1-y);
 out(2,3) = -1/(1-y);
 
 out(3,2) = 1/(y*(1-y));
-out(3,3) = 2-y+sigma*(1-y);
+out(3,3) = (2-y+sigma*(1-y))*out(3,2);
 
 out(4,1) = a*a*alpha2;
 out(4,2) = out(4,1)*R;

@@ -1,66 +1,62 @@
 function func
 
+clc
 close all
 clear all
 
-x0 = 1/(30*pi);
-options = odeset(...
-    'RelTol', 1e-8 ...
-    , 'AbsTol', 1e-8 ...
-    , 'NormControl', 'on' ...
-    ..., 'NonNegative', [1,3] ...
-     , 'InitialStep', 1e-8 ...
-    , 'MaxStep', 1e-3 ...
-    ... , 'Jacobian', Jac ...
-    ..., 'Stats','on' ...
-    ... ,'OutputFcn', @odeplot ...
-    ..., 'Events', @(z,y) events(z,y) ...
-    );
 
-[x, y] = ...
-    ode45(@(x,y) f(x,y), ...
-    [x0, 1], ...
-    [sin(1/x0), -1/(x0*x0)*cos(1/x0)], options);
-figure(1)
-hold on
-plot(x,y(:,1))
+params.t = 0.3;
+params.a = sqrt(2*params.t);
+
+params.R = 0.1;
+params.alpha = 100;
+sigma = 0.1;
 
 
 opts = bvpset(...
-    'FJacobian',@jac,'RelTol',1e-5,...
-    'AbsTol',1e-5,'Stats','on');
-xmesh = linspace(x0, 1, 10);
-solinit = bvpinit(xmesh, [1; 1]);
+    'RelTol',1e-5 ...
+    , 'AbsTol',1e-5 ...
+    , 'FJacobian',@(x,y) Jac(x, y, params, sigma) ...
+    , 'Stats','on');
 
-sol4c = bvp5c(@bvpfcn, @bcfcn, solinit, opts);
+h = 1e-2;
+x0 = h;
+x1 = 1 - h;
 
-plot(sol4c.x,sol4c.y(1,:),'r*')
 
-set(gca, 'xScale', 'log')
+xmesh = linspace(x0, x1, 10);
+solinit = bvpinit(xmesh, [0; 0; 0; 1]);
+
+sol = bvp4c(...
+    @(x,y) bvpfcn(x, y, params, sigma), ...
+    @(ya, yb) bcfcn(ya, yb, params, sigma, h), ...
+    solinit, opts);
+
+plot(sol.x, sol.y(1,:), 'r-')
 
 end
 
-
-
-function dy = f(x, y)
-
-dy = [y(2)
-       -2*y(2)/x - y(1)/x^4];
-
+function dydx = bvpfcn(x, y, params, sigma)
+dydx = Jac(x, [], params, sigma)*y;
 end
 
-function dfdy = jac(x,~)
-dfdy = [0      1
-       -1/x^4 -2/x];
+function res = bcfcn(ya, ~, params, sigma, h)
+ic = IC(params, sigma, h);
+res = ya - ic;
 end
 
-function dydx = bvpfcn(x,y)
-dydx = [y(2)
-       -2*y(2)/x - y(1)/x^4];
+function yinit = mat4init(x) % initial guess function
+yinit = [cos(4*x)
+        -4*sin(4*x)];
 end
 
-function res = bcfcn(ya,yb)
-res = [ya(1)
-       yb(1)-sin(1)];
+function out = IC(params, sigma, h)
+g0 = 1;
+R = params.R;
+alpha2 = (params.alpha)^2;
+out = g0*[1*h - R/2*h*h
+       -h*h/2
+       h*h/(2*sigma)
+       1-R*h+(R*R+alpha2)/2*h*h];
 end
 
