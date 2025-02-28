@@ -1,5 +1,5 @@
 function out = calc_sigma(f, R, starter, pens)
-out = zeros(numel(f), numel(R)) - 1.95;
+out = zeros(numel(f), numel(R)) - 1.888;
 for j = 1:numel(f)
     params.f = f(j);
     for i = 1:numel(R)
@@ -9,7 +9,7 @@ for j = 1:numel(f)
         pen = set_pen(pens.lc{min(i, numel(pens.lc))}, pens.style);
         params.pen = pen;
         
-        [sigma] = fit_sigma(starter, out(j,I), params);
+        [sigma, ~] = fit_sigma(starter, out(j,I), params);
         out(j,i) = sigma;
         
         
