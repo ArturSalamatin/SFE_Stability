@@ -1,6 +1,6 @@
 clc
 clear all
-close all
+% close all
 
 fntSize = 14;
 set(0,'defaultAxesFontName', 'Times New Roman')
@@ -8,10 +8,10 @@ set(0,'DefaultAxesFontSize', fntSize);
 set(0,'defaultTextFontName', 'Times New Roman')
 set(0,'defaultTextFontSize', fntSize)
 %% params
-f = [1.87, 3.2, 5.2, 12, 40, 100];% linspace(1,505,11);
-R = 0.8; %0.2;% [0.1, 0.3, 0.5,1,2,2.5];
-col = {'k'};
-style = {'-', '--', '-', '-.', '-'};
+f = [0.1,0.5,1,5,10];% linspace(1,505,11);
+R = linspace(0.01, 2.0, 101); %0.2;% [0.1, 0.3, 0.5,1,2,2.5];
+col = {'b'};
+style = {'-', '--'};
 %% set mesh
 Left = 0;
 Right = 1;
@@ -24,7 +24,7 @@ for i = 1:numel(N)
 %     out = calc_sigma(f, R, starter, pen);
     %% choose starter
     starter = @(sigma, params) starter_omega_Y(sigma, params, mesh);
-    pen = set_pen(col, style);
+    pen = set_pen(col, style{1});
     out = calc_sigma(f, R, starter, pen);  
     %% choose starter
 %     A = 35;
@@ -35,16 +35,12 @@ for i = 1:numel(N)
 end
 
 
-% figure(8)
-% hold on
-% box on
-% xlabel('{\itR}')
-% ylabel('{\it\sigma}')
-% plot(R, out, 'k-', 'LineWidth', 1)
+figure(8)
+hold on
+box on
+xlabel('{\itR}')
+ylabel('{\it\sigma}')
+plot(R, out, 'k-', 'LineWidth', 1)
 
-% figure(1)
-% hold on
-% y = [1.87, 3.2, 5.2, 12];
-% x = ones(size(y))*2.0;
-% plot(x,y, 'ok', 'MarkerFaceColor', 'black')
+
 

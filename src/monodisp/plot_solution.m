@@ -3,9 +3,12 @@ fig_id = 700;
 
 factor = 1;
 
-names = {'{\Phi}','{\Psi}','X','{\Gamma}','{\Omega}','Y', '{\Psi}+X'};
+names = {'{\Phi}','{\Psi}','X','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
 
-for i = 1:7
+for i = 1:numel(names)
+    if(i > size(y,2))
+        break
+    end
     figure(fig_id+i)
     box on
     %     axis([0 1 -Inf Inf])
@@ -19,4 +22,7 @@ for i = 1:7
     xlabel('{\xi}')
     ylabel(names{i})
 end
+
+figure(fig_id+8)
+axis([-Inf Inf -Inf 5])
 end

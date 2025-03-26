@@ -2,7 +2,7 @@ function sol = starter_omega_Y(sigma, params, mesh)
 %% problem descriptor
 problem = set_problem(mesh, sigma, params);
 %% solve problem
-sol = transform(solver(problem, mesh));
+sol = transform(solver(problem, mesh), params);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -61,19 +61,30 @@ out.right = right;
 out.rhs = [0;0;0;-1];
 end
 
-function sol = transform(sol)
+function sol = transform(sol, params)
 t = sol.t';
-% in
+%% in
 %[Phi, Omega, Y, Gamma]
 Phi = sol.y(:,1);
 Omega = sol.y(:,2);
 Y = sol.y(:,3);
 Gamma = sol.y(:,4);
-% out
+%% out
 %[Phi, Psi, X, Gamma, Omega, Y, Psi+X]
 X = Y./t;
 X(1) = 0;
 Psi = Omega - Y;
-
-sol.y = [Phi, Psi, X, Gamma, Omega, Y, Psi+X];
+%% flux Q, pressure P
+Q = -(Phi+Psi)./(1-t);
+% calc P
+R = params.R;
+mu = exp(R*t); % viscosity
+grad_p = -mu.*(Psi./t + Phi);
+grad_p(1)=0;
+I = 1:numel(mu)-1;
+P = (grad_p(I)+grad_p(I+1))/2.*(t(I+1)-t(I));
+P = [0; cumsum(P)];
+dP = grad_p;
+%% form return variable
+sol.y = [Phi, Psi, X, Gamma, Omega, Y, Psi+X, Q, P, dP];
 end
