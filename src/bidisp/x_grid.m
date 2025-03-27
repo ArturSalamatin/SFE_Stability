@@ -33,7 +33,7 @@ else
         % concatanate meshes
         out = [out(1:end-1), linspace(a0, a, n)];
     else
-        error('Large times, t > 0.5, are not considered.')
+        warning('Large times, t > 0.5, are not considered.')
         step = (1-a0)/n;
         n = ceil((1-a0)/step);
         out = [out(1:end-1), linspace(a0, 1, n)];
