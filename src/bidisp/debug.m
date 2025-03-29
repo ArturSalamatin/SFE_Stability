@@ -1,8 +1,8 @@
 clc
 clear all
-close all
+% close all
 
-params.a0 = 0.1;
+params.a0 = 0.5;
 params.a1 = 1.0;
 params.r = 0.5; % dust volume fraction
 params.g1 = (1-params.r)/params.a1;
@@ -26,7 +26,7 @@ xlabel('\xi')
 ylabel('$\bar{x}_0$', 'interpreter', 'latex')
 % plot([0 0.7], params.a0*[1 1], 'k--')
 
-t = linspace(1E-2, 0.5, 11);
+t = linspace(1E-2, 0.5, 5);
 for i = 1:numel(t)
     params.t = t(i);
     params.a = sqrt(2*params.t);
@@ -45,7 +45,9 @@ for i = 1:numel(t)
     figure(100)
     plot(z, x, 'k-', 'LineWidth', 1)
     %     plot(z, x_inv, 'r--', 'LineWidth', 2)
-    plot(params.z0, params.a0, 'ok', 'MarkerFaceColor', 'black')
+    if(params.z0>0)
+        plot(params.z0, params.a0, 'ok', 'MarkerFaceColor', 'black')
+    end
     plot(params.z2, 0, 'sk', 'MarkerFaceColor', 'black')
     
     figure(110)
