@@ -12,7 +12,7 @@ if(a0 > a1)
 end
 
 if(nargin == 1)
-    step = a0/15;
+    step = 0.005;
 end
 
 if(a <= a0)
