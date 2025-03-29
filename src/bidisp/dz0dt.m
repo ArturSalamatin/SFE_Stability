@@ -6,8 +6,7 @@ r = params.r;
 
 if(a < a0)
     % here z0 does not propagate yet
-    out = ...
-        0;
+    out = 0;
 else
     % here z0 > 0, and front popagates
     out = 1/(r+(1-r)*a);
