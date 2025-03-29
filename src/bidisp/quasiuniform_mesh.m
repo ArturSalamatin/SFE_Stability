@@ -1,5 +1,8 @@
 function mesh = quasiuniform_mesh(xL, xMid, xR, N, params)
 % set mesh
+if(xL ~= 1.0 || xR ~= 0.0 || xMid > xL || xMid < xR)
+    error('Wrong mesh stencils!');
+end
 % approximate quasi-uniform step in xBar(!)
 h = abs(xR-xL)/(N-1);
 %% set left mesh segment
