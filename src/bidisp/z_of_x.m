@@ -1,9 +1,9 @@
 function out = z_of_x(x, params)
 
-t = params.t;
+% t = params.t;
 a0 = params.a0;
 g0 = params.g0;
-g1 = params.g1;
+% g1 = params.g1;
 r = params.r;
 
 a = params.a;
