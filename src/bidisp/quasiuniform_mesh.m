@@ -6,6 +6,8 @@ h = (R-L)/(N-1);
 mesh.left = uniform_mesh(L, Mid, ceil((Mid - L)/h) +1);
 %% set left mesh segment
 mesh.right = uniform_mesh(Mid, R, ceil((R - Mid)/h) +1);
+
+mesh.N = mesh.right.N + mesh.left.N;
 end
 
 function mesh = uniform_mesh(L, R, N)
