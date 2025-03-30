@@ -2,7 +2,7 @@ function sol = starter_Y(sigma, params, mesh)
 %% problem descriptor
 problem = set_problem(mesh, sigma, params);
 %% solve problem
-sol = transform(solver(problem, mesh), params);
+sol = transform(solver(problem, mesh), params, problem.base_state);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -119,7 +119,7 @@ out.right = -eye(eqN,eqN);
 out.rhs = [0;0;0;0];
 end
 
-function sol = transform(sol, params)
+function sol = transform(sol, params, base_state)
 t = sol.t';
 %% in
 %[Phi, Psi, Y, Gamma]
@@ -144,5 +144,8 @@ P = (grad_p(I)+grad_p(I+1))/2.*(t(I+1)-t(I));
 P = [0; cumsum(P)];
 dP = grad_p;
 %% form return variable
-sol.y = [Phi, Psi, X, Gamma, Omega, Y, Psi+X, 0*Q, 0*P, 0*dP];
+g0 = params.g0;
+dz2dt = base_state.dz2dt;
+a = params.a;
+sol.y = [Phi, Psi, X, Gamma, Omega, Y, Psi+X*a*g0*dz2dt, 0*Q, 0*P, 0*dP];
 end
