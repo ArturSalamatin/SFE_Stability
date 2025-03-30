@@ -6,7 +6,7 @@ clear all
 N = 3001;
 mesh = quasiuniform_mesh(N, params);
 
-sol = starter_Y(sigma, params, mesh);
+sol = starter_Y(sigma, params, N);
 
 pen.lc = 'black';
 pen.style = '-';
