@@ -104,20 +104,13 @@ end
 
 function out = JC(params, eqN)
 %% BC at the left end
-left = zeros(eqN,eqN);
-left(1,1) = 1; % Phi(0) = 0
-left(2,2) = 1; % Omega(0) = 0 /* = Psi(0)*/
-% left(3,3) = 1; % Y(0) = 0
-% left(4,4) = 1; % G(0)   = 1
-%% BC at the right end
-right = zeros(eqN,eqN);
-% right(2,2) = 1; % Omega(1) = 0
-right(3,1) = h; % f*Phi(1) + G(1) = 0
-right(3,4) = 1; 
-right(4,4) = 1; % G(1)   = 1
+left = eye(eqN,eqN);
+left(2, 3) = params.base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
 %% rhs for BC eqns
+% BC at the left end
 out.left = left;
-out.right = right;
+% JC at the right end
+out.right = -eye(eqN,eqN);
 out.rhs = [0;0;0;0];
 end
 
