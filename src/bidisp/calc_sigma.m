@@ -9,7 +9,7 @@ for j = 1:numel(h)
         pens.style{min(j, numel(pens.style))});
     params.pen = pen;
     
-    [sigma,~] = fit_sigma(starter, params);
+    [sigma] = fit_sigma(starter, params);
     out(j,1) = sigma;
     for i = 2:numel(R)
         params.R = R(i);
