@@ -5,7 +5,7 @@ factor = 1;
 
 names = {'{\Phi}','{\Psi}','X','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
 
-for i = 1:numel(names)
+for i = 1:7%numel(names)
     if(i > size(y,2))
         break
     end
@@ -23,6 +23,6 @@ for i = 1:numel(names)
     ylabel(names{i})
 end
 
-figure(fig_id+8)
-axis([-Inf Inf -Inf 5])
+% figure(fig_id+8)
+% axis([-Inf Inf -Inf 5])
 end
