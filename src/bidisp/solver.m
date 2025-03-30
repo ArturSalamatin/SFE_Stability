@@ -10,7 +10,7 @@ b = zeros(M, 1); % rhs
 %% fill in the matrix
 for i = I
     block_pos = (i-1)*eqN;
-    step = (t(i+1) - t(i))/2; % (!)trapezoidal rule
+    step = (t(i+1) - t(i))/2.0; % (!)trapezoidal rule
     block = problem.block_matrix(t(i), t(i+1), i);
     Diag = problem.diag(i);
     % coef at y_i
