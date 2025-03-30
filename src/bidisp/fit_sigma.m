@@ -42,7 +42,7 @@ out = i;
 end
 
 function out_I = make_guess(starter, params)
-sigma = linspace(-2,2,101);
+sigma = linspace(-3,2,101);
 out = zeros(size(sigma));
 for i = 1:numel(sigma)
     sol = starter(sigma(i), params);
