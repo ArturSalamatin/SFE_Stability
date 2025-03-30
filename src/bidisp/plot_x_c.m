@@ -1,14 +1,23 @@
 clc
 clear all
-% close all
+close all
 
 params.a0 = 0.5;
 params.a1 = 1.0;
-params.r = 0.5; % dust volume fraction
+params.r = 0.05; % dust volume fraction
 params.g1 = (1-params.r)/params.a1;
 params.g0 = params.g1 + params.r/params.a0;
 
+t = linspace(1E-2, 0.5, 5);
+
 %% verify x(z,t)
+verify_x(params, t);
+%% verify c(z,t)
+verify_c(params, t);
+%% verify G(x)/x
+% verify_GdivX(params);
+
+function verify_x(params, t)
 my_figure(100)
 hold on
 axis([0 0.8 0 1])
@@ -26,12 +35,12 @@ xlabel('\xi')
 ylabel('$\bar{x}_0$', 'interpreter', 'latex')
 % plot([0 0.7], params.a0*[1 1], 'k--')
 
-t = linspace(1E-2, 0.5, 5);
 for i = 1:numel(t)
     params.t = t(i);
     params.a = sqrt(2*params.t);
     
     params.z0 = z0(params);
+    params.z0
     params.z2 = z2(params);
     
     x = x_grid(params);
@@ -56,8 +65,9 @@ for i = 1:numel(t)
     plot(params.z0/params.z2, params.a0/params.a, 'ok', 'MarkerFaceColor', 'black')
     %     plot(params.z2, 0, 'sk', 'MarkerFaceColor', 'black')
 end
+end
 
-%% verify c(z,t)
+function verify_c(params, t)
 my_figure(200)
 hold on
 axis([0 0.8 0 1])
@@ -94,8 +104,9 @@ for i = 1:numel(t)
     plot(params.z0/params.z2, c_of_x(params.a0, params), 'ok', 'MarkerFaceColor', 'black')
     %     plot(params.z2, 1, 'sk', 'MarkerFaceColor', 'black')
 end
+end
 
-%% verify G(x)/x
+function verify_GdivX(params)
 my_figure(300)
 hold on
 axis([0 2 0 params.g0])
@@ -117,4 +128,5 @@ for i = 1:numel(a0)
     plot(x, out, 'k-', 'LineWidth', 1)
     plot(params.a0*[1 1], [0 params.g0], 'k--')
     plot([1 1]*params.a1, [0 params.g0], 'k--')
+end
 end
