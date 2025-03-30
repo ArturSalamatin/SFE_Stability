@@ -13,6 +13,7 @@ mesh.right = uniform_mesh(...
     xMid, xR, ceil(abs(xR - xMid)/h) +1, params);
 
 mesh.N = mesh.right.N + mesh.left.N;
+mesh.I = [mesh.left.I, mesh.left.N+1 + mesh.right.I];
 end
 
 function mesh = uniform_mesh(xL, xR, N, params)
