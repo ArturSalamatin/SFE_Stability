@@ -13,10 +13,10 @@ problem.ids = 1:problem.eqN; % iterator for block rows/cols
 problem.base_state = set_base_state(mesh, params);
 
 problem.M = problem.eqN * mesh.N;
-problem.block_matrix = @(xL, xR, i)block(xL, xR, i, sigma, params);
-problem.diag = @(i)Diag(i, eqN, problem.base_state);
+problem.block_matrix = @(xL, xR, i)block(xL, xR, i, sigma, params, problem.base_state);
+problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
 problem.BC = @()BC(params, problem.eqN);
-problem.JC = @()JC(params, problem.eqN);
+problem.JC = @()JC(params, problem.base_state, problem.eqN);
 end
 
 function out = set_base_state(mesh, params)
@@ -28,8 +28,9 @@ nodes_xBar = (nodes_xBar(I)+nodes_xBar(I+1))/2;
 
 out.z2 = z2(params);
 out.z0 = z0(params);
-out.dz2 = dz2dt(params);
-out.C2 = a*a*out.dz2/out.z2;
+out.dz2dt = dz2dt(params);
+out.dz0dt = dz0dt(params);
+out.C2 = a*a*out.dz2dt/out.z2;
 out.C1 = a/out.z2;
 
 out.x = nodes_xBar*a;
@@ -41,24 +42,28 @@ out.B21 = a*out.dcdz;
 out.B33 = (a^3)./out.x.*out.dxBardt;
 end
 
-function out = block(xiL, xiR, i, sigma, params)
+function out = block(xiL, xiR, i, sigma, params, base_state)
 %[Phi, Psi, Y, Gamma]
 % if(nargin == 3)
 %     sigma = params.sigma;
 % end
-%% set params
-% C2(t) = 2t*dzeta2dt/zeta2
-C2 = params.base_state.C2;
-% sqrt(2t)*dc/dzeta
-B21 = params.base_state.B21;
-% 2t/xBar*dxBardt
-B33 = params.nase_state.B33;
 
-g_of_x = params.base_state.g_of_x(i);
-dcdz = params.base_state.dcdz(i);
-
+a = params.a;
 R = params.R;
 h2 = (params.h)^2;
+
+%% set params
+% C2(t) = 2t*dzeta2dt/zeta2
+C2 = base_state.C2;
+% sqrt(2t)*dc/dzeta
+B21 = base_state.B21(i);
+% 2t/xBar*dxBardt
+B33 = base_state.B33(i);
+
+g_of_x = base_state.g_of_x(i);
+dcdz = base_state.dcdz(i);
+xBar = base_state.x(i)/a;
+
 
 y  =(xiL+xiR)/2;
 %% set out
@@ -78,7 +83,7 @@ out(4,4) = -R*dcdz;
 end
 
 function out = Diag(i, eqN, base_state)
-out = sparse([1:eqN,2], [1:eqN,3], ones(1,eqN+1), eqN, eqN, eqN);
+out = sparse([1:eqN,2], [1:eqN,3], ones(1,eqN+1), eqN, eqN, eqN+1);
 out(2, 2) = base_state.C1;
 out(2, 3) = base_state.C2*base_state.g_of_x(i);
 end
@@ -102,10 +107,10 @@ out.right = right;
 out.rhs = [0;0;0;-1];
 end
 
-function out = JC(params, eqN)
+function out = JC(params, base_state, eqN)
 %% BC at the left end
 left = eye(eqN,eqN);
-left(2, 3) = params.base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
+left(2, 3) = base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
 %% rhs for BC eqns
 % BC at the left end
 out.left = left;
