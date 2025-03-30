@@ -1,4 +1,4 @@
-function out = calc_sigma(h, R, starter, pens)
+function out = calc_sigma(h, R, starter, pens, params)
 out = zeros(numel(h), numel(R)) - 1.888;
 for j = 1:numel(h)
     params.h = h(j);
