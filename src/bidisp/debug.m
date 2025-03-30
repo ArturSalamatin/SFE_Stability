@@ -22,3 +22,6 @@ mesh = quasiuniform_mesh(1, params.a0, 0, N, params);
 sigma = -1.9;
 sol = starter_Y(sigma, params, mesh);
 
+pen.lc = 'black';
+pen.style = '-';
+plot_solution(sol.t,sol.y,pen);
