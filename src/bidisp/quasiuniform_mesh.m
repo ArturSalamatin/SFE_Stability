@@ -1,6 +1,11 @@
-function mesh = quasiuniform_mesh(xL, xMid, xR, N, params)
+function mesh = quasiuniform_mesh(N, params)
 % set mesh
-if(xL ~= 1.0 || xR ~= 0.0 || xMid > xL || xMid < xR)
+
+xL = 1.0;
+xR = 0.0;
+xMid = params.a0;
+
+if(xMid > xL || xMid < xR)
     error('Wrong mesh stencils!');
 end
 % approximate quasi-uniform step in xBar(!)
