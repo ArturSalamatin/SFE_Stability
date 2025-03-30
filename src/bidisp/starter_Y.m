@@ -129,9 +129,14 @@ Y = sol.y(:,3);
 Gamma = sol.y(:,4);
 %% out
 %[Phi, Psi, X, Gamma, Omega, Y, Psi+X]
+% X
 X = Y./t;
 X(1) = 0;
-Omega = Psi + Y;
+% Omega
+g0 = params.g0;
+dz2dt = base_state.dz2dt;
+a = params.a;
+Omega = Psi + Y*a*g0*dz2dt;
 %% flux Q, pressure P
 Q = -(Phi+Psi)./(1-t);
 % calc P
@@ -144,8 +149,5 @@ P = (grad_p(I)+grad_p(I+1))/2.*(t(I+1)-t(I));
 P = [0; cumsum(P)];
 dP = grad_p;
 %% form return variable
-g0 = params.g0;
-dz2dt = base_state.dz2dt;
-a = params.a;
-sol.y = [Phi, Psi, X, Gamma, Omega, Y, Psi+X*a*g0*dz2dt, 0*Q, 0*P, 0*dP];
+sol.y = [Phi, Psi, X, Gamma, Omega, Y, 0*(Psi+X), 0*Q, 0*P, 0*dP];
 end
