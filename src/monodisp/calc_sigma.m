@@ -1,7 +1,7 @@
-function out = calc_sigma(f, R, starter, pens)
-out = zeros(numel(f), numel(R)) - 1.888;
-for j = 1:numel(f)
-    params.f = f(j);
+function out = calc_sigma(h, R, starter, pens)
+out = zeros(numel(h), numel(R)) - 1.888;
+for j = 1:numel(h)
+    params.h = h(j);
     
     params.R = R(1);    
     pen = set_pen(...
