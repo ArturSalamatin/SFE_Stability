@@ -5,11 +5,13 @@ a0 = params.a0;
 r = params.r;
 g0 = (params.g0 - params.g1);
 
-if(a < a0)
-    % here z0 does not propagate yet
-    out = 1/(a*g0);
-else
-    % here z0 > 0, and front popagates
-    out = 1/(r+(1-r)*a);
-end
+out = zeros(size(a));
+
+% here z0 does not propagate yet
+mask = a < a0;
+out(mask) = 1./(a(mask)*g0);
+% here z0 > 0, and front popagates
+mask = ~mask;
+out(mask) = 1./(r+(1-r)*a(mask));
+
 end
