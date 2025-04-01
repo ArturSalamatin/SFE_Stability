@@ -31,8 +31,8 @@ out.z2 = z2(params);
 out.z0 = z0(params);
 out.dz2dt = dz2dt(params);
 out.dz0dt = dz0dt(params);
-out.C2 = a*a*out.dz2dt/out.z2;
 out.C1 = a/out.z2;
+out.C2 = out.C1*a*out.dz2dt;
 
 out.x = nodes_xBar*a;
 out.g_of_x = g(out.x, params);
@@ -94,12 +94,10 @@ h = params.h;
 left = zeros(eqN,eqN);
 left(1,1) = 1; % Phi(0) = 0
 left(2,2) = 1; % Psi(0) = 0
-% left(3,3) = 1; % Y(0) = 0
-% left(4,4) = 1; % G(0)   = 1
 %% BC at the right end
 right = zeros(eqN,eqN);
 % right(2,2) = 1; % Omega(1) = 0
-right(3,1) = h; % f*Phi(1) + G(1) = 0
+right(3,1) = h; % h*Phi(1) + G(1) = 0
 right(3,4) = 1; 
 right(4,4) = 1; % G(1)   = -1
 %% rhs for BC eqns
@@ -109,11 +107,11 @@ out.rhs = [0;0;0;-1];
 end
 
 function out = JC(params, base_state, eqN)
-%% BC at the left end
+%% JC at the left end
 left = eye(eqN,eqN);
 left(2, 3) = base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
 %% rhs for BC eqns
-% BC at the left end
+% assign JC at the left end
 out.left = left;
 % JC at the right end
 out.right = -eye(eqN,eqN);
