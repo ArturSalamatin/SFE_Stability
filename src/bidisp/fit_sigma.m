@@ -34,7 +34,6 @@ end
 function out = right_monotone(y)
 % identify monotone interval in y-values
 i = numel(y);
-while (i > 1) && (y(i) > y(i-1))
 flag = (y(i) > y(i-1));
 while (i > 1) && ((y(i) > y(i-1)) == flag)
     i = i-1;
@@ -46,7 +45,6 @@ function out = sign_change(y)
 % identify the change of sign in y-values
 i = 1;
 I = numel(y);
-while (i <= I) && (y(i) < 0)
 while (i <= I-1) && (y(i)*y(i+1) > 0)
     i = i+1;
 end
@@ -70,7 +68,6 @@ out = out(idx:end);
 
 I = sign_change(out);
 R = sigma(I);
-L = sigma(I-1);
 L = sigma(I+1);
 out_I = (L + R)/2;
 end
