@@ -18,15 +18,16 @@ a = params.a;
 
 h1 = my_figure(300);
 hold on
+% axis([0 0.5 1 8])
 xlabel('\tau')
 ylabel('{\itC}_1')
 
 h2 = my_figure(400);
 hold on
+% axis([0 0.5 1 2])
 xlabel('\tau')
 ylabel('{\itC}_2')
 
-alpha = [0.1, 0.3, 0.5, 0.7, 1];
 alpha = [0.1, 0.3, 0.5, 0.7];
 for i = 1:numel(alpha)
     
