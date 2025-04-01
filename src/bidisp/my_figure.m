@@ -8,12 +8,15 @@ set(0,'defaultTextFontName', 'Times New Roman')
 set(0,'defaultTextFontSize', fntSize)
 
 
-h = figure(id);
+h0 = figure(id);
 box on
 set(gca,'fontsize',14)
 set(gca,'fontname','Times New Roman')
 % set(gca,'textfontsize',14)
 
+if(nargout == 1)
+    h = h0;
+end
 
 
 end
