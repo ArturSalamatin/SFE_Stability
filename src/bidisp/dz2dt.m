@@ -3,7 +3,7 @@ function out = dz2dt(params)
 a = params.a;
 a0 = params.a0;
 r = params.r;
-g0 = (params.g0 - params.g1);
+g0 = params.g0;
 
 out = zeros(size(a));
 
