@@ -1,5 +1,4 @@
-function sol = starter_Y(sigma, params, N)
-mesh = quasiuniform_mesh(N, params);
+function sol = starter_Y(sigma, params, mesh)
 %% problem descriptor
 problem = set_problem(mesh, sigma, params);
 %% solve problem
