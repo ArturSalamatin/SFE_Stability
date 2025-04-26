@@ -6,6 +6,7 @@ t = mesh.t;
 I = mesh.I; % jump node is skipped
 %% allocate memory
 A = spalloc(M,M,M*2); % matrix
+% A = full(A);
 b = zeros(M, 1); % rhs
 %% fill in the matrix
 for i = I

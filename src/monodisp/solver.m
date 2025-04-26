@@ -10,7 +10,7 @@ A = spalloc(M,M,M*2);
 %% fill in the matrix
 block_pos = 0;
 for i = I
-    step = t(i+1) - t(i);
+    step = (t(i+1) - t(i))/2; % (!)trapezoidal rule
     block = problem.block_matrix(t(i), t(i+1));
     % coef at y_i
     A(block_pos+ids, block_pos + ids) = ...

@@ -1,39 +1,29 @@
 function out = calc_sigma(h, R, starter, pens, params)
+global sigma_fig
 out = zeros(numel(h), numel(R)) - 1.888;
 for j = 1:numel(h)
-    params.h = h(j);
-    
-    params.R = R(1);    
-    pen = set_pen(...
+    j
+    params.h = h(j);    
+    params.R = R(1);
+    params.pen = set_pen(...
         pens.lc{min(1, numel(pens.lc))}, ...
         pens.style{min(j, numel(pens.style))});
-    params.pen = pen;
     
-    [sigma] = fit_sigma(starter, params);
+    [sigma] = fit_sigma(starter, params, -params.C1-params.C2);
     out(j,1) = sigma;
     for i = 2:numel(R)
         params.R = R(i);
         I = max(1,i-1);
         
-        pen = set_pen(pens.lc{min(i, numel(pens.lc))}, pens.style);
-        params.pen = pen;
+        params.pen = set_pen(...
+            pens.lc{min(i, numel(pens.lc))}, ...
+            pens.style{1});
         
         [sigma] = fit_sigma(starter, params, out(j,I));
         out(j,i) = sigma;
-        
-        
-        
-        
-        %         x = sol.t';
-        %         x = x(x<0.2);
-        %         sol = series_expansion(x, 805, sigma, params);
-        %
-        %         pen_series.lc = 'm';
-        %         pen_series.style = '--';
-        %         plot_solution(sol.x,sol.y,pen_series);
     end
     
-    figure(7)
+    figure(sigma_fig)
     hold on
     box on
     xlabel('{\itR}')
@@ -43,6 +33,9 @@ for j = 1:numel(h)
     %         save_figs(sigma, params);
     
 end
-
-
+    figure(sigma_fig)
+    plot(0, out(1,1), 'k', ...
+        'LineStyle', 'none', ...
+        'Marker', params.marker, ...
+        'MarkerFacecolor', 'black')
 end
