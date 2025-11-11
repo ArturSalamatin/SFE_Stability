@@ -129,7 +129,7 @@ Gamma = sol.y(:,4);
 %[Phi, Psi, X, Gamma, Omega, Y, Psi+X]
 % X
 X = Y./t;
-X(1) = 0;
+%X(1) = 0;
 % Omega
 g0 = params.g0;
 dz2dt = base_state.dz2dt;
