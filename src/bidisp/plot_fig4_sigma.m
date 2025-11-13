@@ -16,7 +16,7 @@ R = linspace(0.01, 3, 85);
 col = {'m'};
 style = {'-'};
 %% set mesh
-N = 300;
+N = 1000;
 q = 1.06;
 for t_id = 1:numel(t)
     sigma_fig = sigma_fig+1;
@@ -34,8 +34,8 @@ for t_id = 1:numel(t)
         params = poly_case(a0, alpha(J), t(t_id));
         params.marker = marker(J);
         for i = 1:numel(N)
-            %         mesh = quasiuniform_mesh(N, params);
-            mesh = log_mesh(q, N(i), params);
+            mesh = quasiuniform_mesh(N, params);
+            %mesh = log_mesh(q, N(i), params);
             %% choose starter
             starter = @(sigma, params) starter_Y(...
                 sigma, params, mesh);
