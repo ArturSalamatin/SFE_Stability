@@ -39,7 +39,7 @@ out.dcdz = dcdz(out.x, params);
 out.dxBardt = dxBardt(out.x, params);
 
 out.B21 = a*out.dcdz;
-out.B33 = (a^3)./out.x.*out.dxBardt;
+out.B33 = (a^2)./out.x.*out.dxBardt;
 end
 
 function out = block(xiL, xiR, i, sigma, params, base_state)
