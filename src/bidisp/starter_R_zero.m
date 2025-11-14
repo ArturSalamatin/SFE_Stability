@@ -1,4 +1,4 @@
-function sol = starter_Y(sigma, params, mesh)
+function sol = starter_R_zero(sigma, params, mesh)
 %% problem descriptor
 problem = set_problem(mesh, sigma, params);
 %% solve problem
