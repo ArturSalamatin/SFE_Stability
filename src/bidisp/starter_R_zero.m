@@ -42,44 +42,31 @@ out.B21 = a*out.dcdz;
 out.B33 = (a^3)./out.x.*out.dxBardt;
 end
 
-function out = block(xiL, xiR, i, sigma, params, base_state)
-%[Phi, Psi, Y, Gamma]
+function out = block(xiL, xiR, i, sigma, params, base_state, eqN)
+%[Psi, Y]
 % if(nargin == 3)
 %     sigma = params.sigma;
 % end
 
 a = params.a;
-R = params.R;
-h2 = (params.h)^2;
-
 %% set params
-% C2(t) = 2t*dzeta2dt/zeta2
+% def: C1(t) == sqrt(2t)/zeta2
+C1 = base_state.C1;
+% def: C2(t) == 2t*dzeta2dt/zeta2
 C2 = base_state.C2;
-% sqrt(2t)*dc/dzeta
-B21 = base_state.B21(i);
-% 2t/xBar*dxBardt
-B33 = base_state.B33(i);
 
+c = base_state.c(i);
 g_of_x = base_state.g_of_x(i);
-dcdz = base_state.dcdz(i);
 xBar = base_state.x(i)/a;
-
 
 y  =(xiL+xiR)/2;
 %% set out
-out = zeros(4,4);
+out = zeros(eqN,eqN);
+out(1,1) = g_of_x/C1/xBar;
+out(1,2) = (g_of_x/C1*(1-c)/(xBar^2))/y;
 
-out(1,4) = 1;
-
-out(2,1) = -B21;
-out(2,3) = (1+sigma+C2)*g_of_x/y;
-
-out(3,2) = 1/xBar/C2;
-out(3,3) = (3+sigma+B33)/y/C2;
-
-out(4,1) = h2;
-out(4,2) = h2*R;
-out(4,4) = -R*dcdz;
+out(2,1) = 1/(C2*xBar);
+out(2,2) = (C2+(1-c)/(xBar^2)+1+sigma)/y;
 end
 
 function out = Diag(i, eqN, base_state)
