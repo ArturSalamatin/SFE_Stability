@@ -7,7 +7,7 @@ end
 
 function problem = set_problem(mesh, sigma, params)
 % number of equations
-problem.eqN = 2;
+problem.eqN = 4;
 problem.ids = 1:problem.eqN; % iterator for block rows/cols
 
 problem.base_state = set_base_state(mesh, params);
@@ -43,20 +43,21 @@ out.B33 = (a^3)./out.x.*out.dxBardt;
 end
 
 function out = block(xiL, xiR, i, sigma, params, base_state)
-%[Psi, X]
+%[Phi, Psi, Y, Gamma]
 % if(nargin == 3)
 %     sigma = params.sigma;
 % end
 
 a = params.a;
 R = params.R;
+h2 = (params.h)^2;
 
 %% set params
-% def: C2(t) == 2t*dzeta2dt/zeta2
+% C2(t) = 2t*dzeta2dt/zeta2
 C2 = base_state.C2;
-% def: B21 == sqrt(2t)*dc/dzeta
+% sqrt(2t)*dc/dzeta
 B21 = base_state.B21(i);
-% def B33 == 2t/xBar*dxBardt
+% 2t/xBar*dxBardt
 B33 = base_state.B33(i);
 
 g_of_x = base_state.g_of_x(i);
