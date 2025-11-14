@@ -7,7 +7,7 @@ end
 
 function problem = set_problem(mesh, sigma, params)
 % number of equations
-problem.eqN = 4;
+problem.eqN = 2;
 problem.ids = 1:problem.eqN; % iterator for block rows/cols
 
 problem.base_state = set_base_state(mesh, params);
