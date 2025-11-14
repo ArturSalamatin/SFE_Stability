@@ -69,13 +69,21 @@ out(2,1) = 1/(C2*xBar);
 out(2,2) = (C2+(1-c)/(xBar^2)+1+sigma)/y;
 end
 
-function out = Diag(i, eqN, base_state)
-out = sparse([1:eqN,2], [1:eqN,3], ones(1,eqN+1), eqN, eqN, eqN+1);
-out(2, 2) = base_state.C1;
-out(2, 3) = base_state.C2*base_state.g_of_x(i);
+function out = Diag(~, eqN, ~)
+out = sparse(1:eqN, 1:eqN, ones(1,eqN), eqN, eqN, eqN);
 end
-function out = BC(params, eqN)
-h = params.h;
+
+function out = BC(params, base_state, sigma, eqN, d_zeta)
+% d_zeta -- small value close to zeta = 0,
+% it is used to cut the singular point zeta = 0
+C2 = base_state.C2;
+C1 = base_state.C1;
+zeta2 = base_state.zeta2;
+r = (2+sigma)/C2;
+psi = -(1-alpha)/((r+1)*C1*zeta2)*(d_zeta^(r+1));
+x = (1 + (A^2*gamma1/C2 - (1-alpha)/((r+1)*C2*C1*zeta2))*d_zeta)*(d_zeta^r);
+d_xi = d_zeta/zeta2;
+y = x*d_xi;
 %% BC at the left end
 left = zeros(eqN,eqN);
 left(1,1) = 1; % Phi(0) = 0
