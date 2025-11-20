@@ -32,6 +32,7 @@ block_pos = (mesh.left.N-1)*eqN;
 jc = problem.JC();
 A(block_pos+ids, block_pos+ids) = jc.left;
 A(block_pos+ids, block_pos+eqN+ids) = jc.right;
+b(block_pos+ids) = jc.rhs;
 %% solution
 sol.y = reshape(A\b, problem.eqN, mesh.N)';
 sol.t = mesh.t;
