@@ -73,31 +73,37 @@ function out = Diag(~, eqN, ~)
 out = sparse(1:eqN, 1:eqN, ones(1,eqN), eqN, eqN, eqN);
 end
 
-function out = BC(params, base_state, sigma, eqN, d_zeta)
+function out = BC(params, base_state, sigma, eqN, mesh)
 % d_zeta -- small value close to zeta = 0,
 % it is used to cut the singular point zeta = 0
 C2 = base_state.C2;
 C1 = base_state.C1;
 zeta2 = base_state.zeta2;
-r = (2+sigma)/C2;
-psi = -(1-alpha)/((r+1)*C1*zeta2)*(d_zeta^(r+1));
-x = (1 + (A^2*gamma1/C2 - (1-alpha)/((r+1)*C2*C1*zeta2))*d_zeta)*(d_zeta^r);
-d_xi = d_zeta/zeta2;
-y = x*d_xi;
+r = 1+(2+sigma)/C2;
+a = params.a;
+tau = (a*a)/2.0;
+alpha = params.r;
+
+xi_left = mesh.left.L;
+
+[Psi_left, Y_left] = ...
+    second_solution_Frobenius(xi_left, alpha, tau, sigma, C1, C2, zeta2);
+
 %% BC at the left end
 left = zeros(eqN,eqN);
-left(1,1) = 1; % Y(0) = 0
-left(2,2) = 1; % Psi(0) = 0
+left(1,1) = 1; % Y(left) = 0
+left(2,2) = 1; % Psi(left) = 0
 %% BC at the right end
 right = zeros(eqN,eqN);
 %% rhs for BC eqns
 % left*y(0) + right*y(1) = rhs
 out.left = left;
 out.right = right;
-out.rhs = [y;psi];
+out.rhs = [Y_left;Psi_left];
 end
 
 function out = JC(params, base_state, eqN)
+% left*y(0) + right*y(1) = rhs
 %% JC at the left end
 left = eye(eqN,eqN);
 left(2, 3) = base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
