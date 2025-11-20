@@ -16,7 +16,7 @@ params.marker = marker(2);
 N = 800;
 % q = 1.06;
 % mesh = log_mesh(q, N, params);
-mesh = quasiuniform_mesh(N, params);
+mesh = quasiuniform_mesh_Frobenius(1e-10, N, params);
 starter = @(sigma, params) starter_Y(...
                 sigma, params, mesh);
 
