@@ -13,11 +13,11 @@ marker = ['o','s','d','*','x'];
 params = poly_case(a0, 0.3, 0.5);
 params.marker = marker(2);
 
-N = 800;
+N = 5;
 % q = 1.06;
 % mesh = log_mesh(q, N, params);
 mesh = quasiuniform_mesh_Frobenius(1e-10, N, params);
-starter = @(sigma, params) starter_Y(...
+starter = @(sigma, params) starter_R_zero(...
                 sigma, params, mesh);
 
 col = {'k'};
