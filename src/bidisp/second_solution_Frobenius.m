@@ -1,4 +1,4 @@
-function [Psi, Y] = second_solution(xi, alpha, tau, sigma, C1, C2, zeta2)
+function [Psi, Y] = second_solution_Frobenius(xi, alpha, tau, sigma, C1, C2, zeta2)
 % coefficient derivation
 %https://chat.deepseek.com/share/9nvlb0xuxegl9ixxjp
 
