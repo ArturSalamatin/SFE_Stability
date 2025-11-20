@@ -103,16 +103,17 @@ out.rhs = [Y_left;Psi_left];
 end
 
 function out = JC(params, base_state, eqN)
-% left*y(0) + right*y(1) = rhs
+% left*y(left) + right*y(right) = rhs
+% [Psi] + a*dz0dt*g0*X = 0
+a = params.a; % a == sqrt(2*t)
 %% JC at the left end
 left = eye(eqN,eqN);
-left(2, 3) = base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
 %% rhs for BC eqns
 % assign JC at the left end
 out.left = left;
 % JC at the right end
 out.right = -eye(eqN,eqN);
-out.rhs = [0;0;0;0];
+out.rhs = [0;-a*base_state.dz0dt*(params.g0-params.g1)];
 end
 
 function sol = transform(sol, params, base_state)
