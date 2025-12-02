@@ -15,8 +15,8 @@ function [Psi, Y] = second_solution_Frobenius(xi, alpha, tau, sigma, C1, C2, zet
 % Outputs:
 %   Psi, Y - solution values at xi
 
-    s = sqrt(2*tau);
-    K = alpha + (1 - alpha)*s;
+%     s = sqrt(2*tau);
+%     K = alpha + (1 - alpha)*s;
     r = (2 + sigma + C2) / C2;
     
     % Calculate expansion coefficients

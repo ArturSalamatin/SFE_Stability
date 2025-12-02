@@ -1,23 +1,31 @@
 function [sigma, sol] = fit_sigma(starter, params, guess)
 if(nargin == 2)
-% make guess, if no guess provided for sigma
-[guess, L, R] = make_guess(starter, params);
+    % make guess, if no guess provided for sigma
+    [guess, L, R] = make_guess2(starter, params);
+%     [guess, L, R] = make_guess(starter, params);
 end
 sigma = guess;
-[sigma, val, exitflag, output] = ...
+
+[sigma, val, ~, ~] = ...
     fzero(@(s) func_to_min(starter, s, params), guess);
-if(abs(val) > 2e-5)
-    % solution may not be found
-    sigma = NaN;
+if((abs(val) > 2e-5) || (sigma < -2) || isnan(sigma) || isnan(val))
     if(nargin == 3)
         % if no guess was constructed internally
-        [guess, L, R] = make_guess(starter, params);
+        [~, L, R] = make_guess2(starter, params);
+        guess = [L,R];
     end
     % use segment division by half method
     [sigma, val] = ...
-        fzero(@(s) func_to_min(starter, s, params), [L,R]);
-    %     error('Wrong value found!');
+        fzero(@(s) func_to_min(starter, s, params), guess);
 end
+
+% if((sigma < -2) || isnan(sigma))
+    make_guess(starter, params);
+    sol = starter(sigma, params);
+    plot_solution(sol.t,sol.y,params.pen)
+    warning(['sigma is ', num2str(sigma), ...
+        '; val is ', num2str(val)])
+% end
 
 % figure(3000)
 % hold on
@@ -31,7 +39,7 @@ end
 
 function [out, sol] = func_to_min(starter, sigma, params)
 sol = starter(sigma, params);
-out = sol.y(end,5);
+out = sol.BC;
 end
 
 %%
@@ -55,23 +63,71 @@ end
 out = i;
 end
 
-function [out_I, L, R] = make_guess(starter, params)
-sigma_min = -params.C1-params.C2;
+function [out_I, L, R] = make_guess2(starter, params)
+global sigma_min_limit sigma_max_limit
+%% check the largest value
+sigma_R = sigma_max_limit;
+sol = starter(sigma_R, params);
+out_R = sol.BC;
+%% check the smallest value
+sigma_L = sigma_min_limit;
+sol = starter(sigma_L, params);
+out_L = sol.BC;
+%% check the mid value
+sigma_C = (sigma_R+sigma_L)/2;
+sol = starter(sigma_C, params);
+out_C = sol.BC;
+while(out_L > 0)
+    if(out_C < 0)
+        out_L = out_C;
+        sigma_L = sigma_C;
+        continue;
+    end
+    if((out_C < out_R) && (out_C > out_L))
+        a = rand(1);
+        sigma_C = a*sigma_L + (1-a)*sigma_R;
+    end
+    if(out_C > out_R)
+        out_L = out_C;
+        sigma_L = sigma_C;
+        sigma_C = (sigma_R+sigma_L)/2;
+    elseif(out_C < out_L)
+        out_R = out_C;
+        sigma_R = sigma_C;
+        sigma_C = (sigma_R+sigma_L)/2;
+    end
+    sol = starter(sigma_C, params);
+    out_C = sol.BC;
+end
+L = sigma_L;
+R = sigma_R;
+out_I = (L+R)/2;
+end
 
-sigma = linspace(-4,-0.6,31);
+function [out_I, L, R] = make_guess(starter, params)
+global sigma_min_limit sigma_max_limit
+%% crude mesh for localization of F(sigma)=0 point
+sigma = linspace(sigma_min_limit,sigma_max_limit,151);
 out = zeros(size(sigma));
 for i = 1:numel(sigma)
     sol = starter(sigma(i), params);
-    out(i) = sol.y(end, 5);
+    out(i) = sol.BC;
 end
-
-% figure(3000)
-% hold on
-% % axis([-Inf Inf -1 1])
-% plot(sigma, out, 'k-', 'LineWidth', 1)
-% hold on
-
-
+%% do not plot jumps
+for i = 2:numel(sigma)
+    if(out(i) < out(i-1))
+        out(i-1) = NaN;
+        break;
+    end
+end
+%% plot F(sigma)
+figure(3000)
+hold on
+axis([sigma_min_limit sigma_max_limit -1 1])
+plot(sigma, out, 'r-', 'LineWidth', 1)
+hold on
+grid on
+%% localize the root
 idx = right_monotone(out);
 % figure(3000)
 % plot(sigma(idx:end), out(idx:end), 'r-', 'LineWidth', 1)
@@ -93,8 +149,8 @@ end
 I = [idx-1, idx];
 [s, o] = get_sign_change(...
     sigma(I), out(I), starter, params);
-    sigma = sigma(idx:end);
-    out = out(idx:end);
+sigma = sigma(idx:end);
+out = out(idx:end);
 sigma = [s,sigma];
 out = [o,out];
 
@@ -110,6 +166,9 @@ R = sigma(I);
 L = sigma(I+1);
 out_I = (L + R)/2;
 end
+
+
+
 
 function [s, o] = get_sign_change(sigma, out, starter, params)
 
@@ -127,7 +186,7 @@ while(val_l*val_r > 0)
         o = val;
         return
     end
-        
+    
     if(val > val_l)
         val_l = val;
         l = c;

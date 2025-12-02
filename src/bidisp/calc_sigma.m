@@ -10,9 +10,9 @@ for j = 1:numel(h)
         pens.style{min(j, numel(pens.style))});
     
         if(nargout == 2)
-            [sigma, sol] = fit_sigma(starter, params, -params.C1-params.C2);        
+            [sigma, sol] = fit_sigma(starter, params, -1.31);        
         else
-            sigma = fit_sigma(starter, params, -params.C1-params.C2);
+            sigma = fit_sigma(starter, params, -1.31);
         end
     out(j,1) = sigma;
     for i = 2:numel(R)

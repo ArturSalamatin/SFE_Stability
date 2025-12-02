@@ -1,8 +1,8 @@
-function sol = starter_R_zero(sigma, params, mesh)
+function sol = starter_R_zero_X_Psi(sigma, params, mesh)
 %% problem descriptor
 problem = set_problem(mesh, sigma, params);
 %% solve problem
-sol = transform(solver(problem, mesh), params, problem.base_state);
+sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -38,13 +38,10 @@ out.c = c_of_x(out.x, params);
 out.g_of_x = g(out.x, params);
 out.dcdz = dcdz(out.x, params);
 out.dxBardt = dxBardt(out.x, params);
-
-out.B21 = a*out.dcdz;
-out.B33 = (a^3)./out.x.*out.dxBardt;
 end
 
 function out = block(xiL, xiR, i, sigma, params, base_state, eqN)
-%[Psi, Y]
+%[Psi, X]
 % if(nargin == 3)
 %     sigma = params.sigma;
 % end
@@ -63,11 +60,11 @@ xBar = base_state.x(i)/a;
 y  =(xiL+xiR)/2;
 %% set out
 out = zeros(eqN,eqN);
-out(1,1) = g_of_x/C1/xBar;
-out(1,2) = (g_of_x/C1*(1-c)/(xBar^2))/y;
+out(1,1) = -g_of_x/C1/xBar;
+out(1,2) = -(g_of_x/C1*(1-c)/(xBar^2));
 
-out(2,1) = 1/(C2*xBar);
-out(2,2) = (C2+(1-c)/(xBar^2)+1+sigma)/y;
+out(2,1) = 1/(C2*xBar*y);
+out(2,2) = ((1-c)/(xBar^2)+1+sigma)/y/C2;
 end
 
 function out = Diag(~, eqN, ~)
@@ -87,20 +84,21 @@ alpha = params.r;
 
 xi_left = mesh.left.L;
 
-[Psi_left, Y_left] = ...
-    second_solution_Frobenius(xi_left, alpha, tau, sigma, C1, C2, zeta2);
+[Psi_left, X_left] = ...
+    calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
 
 %% BC at the left end
 left = zeros(eqN,eqN);
-left(1,1) = 1; % Y(left) = 0
-left(2,2) = 1; % Psi(left) = 0
+left(1,1) = 1; % Psi(left) = Psi_left, left = delta -> 0
+left(2,2) = 1; % X(left) = X_left, left = dalta -> 0
 %% BC at the right end
 right = zeros(eqN,eqN);
 %% rhs for BC eqns
 % left*y(0) + right*y(1) = rhs
 out.left = left;
 out.right = right;
-out.rhs = [Y_left;Psi_left];
+% X_left = Y_left/xi_left;
+out.rhs = [Psi_left;X_left];
 end
 
 function out = JC(params, base_state, eqN)
@@ -108,8 +106,8 @@ function out = JC(params, base_state, eqN)
 
 % left*y(left) + right*y(right) = rhs
 % [Psi] + a*dz0dt*g0*X = 0, Y = xi0*X
-% - 1*Psi(left) + 1*Psi(right) + a*dz0dt*g0/xi0*Y(right) = 0
-% - 1*Y(left) + 1*Y(right) = 0
+% - 1*Psi(left) + 1*Psi(right) + a*dz0dt*g0*X(right) = 0
+% - 1*X(left) + 1*X(right) = 0
 a = params.a; % a == sqrt(2*t)
 %% JC at the left end
 left = -eye(eqN,eqN);
@@ -118,24 +116,23 @@ left = -eye(eqN,eqN);
 out.left = left;
 % JC at the right end
 out.right = eye(eqN,eqN);
-xi0 = base_state.z0/base_state.z2;
-out.right(1,2) = a*base_state.dz0dt*(params.g0-params.g1)/xi0;
+out.right(1,2) = a*base_state.dz0dt*(params.g0-params.g1);
 out.rhs = [0;0];
 end
 
-function sol = transform(sol, params, base_state)
+function sol = transform(sol, params, base_state, sigma)
 t = sol.t';
 %% in
-%[Psi, Y]
+%[Psi, X]
+sol.y = sol.y/sol.y(end,2);
 Psi = sol.y(:,1);
-Y = sol.y(:,2);
+X = sol.y(:,2);
 Phi = 0*Psi;
 Gamma = 0*Psi;
 %% out
 %[Phi, Psi, X, Gamma, Omega, Y, Psi+X]
 % X
-X = Y./t;
-X(1) = 0;
+Y = X.*t;
 % Omega
 g0 = params.g0;
 dz2dt = base_state.dz2dt;
@@ -154,4 +151,28 @@ P = [0; cumsum(P)];
 dP = grad_p;
 %% form return variable
 sol.y = [Phi, Psi, X, Gamma, Omega, Y, 0*(Psi+X), 0*Q, 0*P, 0*dP];
+
+C1 = base_state.C1;
+C2 = base_state.C2;
+sol.BC = Psi(end) + X(end)*g0/C1*(C2+(1+sigma)*(1-t(end)));
+% [sigma, sol.BC]
 end
+
+
+% function solver_RK(problem, mesh)
+% 
+% xi_left = mesh.left.L;
+% 
+% [Psi_left, X_left] = ...
+%     calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
+% 
+% y0 = [Psi_left, X_left];
+% 
+% end
+% 
+% function my_ode(t,y, sigma, base_state)
+% c = 
+% 
+% end
+
+

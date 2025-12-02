@@ -5,7 +5,7 @@ factor = 1;
 
 names = {'{\Phi}','{\Psi}','X','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
 
-for i = 1:6%numel(names)
+for i = [2,3,5,6]% 1:6%numel(names)
     if(i > size(y,2))
         break
     end

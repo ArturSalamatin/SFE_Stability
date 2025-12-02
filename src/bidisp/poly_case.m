@@ -8,7 +8,13 @@ params.g1 = (1-params.r)/params.a1;
 params.g0 = params.g1 + params.r/params.a0;
 %% set time
 if(nargin == 2)
-    t = 0.2;
+    t = (a0*a0/2+0.5)/2;
+end
+if(t >= 0.5)
+    error("Time moment is too big!");
+end
+if(t < a0*a0/2)
+    error("Time moment is too small!");
 end
 params.t = t;
 params.a = sqrt(2*params.t);
