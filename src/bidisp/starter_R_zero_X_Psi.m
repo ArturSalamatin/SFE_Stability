@@ -2,7 +2,10 @@ function sol = starter_R_zero_X_Psi(sigma, params, mesh)
 %% problem descriptor
 problem = set_problem(mesh, sigma, params);
 %% solve problem
-sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
+% sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
+sol = transform(...
+    solver_RK(problem.base_state, mesh, params, sigma), ...
+    params, problem.base_state, sigma);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -152,27 +155,60 @@ dP = grad_p;
 %% form return variable
 sol.y = [Phi, Psi, X, Gamma, Omega, Y, 0*(Psi+X), 0*Q, 0*P, 0*dP];
 
-C1 = base_state.C1;
+%% Keller-box scheme behind the jump point
+% C1 = base_state.C1;
+% C2 = base_state.C2;
+% sol.BC = Psi(end) + X(end)*g0/C1*(C2+(1+sigma)*(1-t(end)));
+%% RK integration to the left from the jump point
 C2 = base_state.C2;
-sol.BC = Psi(end) + X(end)*g0/C1*(C2+(1+sigma)*(1-t(end)));
-% [sigma, sol.BC]
+C1 = base_state.C1;
+a = params.a;
+dz0dt = base_state.dz0dt;
+g0 = params.g0 - params.g1;
+g1 = params.g1;
+xi0 = base_state.z0/base_state.z2;
+sol.BC = Psi(end) - X(end)*(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)));
 end
 
+function sol = solver_RK(base_state, mesh, params, sigma)
+%% assymptotics at xi = 0
+a = params.a; % == sqrt(2tau)
+tau = (a*a)/2.0;
+alpha = params.r;
+C2 = base_state.C2;
+C1 = base_state.C1;
+zeta2 = base_state.z2;
+xi_left = mesh.left.L;
+[Psi_left, X_left] = ...
+    calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
+%% init the RK solver
+options = odeset('Abstol', 1e-10, 'RelTol', 1e-10);
+y0 = [Psi_left; X_left];
+x_mesh = mesh.left.xBar*a;
+[t,y] = ode15s(@(x,y) my_ode(x,y,sigma,params,base_state), ...
+    x_mesh, y0, options);
+sol.t = z_of_x(t', params)/zeta2;
+sol.y = y;
+end
 
-% function solver_RK(problem, mesh)
-% 
-% xi_left = mesh.left.L;
-% 
-% [Psi_left, X_left] = ...
-%     calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
-% 
-% y0 = [Psi_left, X_left];
-% 
-% end
-% 
-% function my_ode(t,y, sigma, base_state)
-% c = 
-% 
-% end
+function dy = my_ode(x,y, sigma, params, base_state)
+
+alpha = params.r;
+a = params.a; % == sqrt(2tau)
+g1 = 1-alpha;
+D =  alpha+(1-alpha)*a;
+Dx = alpha+(1-alpha)*x;
+z = z_of_x(x, params);
+C2 = base_state.C2;
+
+f = zeros(2,2);
+f(1,1) = g1/Dx;
+f(1,2) = g1*a/(x*D);
+
+f(2,1) = -a/(Dx*z*C2);
+f(2,2) = -(a*a/(x*D) + x*(1+sigma)/Dx)/(z*C2);
+
+dy = f*y;
+end
 
 

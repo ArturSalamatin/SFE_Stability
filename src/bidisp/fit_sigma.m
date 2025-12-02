@@ -23,8 +23,9 @@ end
     make_guess(starter, params);
     sol = starter(sigma, params);
     plot_solution(sol.t,sol.y,params.pen)
-    warning(['sigma is ', num2str(sigma), ...
-        '; val is ', num2str(val)])
+    warning(['sigma is ', num2str(sigma)...
+        ..., '; val is ', num2str(val)...
+        ])
 % end
 
 % figure(3000)
@@ -124,7 +125,7 @@ end
 figure(3000)
 hold on
 axis([sigma_min_limit sigma_max_limit -1 1])
-plot(sigma, out, 'r-', 'LineWidth', 1)
+plot(sigma, out, 'b-', 'LineWidth', 1)
 hold on
 grid on
 %% localize the root

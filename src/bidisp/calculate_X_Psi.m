@@ -30,7 +30,7 @@ t = (2 + sigma)/C2;
 A10 = (1 - alpha)/C1;
 a = sqrt(2*tau);
 
-b1 = b0*(...
+b1 = (...
     -Z2/(2*tau)*(2*alpha+(1-alpha)*a)...
     +A10/(t+1));
 
@@ -40,8 +40,8 @@ b1 = b0*(...
 % b1 = b0/C2*(d1+x1*(1+sigma)/a...
 %      -(1-alpha)/(C1*(t+1)));
 
-X = b0 * epsilon^t + b1*epsilon^(t + 1);
-Psi = -A10/(t + 1) * b0 * epsilon^(t + 1);
+X = b0 * (epsilon^t + b1*epsilon^(t + 1));
+Psi = b0 * (-A10/(t + 1) * epsilon^(t + 1));
 end
 
 function F = xi_equation(x0, xi_target, tau, alpha, Z2)

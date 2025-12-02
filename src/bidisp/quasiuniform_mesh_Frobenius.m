@@ -3,7 +3,7 @@ function mesh = quasiuniform_mesh_Frobenius(delta, N, params)
 q = 1.005;
 xL = 1.0-delta;
 xMid = params.a0/params.a;
-xR = xMid*0.0;
+xR = xMid*0.99999999;
 
 if(xL < xMid)
     % if delta is too big,
