@@ -1,18 +1,20 @@
 function sol = solver(problem, mesh)
-eqN = problem.eqN;
-ids = problem.ids;
-M = problem.M;
-t = mesh.t;
-I = mesh.I; % jump node is skipped
+%% ODE solver using Keller box scheme
+eqN = problem.eqN; % nmbr of equations
+ids = problem.ids; % ids within a block, 1:eqN
+M = problem.M; % nmbr of discrete unknows
+xi = mesh.xi;
+segmIds = mesh.segmIds; % jump node is skipped
 %% allocate memory
-A = spalloc(M,M,M*2); % matrix
+A = spalloc(M,M,M*eqN); % matrix
 % A = full(A);
 b = zeros(M, 1); % rhs
-%% fill in the matrix
-for i = I
+% fill in the matrix
+%% fill regular segments
+for i = segmIds
     block_pos = (i-1)*eqN;
-    step = (t(i+1) - t(i))/2.0; % (!)trapezoidal rule
-    block = problem.block_matrix(t(i), t(i+1), i);
+    step = (xi(i+1) - xi(i))/2.0; % (!)trapezoidal rule
+    block = problem.block_matrix(xi(i), xi(i+1), i);
     Diag = problem.diag(i);
     % coef at y_i
     A(block_pos+ids, block_pos + ids) = ...
@@ -21,18 +23,23 @@ for i = I
     A(block_pos+ids, block_pos + ids + eqN) = ...
         block - Diag/step;
 end
+%% jump conditions, if any
+jumpIds = mesh.segmIds; % jump segments, may be empty
+for i = jumpIds
+    block_pos = (mesh.left.N-1)*eqN;
+    jc = problem.JC();
+    A(block_pos+ids, block_pos+ids) = jc.left;
+    A(block_pos+ids, block_pos+eqN+ids) = jc.right;
+    b(block_pos+ids) = jc.rhs;
+end
+%% boundary conditions
 % BC -- boundary conditions
 block_pos = (mesh.N-1)*eqN;
 bc = problem.BC();
 A(block_pos+ids, ids) = bc.left;
 A(block_pos+ids, block_pos+ids) = bc.right;
 b(block_pos+ids) = bc.rhs;
-% JC -- jump condition
-block_pos = (mesh.left.N-1)*eqN;
-jc = problem.JC();
-A(block_pos+ids, block_pos+ids) = jc.left;
-A(block_pos+ids, block_pos+eqN+ids) = jc.right;
-b(block_pos+ids) = jc.rhs;
+
 %% solution
 sol.y = reshape(A\b, problem.eqN, mesh.N)';
 sol.t = mesh.t;

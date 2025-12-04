@@ -15,13 +15,7 @@ if(xBarR > xBarL)
 end
 %% set left mesh segment
 mesh = logMesh(...
-    xBarL, xBarR, N ...ceil(abs(xMid - xL)/h) +1
-    , params);
-
-mesh.N = mesh.right.N + mesh.left.N;
-mesh.I = [mesh.left.I, mesh.left.N + mesh.right.I];
-
-mesh.t = [mesh.left.t, mesh.right.t];
+    xBarL, xBarR, N, params);
 end
 
 function mesh = logMesh(xBarL, xBarR, N, params)
@@ -40,6 +34,8 @@ mesh.xi = z_of_x(x, params)/params.z2;
 mesh.xiL = mesh.xi(1);
 mesh.xiR = mesh.xi(end);
 mesh.segmIds = 1:(N-1); % ids of all segments
+
+mesh.jumpIds = [];
 end
 
 %% account for singular points at both ends,
