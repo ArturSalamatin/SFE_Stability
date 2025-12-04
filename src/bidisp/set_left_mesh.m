@@ -44,7 +44,7 @@ end
 
 %% account for singular points at both ends,
 % merges two meshes with log step increments from both ends
-function xBar = logMesh0(xL, xR, N)
+function out = logMesh0(xL, xR, N)
 global q
 N = ceil(N/2);
 xC = (xR+xL)/2;
@@ -52,15 +52,15 @@ h = (xC - xL)*(q-1)/(q^N-1);
 
 i = 0:(N-1);
 steps = h*q.^(i);
-xBar = cumsum([xL, steps]);
-xBar([1,end]) = [xL, xC];
+out = cumsum([xL, steps]);
+out([1,end]) = [xL, xC];
 
 i = (N-1):-1:0;
 steps = h*q.^(i);
-xBar2 = cumsum([xC, steps]);
-xBar2([1,end]) = [xC, xR];
+our2 = cumsum([xC, steps]);
+our2([1,end]) = [xC, xR];
 % no point should enter the mesh twice
-xBar = [xBar, xBar2(2:end)];
+out = [out, our2(2:end)];
 end
 
 %% script for a uniform mesh
