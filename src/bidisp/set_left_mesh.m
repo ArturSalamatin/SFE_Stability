@@ -1,4 +1,4 @@
-function mesh = set_global_mesh(N, params, delta)
+function mesh = set_left_mesh(N, params, delta)
 % set interval endpoints
 xBarL = 1.0;
 xBarR = params.a0/params.a; % = a/sqrt(2t)
