@@ -22,12 +22,14 @@ q = 1.005;
 % starter = @(sigma, params) starter_R_zero_X_Psi(...
 %     sigma, params, mesh);
 
-
+sigma = -1.9;
 alpha = 0.2;
 a0 = 0.04;
 tau0 = 0.35;
 params = poly_case(a0, alpha, tau0);
 mesh = set_left_mesh();
+starter = @(sigma, params) starter_R_zero_X_Psi(...
+                sigma, params, mesh);
 
 
 label = '';
