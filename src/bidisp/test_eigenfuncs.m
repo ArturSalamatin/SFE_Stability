@@ -26,13 +26,13 @@ N = 801;
 for alpha = 0.2 % 0.2:0.2:0.8
     num = 2200+alpha*10;
     clc
-    col = {'r'};
+    col = {'k'};
     style = {'-'};
     pen = set_pen(col, style);
     %% make calculation grid
     eps = 10e-3;
-    a0 = 0.05;
-    tau0 = 0.45;
+    a0 = 0.04;
+    tau0 = 0.35;
 %     tau0 = linspace(eps, 0.5 - eps, 20);
 %     a0 = linspace(eps,1-eps, 20);
     [tau0, a0] = meshgrid(tau0, a0);

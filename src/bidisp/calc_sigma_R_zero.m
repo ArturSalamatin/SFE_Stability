@@ -1,7 +1,7 @@
 function [tau0, a0, out] = calc_sigma_R_zero(...
     N, alpha, tau0, a0, pens)
 %% calculate sigma
-out = -1.8911;% -2 + alpha./(alpha+(1-alpha).*a0);
+out = -2.035;% -2 + alpha./(alpha+(1-alpha).*a0);
 guess = out(1,1);
 for j = 1:size(out, 1)
     j

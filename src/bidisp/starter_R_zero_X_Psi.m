@@ -4,8 +4,8 @@ problem = set_problem(mesh, sigma, params);
 %% solve problem
 % sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
 sol = transform(...
-    solver_RK(problem.base_state, mesh, params, sigma), ...
-    params, problem.base_state, sigma);
+    solver_RK_backwards(problem.base_state, mesh, params, sigma), ...
+    params, problem.base_state, sigma, mesh);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -123,7 +123,7 @@ out.right(1,2) = a*base_state.dz0dt*(params.g0-params.g1);
 out.rhs = [0;0];
 end
 
-function sol = transform(sol, params, base_state, sigma)
+function sol = transform(sol, params, base_state, sigma, mesh)
 t = sol.t';
 %% in
 %[Psi, X]
@@ -160,14 +160,27 @@ sol.y = [Phi, Psi, X, Gamma, Omega, Y, 0*(Psi+X), 0*Q, 0*P, 0*dP];
 % C2 = base_state.C2;
 % sol.BC = Psi(end) + X(end)*g0/C1*(C2+(1+sigma)*(1-t(end)));
 %% RK integration to the left from the jump point
+% C2 = base_state.C2;
+% C1 = base_state.C1;
+% a = params.a;
+% dz0dt = base_state.dz0dt;
+% g0 = params.g0 - params.g1;
+% g1 = params.g1;
+% xi0 = base_state.z0/base_state.z2;
+% sol.BC = Psi(end) - X(end)*(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)));
+%% RK integration FROM the jump point to the left
+a = params.a; % == sqrt(2tau)
+tau = (a*a)/2.0;
+alpha = params.r;
 C2 = base_state.C2;
 C1 = base_state.C1;
-a = params.a;
-dz0dt = base_state.dz0dt;
-g0 = params.g0 - params.g1;
-g1 = params.g1;
-xi0 = base_state.z0/base_state.z2;
-sol.BC = Psi(end) - X(end)*(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)));
+zeta2 = base_state.z2;
+xi_left = mesh.left.L;
+[Psi_left, X_left] = ...
+    calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
+sol.BC = Psi_left/X_left - Psi(1)/X(1);
+sol.base_state = base_state;
+sol.sigma = sigma;
 end
 
 function sol = solver_RK(base_state, mesh, params, sigma)
@@ -189,6 +202,36 @@ x_mesh = mesh.left.xBar*a;
     x_mesh, y0, options);
 sol.t = z_of_x(t', params)/zeta2;
 sol.y = y;
+end
+
+function sol = solver_RK_backwards(base_state, mesh, params, sigma)
+%% assymptotics at xi = 0
+a = params.a; % == sqrt(2tau)
+zeta2 = base_state.z2;
+%% init the RK solver
+C2 = base_state.C2;
+C1 = base_state.C1;
+dz0dt = base_state.dz0dt;
+g0 = params.g0 - params.g1;
+g1 = params.g1;
+xi0 = base_state.z0/base_state.z2;
+
+options = odeset(...
+    'Abstol', 1e-10...
+    , 'RelTol', 1e-10 ...
+    , 'NormControl', 'on' ...
+    , 'NonNegative', 2 ...
+    , 'MaxStep', 0.01);
+X_right = 1;
+Psi_right = (g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)));
+y0 = [Psi_right; X_right];
+x_mesh = mesh.left.xBar(end:-1:1)*a;
+[t,y] = ode45(@(x,y) my_ode(x,y,sigma,params,base_state), ...
+    x_mesh, y0, options);
+sol.t = z_of_x(t', params)/zeta2;
+
+sol.t = sol.t(end:-1:1);
+sol.y = y(end:-1:1,:);
 end
 
 function dy = my_ode(x,y, sigma, params, base_state)

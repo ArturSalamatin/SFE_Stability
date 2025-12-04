@@ -6,23 +6,24 @@ if(nargin == 2)
 end
 sigma = guess;
 
-[sigma, val, ~, ~] = ...
-    fzero(@(s) func_to_min(starter, s, params), guess);
-if((abs(val) > 2e-5) || (sigma < -2) || isnan(sigma) || isnan(val))
-    if(nargin == 3)
-        % if no guess was constructed internally
-        [~, L, R] = make_guess2(starter, params);
-        guess = [L,R];
-    end
-    % use segment division by half method
-    [sigma, val] = ...
-        fzero(@(s) func_to_min(starter, s, params), guess);
-end
+%     make_guess(starter, params);
+
+% [sigma, val, ~, ~] = ...
+%     fzero(@(s) func_to_min(starter, s, params), guess);
+% if((abs(val) > 2e-5) || (sigma < -2) || isnan(sigma) || isnan(val))
+%     if(nargin == 3)
+%         % if no guess was constructed internally
+%         [~, L, R] = make_guess2(starter, params);
+%         guess = [L,R];
+%     end
+%     % use segment division by half method
+%     [sigma, val] = ...
+%         fzero(@(s) func_to_min(starter, s, params), guess);
+% end
 
 % if((sigma < -2) || isnan(sigma))
-    make_guess(starter, params);
     sol = starter(sigma, params);
-    plot_solution(sol.t,sol.y,params.pen)
+    plot_solution(sol.t,sol.y,params.pen, params, sol)
     warning(['sigma is ', num2str(sigma)...
         ..., '; val is ', num2str(val)...
         ])
