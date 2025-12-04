@@ -2,10 +2,11 @@ clc
 clear all
 % close all
 
-global sigma_fig sigma_max_limit sigma_min_limit
+global sigma_fig sigma_max_limit sigma_min_limit q
 sigma_fig = 9;
 sigma_max_limit = -1;
 sigma_min_limit = -3;
+q = 1.005;
 %% packed bed params
 % a0 = 0.2;
 % alpha = [0, 0.1, 0.3, 0.5, 0.7];
