@@ -20,9 +20,9 @@ if(t < a0*a0/2)
     error("Time moment is too small!");
 end
 params.t = t;
-params.a = sqrt(2*t);
 params.R = R;
 %% set dependent vars
+params.a = sqrt(2*t);
 params.z0 = z0(params);
 params.z2 = z2(params);
 params.xi0 = params.z0/params.z2;
