@@ -39,10 +39,10 @@ b2 = (b0*(1+sigma)+a*(a*psi2-psi1)-b1*(a*a*y2/D+2*a*(1+sigma)) ...
 
 t = a-x_left;% linspace(0,3e-1,1001);
 
-psi = (psi0+(psi1+2*psi2*t).*t).*(t.^r);
+psi = (psi0+(psi1+psi2*t).*t).*(t.^r);
 b = (b0 + (b1+b2*t).*t).*(t.^r);
 
-x = a-t;
+x = x_left;
 xi = z_of_x(x, params)/params.z2;
 Psi = psi;
 X = b;
