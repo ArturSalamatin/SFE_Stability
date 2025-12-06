@@ -1,17 +1,18 @@
-function [x,xi, Psi, X] = calc_solution_assymptotics(params, sol)
+function [x,xi, Psi, X] = calc_solution_assymptotics(...
+    x_right, params, sigma)
 %% assymptotics for [Psi, X] at the jump point, xi = xi0-0
 a0 = params.a0;
 % x = a0;% linspace(a0, 2*a0, 101);
 % xi = z_of_x(x, params)/sol.base_state.z2;
-xi0 = z_of_x(a0, params)/sol.base_state.z2;
+xi0 = z_of_x(a0, params)/params.z2;
 g1 = params.g1;
 g0 = params.g0 - g1;
 a = params.a;
 alpha = params.r;
-dz0dt = sol.base_state.dz0dt;
-C1 = sol.base_state.C1;
-C2 = sol.base_state.C2;
-sigma = sol.sigma;
+dz0dt = params.dz0dt;
+C1 = params.C1;
+C2 = params.C2;
+% sigma = sol.sigma;
 
 
 psi0 = g0*a*dz0dt - (g0+g1)/C1*(C2 + (1+sigma)*(1-xi0));
@@ -52,13 +53,17 @@ b4 =  -(...
     )/C2 ...
     + l3*b1+2*b2*l2+3*b3*l1)/(4*l0);
 
-u = linspace(0,a0,101);
+
+
+u = x_right - a0;
+
+% u = linspace(0,a0/2,101);
 
 psi = psi0+(psi1+(psi2+(psi3+psi4*u).*u).*u).*u;
 b = b0 + (b1+(b2+(b3+b4*u).*u).*u).*u;
 
-x = a0+u;
-xi = z_of_x(x, params)/sol.base_state.z2;
+x =  x_right; %a0+u;
+xi = z_of_x(x, params)/params.z2;
 Psi = psi;
 X = b;
 end

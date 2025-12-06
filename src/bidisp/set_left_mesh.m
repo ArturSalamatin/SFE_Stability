@@ -1,7 +1,8 @@
 function mesh = set_left_mesh(N, params, delta)
+global xBarRight
 % set interval endpoints
-xBarL = 1.0;
-xBarR = params.a0/params.a; % = a/sqrt(2t)
+xBarL = 1.0-delta;
+xBarR = params.a0*(1+xBarRight)/params.a; % = a/sqrt(2t)
 
 xBarL = min(1.0, xBarL);
 if(xBarL < xBarR)

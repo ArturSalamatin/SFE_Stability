@@ -1,22 +1,18 @@
-function [x,xi, Psi, X] = calc_inlet_solution_assymptotics(fig_id,pen, params, sol)
+function [x,xi, Psi, X] = calc_inlet_solution_assymptotics(...
+    x_left, params, sigma)
 %% assymptotics for [Psi, X] at the jump point, xi = xi0-0
 a0 = params.a0;
 % x = a0;% linspace(a0, 2*a0, 101);
 % xi = z_of_x(x, params)/sol.base_state.z2;
-xi0 = z_of_x(a0, params)/sol.base_state.z2;
 g1 = params.g1;
-g0 = params.g0 - g1;
 a = params.a;
 alpha = params.r;
-dz0dt = sol.base_state.dz0dt;
-C1 = sol.base_state.C1;
-C2 = sol.base_state.C2;
-sigma = sol.sigma;
+C2 = params.C2;
 
 r = (2+sigma)/C2;
 
 psi0 = 0;
-b0 = 0.76;
+b0 = 1;
 
 D = alpha+(1-alpha)*a;
 y2 = g1;
@@ -41,34 +37,13 @@ b2 = (b0*(1+sigma)+a*(a*psi2-psi1)-b1*(a*a*y2/D+2*a*(1+sigma)) ...
     -C2*(l2*b1*(r+1)+l3*b0*r))/...
     (C2*(r+2)-a*a*(2+sigma));
 
-t = linspace(0,1e-1,101);
+t = a-x_left;% linspace(0,3e-1,1001);
 
-psi = (psi0+(psi1+psi2*t).*t).*(t.^r);
+psi = (psi0+(psi1+2*psi2*t).*t).*(t.^r);
 b = (b0 + (b1+b2*t).*t).*(t.^r);
 
 x = a-t;
-xi = z_of_x(x, params)/sol.base_state.z2;
+xi = z_of_x(x, params)/params.z2;
 Psi = psi;
 X = b;
-
-
-
-figure(fig_id+2)
-hold on
-plot(xi, Psi ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-
-figure(fig_id+3)
-hold on
-plot(xi, X ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-    
-    my_figure(fig_id+10)
-hold on
-    plot(xi, Psi./X ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-
 end

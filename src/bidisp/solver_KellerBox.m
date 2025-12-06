@@ -40,9 +40,8 @@ bc = problem.BC();
 A(block_pos+ids, ids) = bc.left;
 A(block_pos+ids, block_pos+ids) = bc.right;
 b(block_pos+ids) = bc.rhs;
-
 %% solution
 sol.y = reshape(A\b, problem.eqN, mesh.N)';
-sol.t = mesh.t;
+sol.t = mesh.xi;
 % A = full(A);
 end
