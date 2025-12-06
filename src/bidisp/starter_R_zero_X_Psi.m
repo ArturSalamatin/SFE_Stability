@@ -13,16 +13,16 @@ problem.ids = 1:problem.eqN; % iterator for rows/cols within a block
 
 problem.base_state = set_base_state(mesh, params);
 
-c = problem.base_state.mid_c;
-xBar = problem.base_state.mid_x/params.a;
-mid_x = problem.base_state.mid_x;
-mid_xi = z_of_x(mid_x, params)/params.z2;
-figure(80)
-plot(mid_xi, (1-c)./(xBar.*xBar))
-figure(81)
-plot(mid_xi, (1-c))
-figure(82)
-plot(mid_xi, (1-c)./xBar)
+% c = problem.base_state.mid_c;
+% xBar = problem.base_state.mid_x/params.a;
+% mid_x = problem.base_state.mid_x;
+% mid_xi = z_of_x(mid_x, params)/params.z2;
+% figure(80)
+% plot(mid_xi, (1-c)./(xBar.*xBar))
+% figure(81)
+% plot(mid_xi, (1-c))
+% figure(82)
+% plot(mid_xi, (1-c)./xBar)
 
 problem.M = problem.eqN * mesh.N; % nmbr of discrete unknows
 problem.block_matrix = @(xL, xR, segm_i)block(...
@@ -79,6 +79,7 @@ out = sparse(1:eqN, 1:eqN, ones(1,eqN), eqN, eqN, eqN);
 end
 
 function out = BC_L(params, base_state, sigma, eqN, mesh)
+% [Psi, X]
 % d_zeta -- small value close to zeta = 0,
 % it is used to cut the singular point zeta = 0
 C2 = params.C2;
@@ -172,15 +173,13 @@ a = params.a;
 dz0dt = params.dz0dt;
 g1 = params.g1;
 x_right = a0*(1+xBarRight);
-if(a0 == 0)
-    Psi_r = -g1*a*dz0dt;
-    X_r = 1;
-else
+
 [x,xi, Psi_r, X_r] = calc_solution_assymptotics(...
     x_right, params, sigma);
-end
+
 %% normalize
-sol.factor = sol.y(end,2)/X_r;
+ff = sol.y(end,2)/X_r;
+sol.factor = ff;% sol.y(end,2)/X_r
 sol.y = sol.y/sol.factor;
 %% input
 %[Psi, X]

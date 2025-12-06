@@ -43,5 +43,6 @@ b(block_pos+ids) = bc.rhs;
 %% solution
 sol.y = reshape(A\b, problem.eqN, mesh.N)';
 sol.t = mesh.xi;
+sol.mesh = mesh;
 % A = full(A);
 end

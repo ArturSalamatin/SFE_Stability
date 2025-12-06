@@ -1,13 +1,13 @@
 clc
 clear all
-% close all
+close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
 sigma_max_limit = -1;
 sigma_min_limit = -3;
-q = 1.00000025;
-xBarLeft = 1e-8;
+q = 1.003;
+xBarLeft = 9e-3;
 xBarRight = 0*4e-2;
 %% packed bed params
 % a0 = 0.2;
@@ -32,24 +32,37 @@ sigma = -1.988;   % a0 = 0.2; tau0 = 0.47;
 sigma = -2.097600; % a0 = 0.005; n = 100
 sigma = -2.0920; % a0 = 0.005; n = 200
 sigma = -2.0919; % a0 = 0.005; n = 2000
-sigma = -2.059063;
-sigma = -1.604021809231366;
+sigma = -2.05;
+% sigma = -1.604021809231366;
 % sigma = -1.9999;
-alpha = 0.5;
-a0 = 0.2;
-tau0 = 0.3;
+alpha = 0.1;
+a0 = 0.1;
+tau0 = 0.47;
 R = 0;
 params = poly_case(a0, alpha, tau0, R);
-params.pen = set_pen('k', '-');
-mesh = set_left_mesh(2000, params, xBarLeft);
-starter = @(solver, sigma, params) starter_R_zero_X_Psi(...
-                solver, sigma, params, mesh);
+pen = set_pen('r', '-');
+mesh = set_left_mesh(7000, params, xBarLeft);
+
 solver = @(problem) solver_KellerBox(problem, mesh);
-sol = starter(solver, sigma, params);
+
+starter = @(sigma, params) starter_R_zero_X_Psi(...
+                solver, sigma, params, mesh);
+sol = starter(sigma, params);
 (sol.condition/sol.y(end,1)-1)
 % sol.y(end,2)
-plot_solution(sol.t,sol.y,params.pen, params, sol)
+plot_solution(pen, params, sol)
 s=0;
+
+
+
+
+
+
+
+
+
+
+
 % label = '';
 % N = 801;
 % for alpha = 0.2 % 0.2:0.2:0.8

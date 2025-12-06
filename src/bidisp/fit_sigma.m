@@ -8,26 +8,27 @@ sigma = guess;
 
 %     make_guess(starter, params);
 
-% [sigma, val, ~, ~] = ...
-%     fzero(@(s) func_to_min(starter, s, params), guess);
-% if((abs(val) > 2e-5) || (sigma < -2) || isnan(sigma) || isnan(val))
-%     if(nargin == 3)
-%         % if no guess was constructed internally
-%         [~, L, R] = make_guess2(starter, params);
-%         guess = [L,R];
-%     end
-%     % use segment division by half method
-%     [sigma, val] = ...
-%         fzero(@(s) func_to_min(starter, s, params), guess);
-% end
+[sigma, val, ~, ~] = ...
+    fzero(@(s) func_to_min(starter, s, params), guess);
+if((abs(val) > 2e-5) ...|| (sigma < -2) 
+        || isnan(sigma) || isnan(val))
+    if(nargin == 3)
+        % if no guess was constructed internally
+        [~, L, R] = make_guess2(starter, params);
+        guess = [L,R];
+    end
+    % use segment division by half method
+    [sigma, val] = ...
+        fzero(@(s) func_to_min(starter, s, params), guess);
+end
 
-% if((sigma < -2) || isnan(sigma))
+if((sigma < -2) || isnan(sigma))
     sol = starter(sigma, params);
-    plot_solution(sol.t,sol.y,params.pen, params, sol)
+    plot_solution(params.pen, params, sol)
     warning(['sigma is ', num2str(sigma)...
-        ..., '; val is ', num2str(val)...
+        , '; val is ', num2str(val)...
         ])
-% end
+end
 
 % figure(3000)
 % hold on
@@ -35,13 +36,13 @@ sigma = guess;
 
 if(nargout == 2)
     sol = starter(sigma, params);
-    plot_solution(sol.t,sol.y,params.pen)
+    plot_solution(params.pen, params, sol)
 end
 end
 
 function [out, sol] = func_to_min(starter, sigma, params)
 sol = starter(sigma, params);
-out = sol.BC;
+out = sol.condition/sol.y(end,1)-1;
 end
 
 %%
@@ -70,15 +71,15 @@ global sigma_min_limit sigma_max_limit
 %% check the largest value
 sigma_R = sigma_max_limit;
 sol = starter(sigma_R, params);
-out_R = sol.BC;
+out_R = sol.condition;
 %% check the smallest value
 sigma_L = sigma_min_limit;
 sol = starter(sigma_L, params);
-out_L = sol.BC;
+out_L = sol.condition;
 %% check the mid value
 sigma_C = (sigma_R+sigma_L)/2;
 sol = starter(sigma_C, params);
-out_C = sol.BC;
+out_C = sol.condition;
 while(out_L > 0)
     if(out_C < 0)
         out_L = out_C;
@@ -99,7 +100,7 @@ while(out_L > 0)
         sigma_C = (sigma_R+sigma_L)/2;
     end
     sol = starter(sigma_C, params);
-    out_C = sol.BC;
+    out_C = sol.condition;
 end
 L = sigma_L;
 R = sigma_R;
@@ -113,7 +114,7 @@ sigma = linspace(sigma_min_limit,sigma_max_limit,151);
 out = zeros(size(sigma));
 for i = 1:numel(sigma)
     sol = starter(sigma(i), params);
-    out(i) = sol.BC;
+    out(i) = sol.condition;
 end
 %% do not plot jumps
 for i = 2:numel(sigma)

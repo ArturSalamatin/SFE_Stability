@@ -1,36 +1,36 @@
 function plot_solution(...
-    t, y, pen, params, sol)
+    pen, params, sol)
 global xBarLeft
 fig_id = 700;
 
-factor = 1;
+t = sol.t;
+y = sol.y;
 
 names = {'{\Psi}','X','{\Phi}','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
-plot_solution_assymptotics(fig_id, pen, params, sol);
-x_left = linspace(1,1-2*xBarLeft,10001)*params.a;
+plot_solution_assymptotics(fig_id, pen, params, sol.sigma);
+x_left = linspace(1,1-xBarLeft*2,1001)*params.a;
 [~,xi, Psi, X] = calc_inlet_solution_assymptotics(...
-x_left, params, sol.sigma ...
-...fig_id,pen, params, sol
-    );
+    x_left, params, sol.sigma );
+
 Psi = Psi/sol.factor;
 X = X/sol.factor;
 
 figure(fig_id+1)
 hold on
 plot(xi, Psi ...
-        , 'Color', 'k' ...
+        , 'Color', pen.lc ...
         , 'LineStyle', '-.')
 
 figure(fig_id+2)
 hold on
 plot(xi, X ...
-        , 'Color', 'k' ...
+        , 'Color', pen.lc ...
         , 'LineStyle', '-.')
 
 my_figure(fig_id+10)
 hold on
     plot(xi, Psi./X ...
-        , 'Color', 'k' ...
+        , 'Color', pen.lc ...
         , 'LineStyle', '-.')
 
 
@@ -53,6 +53,7 @@ figure(fig_id+1)
 hold on
 plot(xi0, psi0, 'ks', 'markerfacecolor', 'k')
 
+factor = 1;
 for i = [1,2] %,5,6]% 1:6%numel(names)
     if(i > size(y,2))
         break
