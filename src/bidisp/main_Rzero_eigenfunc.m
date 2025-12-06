@@ -33,11 +33,11 @@ sigma = -2.097600; % a0 = 0.005; n = 100
 sigma = -2.0920; % a0 = 0.005; n = 200
 sigma = -2.0919; % a0 = 0.005; n = 2000
 sigma = -2.059063;
-sigma = -1.5;
+sigma = -1.604021809231366;
 % sigma = -1.9999;
-alpha = 0.1;
-a0 = 0.1;
-tau0 = 0.47;
+alpha = 0.5;
+a0 = 0.2;
+tau0 = 0.3;
 R = 0;
 params = poly_case(a0, alpha, tau0, R);
 params.pen = set_pen('k', '-');
