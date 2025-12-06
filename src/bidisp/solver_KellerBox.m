@@ -24,7 +24,7 @@ for i = segmIds
         block - Diag/step;
 end
 %% jump conditions, if any
-jumpIds = mesh.segmIds; % jump segments, may be empty
+jumpIds = mesh.jumpIds; % jump segments, may be empty
 for i = jumpIds
     block_pos = (i-1)*eqN;
     jc = problem.JC();
