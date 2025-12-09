@@ -47,7 +47,7 @@ dz0dt = params.dz0dt;
 C1 = params.C1;
 C2 = params.C2;
 sigma = sol.sigma;
-psi0 = g0*a*dz0dt - (g0+g1)/C1*(C2 + (1+sigma)*(1-xi0));
+psi0 = -g1*a*dz0dt - (1+sigma)*a0/a;
 
 figure(fig_id+1)
 hold on
@@ -75,9 +75,14 @@ for i = [1,2] %,5,6]% 1:6%numel(names)
     end
 end
 
+C1 = params.C1;
+C2 = params.C2;
+alpha = params.r;
+factor = (1-alpha)*C2/(C1*(2+sigma+C2));
+
 my_figure(fig_id+10)
 hold on
-plot(t, y(:,1)./y(:,2)...
+plot(t, y(:,1)./y(:,2)./(t')/factor...
         , 'LineWidth', 1 ...
         , 'Color', pen.lc ...
         , 'LineStyle', '-'... pen.style{1}(1) ...
@@ -86,6 +91,16 @@ plot(t, y(:,1)./y(:,2)...
 
 % figure(fig_id+8)
 % axis([-Inf Inf -Inf 5])
+
+my_figure(fig_id+20)
+hold on
+plot(y(:,1), y(:,2)...
+        , 'LineWidth', 1 ...
+        , 'Color', pen.lc ...
+        , 'LineStyle', '-'... pen.style{1}(1) ...
+        )
+    xlabel(names{1})
+    ylabel(names{2})
 
 figure(701)
 end

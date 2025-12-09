@@ -1,0 +1,19 @@
+function sol = solver_RK_back(problem, mesh, params)
+%% assymptotics at xi = 0
+bc = problem.BC_R();
+
+%% init the RK solver
+options = odeset(...
+    'Abstol', 1e-14...
+    , 'RelTol', 1e-14 ...
+    , 'NormControl', 'on' ...
+    , 'NonNegative', 2 ...
+    , 'MaxStep', 0.001);
+
+[t,y] = ode45(@(x,y) problem.RK(x,y), ...
+    mesh.x(end:-1:1), bc.rhs, options);
+sol.t = z_of_x(t', params)/params.z2;
+
+sol.t = sol.t(end:-1:1);
+sol.y = y(end:-1:1,:);
+end

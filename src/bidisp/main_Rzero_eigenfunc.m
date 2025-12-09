@@ -1,13 +1,13 @@
 clc
 clear all
-close all
+% close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
 sigma_max_limit = -1;
 sigma_min_limit = -3;
 q = 1.003;
-xBarLeft = 9e-3;
+xBarLeft = 3e-3;
 xBarRight = 0*4e-2;
 %% packed bed params
 % a0 = 0.2;
@@ -32,28 +32,83 @@ sigma = -1.988;   % a0 = 0.2; tau0 = 0.47;
 sigma = -2.097600; % a0 = 0.005; n = 100
 sigma = -2.0920; % a0 = 0.005; n = 200
 sigma = -2.0919; % a0 = 0.005; n = 2000
-sigma = -2.05;
-% sigma = -1.604021809231366;
-% sigma = -1.9999;
-alpha = 0.1;
-a0 = 0.1;
+sigma = -1.986683;
+%%
+alpha = 0.2;
+a0 = 0.2;
 tau0 = 0.47;
 R = 0;
+sigma = -1.986683;
+%%
+%%
+alpha = 0.1;
+a0 = 0.2;
+tau0 = 0.47;
+R = 0;
+sigma = -2.022512;
+%%
+%%
+alpha = 0.17;
+a0 = 0.2;
+tau0 = 0.47;
+R = 0;
+sigma = -2.0107;
+%%
+%%
+alpha = 0.18;
+a0 = 0.2;
+tau0 = 0.47;
+R = 0;
+sigma = -1.998;
+%%
+%%
+% alpha = 0.2;
+% a0 = 0.1;
+% tau0 = 0.47;
+% R = 0;
+% sigma = -2.031115;
+%%
+%%
+alpha = 0.5;
+a0 = 0.2;
+tau0 = 0.35;
+R = 0;
+sigma = -1.63387;
+% sigma = -1.8;
+%%
 params = poly_case(a0, alpha, tau0, R);
-pen = set_pen('r', '-');
 mesh = set_left_mesh(7000, params, xBarLeft);
 
-solver = @(problem) solver_KellerBox(problem, mesh);
-
+% solver = @(problem, mesh) solver_KellerBox(problem, mesh);
+solver = @(problem, mesh) solver_RK(problem, mesh, params);
 starter = @(sigma, params) starter_R_zero_X_Psi(...
-                solver, sigma, params, mesh);
+    solver, sigma, params, mesh);
 sol = starter(sigma, params);
-(sol.condition/sol.y(end,1)-1)
 % sol.y(end,2)
+pen = set_pen('r', '-');
 plot_solution(pen, params, sol)
-s=0;
+(sol.condition/sol.y(end,1)-1)
 
+solver = @(problem, mesh) solver_RK_back(...
+    problem, mesh, params);
+starter = @(sigma, params) starter_R_zero_X_Psi(...
+    solver, sigma, params, mesh);
+sol = starter(sigma, params);
+% sol.y(end,2)
+pen = set_pen('b', '-');
+plot_solution(pen, params, sol)
 
+% sigma = -1.99754;
+solver = @(problem, mesh) solver_KellerBox(...
+    problem, mesh);
+starter = @(sigma, params) starter_R_zero_X_Psi(...
+    solver, sigma, params, mesh);
+sol = starter(sigma, params);
+% sol.y(end,2)
+pen = set_pen('k', '-');
+plot_solution(pen, params, sol)
+
+(sol.condition/sol.y(end,1)-1)
 
 
 

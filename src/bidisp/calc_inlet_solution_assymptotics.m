@@ -19,7 +19,7 @@ y2 = g1;
 m0 = a*D;
 m1 = -(D+y2*a);
 z1 = a/D;
-z2 = -1/(2*y2)*(y2/D)^2;
+z2 = -alpha/(2*y2*y2)*(y2/D)^2;
 l1 = m0*z1;
 l2 = m0*z2+m1*z1;
 
@@ -28,7 +28,7 @@ b1 = (a*(a*psi1-psi0) - b0*(a*a*y2/D+2*a*(1+sigma))-C2*l2*b0*r)/...
     (C2*l1*(r+1)-a*a*(2+sigma));
 
 m2 = y2;
-z3 = -1/(3*y2)*(y2/D)^3;
+z3 = -alpha/(3*y2*y2)*(y2/D)^3;
 l3 = m0*z3+m1*z2+m2*z1;
 
 psi2 = -(a*g1/D*(b1*D-b0*y2)+g1*(a*psi1-psi0)-(D+y2*a)*(r+1)*psi1)/...
@@ -39,7 +39,7 @@ b2 = (b0*(1+sigma)+a*(a*psi2-psi1)-b1*(a*a*y2/D+2*a*(1+sigma)) ...
 
 t = a-x_left;% linspace(0,3e-1,1001);
 
-psi = 0*(psi0+(psi1+psi2*t).*t).*(t.^r);
+psi = (psi0+(psi1+psi2*t).*t).*(t.^r);
 b = (b0 + (b1+b2*t).*t).*(t.^r);
 
 x = x_left;

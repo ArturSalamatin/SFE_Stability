@@ -4,7 +4,7 @@ problem = set_problem(mesh, sigma, params);
 %% solve problem
 % sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
 sol = transform(...
-    solver(problem), params, sigma, problem.base_state);
+    solver(problem, mesh), params, sigma, problem.base_state);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -28,8 +28,11 @@ problem.M = problem.eqN * mesh.N; % nmbr of discrete unknows
 problem.block_matrix = @(xL, xR, segm_i)block(...
     xL, xR, segm_i, sigma, problem);
 problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
-problem.BC = @()BC_L(params, problem.base_state, sigma, problem.eqN, mesh);
+problem.BC = @()BC_Psi_LR(params, problem.base_state, sigma, problem.eqN, mesh);
+problem.BC_L = @()BC_L(params, problem.base_state, sigma, problem.eqN, mesh);
+problem.BC_R = @()BC_R(params, problem.base_state, sigma, problem.eqN, mesh);
 problem.JC = @()JC(params, problem.base_state, problem.eqN);
+problem.RK = @(x,y)my_ode(x,y, sigma, params);
 end
 
 function base_state = set_base_state(mesh, params)
@@ -116,6 +119,7 @@ out.rhs = [Psi_left; X_left];
 end
 
 function out = BC_Psi_LR(params, base_state, sigma, eqN, mesh)
+% [Psi, X]
 % d_zeta -- small value close to zeta = 0,
 % it is used to cut the singular point zeta = 0
 a = params.a;
@@ -123,7 +127,10 @@ a0 = params.a0;
 g1 = params.g1;
 dz0dt = params.dz0dt;
 
-% x_left = mesh.xBarL*params.a;
+x_left = mesh.xBarL*params.a;
+[~,~, Psi_left, ~] = calc_inlet_solution_assymptotics(...
+    x_left, params, sigma);
+
 
 left = zeros(eqN,eqN);
 right = zeros(eqN,eqN);
@@ -132,16 +139,42 @@ rhs = zeros(eqN,1);
 % 1*Psi(left) +0*Psi(right) = 0
 left(1,:) = [1,0];
 right(1,:) = [0,0];
-rhs(1) = 0;
+rhs(1) = Psi_left;
 %% BC at the right end
 % 0*Psi(left) + 1*Psi(right) = Psi_r == = -g1*a*dz0dt - (1+sigma)*a0/a
 left(2,:) = [0,0];
-right(2,:) = [1,0];
-rhs(2) = -g1*a*dz0dt - (1+sigma)*a0/a;
+right(2,:) = [1,g1*a*dz0dt + (1+sigma)*a0/a];
+rhs(2) = 0;
 
 out.left = left;
 out.right = right;
 out.rhs = rhs;
+end
+
+function out = BC_R(params, base_state, sigma, eqN, mesh)
+% [Psi, X]
+% d_zeta -- small value close to zeta = 0,
+% it is used to cut the singular point zeta = 0
+C2 = params.C2;
+C1 = params.C1;
+% r = 1+(2+sigma)/C2;
+a = params.a;
+a0 = params.a0;
+g1 = params.g1;
+dz0dt = params.dz0dt;
+
+%% BC at the left end
+left = zeros(eqN,eqN);
+% left(1,:) = [0,1]; % X(left) = X(x_s)
+% left(1,1) = 1; % Psi(left) = Psi_left, left = delta -> 0
+% left(2,2) = 1; % X(left) = X_left, left = dalta -> 0
+%% BC at the right end
+right = eye(eqN,eqN);
+%% rhs for BC eqns
+% left*y(0) + right*y(1) = rhs
+out.left = left;
+out.right = right;
+out.rhs = [-g1*a*dz0dt - (1+sigma)*a0/a, 1];
 end
 
 function out = JC(params, base_state, eqN)
@@ -249,27 +282,6 @@ sol.base_state = base_state;
 sol.sigma = sigma;
 end
 
-function sol = solver_RK(base_state, mesh, params, sigma)
-%% assymptotics at xi = 0
-a = params.a; % == sqrt(2tau)
-tau = (a*a)/2.0;
-alpha = params.r;
-C2 = base_state.C2;
-C1 = base_state.C1;
-zeta2 = base_state.z2;
-xi_left = mesh.left.L;
-[Psi_left, X_left] = ...
-    calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
-%% init the RK solver
-options = odeset('Abstol', 1e-10, 'RelTol', 1e-10);
-y0 = [Psi_left; X_left];
-x_mesh = mesh.left.xBar*a;
-[t,y] = ode15s(@(x,y) my_ode(x,y,sigma,params,base_state), ...
-    x_mesh, y0, options);
-sol.t = z_of_x(t', params)/zeta2;
-sol.y = y;
-end
-
 function sol = solver_RK_backwards(base_state, mesh, params, sigma)
 %% assymptotics at xi = 0
 a = params.a; % == sqrt(2tau)
@@ -292,7 +304,7 @@ X_right = 1;
 Psi_right = (g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)));
 y0 = [Psi_right; X_right];
 x_mesh = mesh.left.xBar(end:-1:1)*a;
-[t,y] = ode45(@(x,y) my_ode(x,y,sigma,params,base_state), ...
+[t,y] = ode45(@(x,y) my_ode(x,y,sigma,params), ...
     x_mesh, y0, options);
 sol.t = z_of_x(t', params)/zeta2;
 
@@ -300,7 +312,7 @@ sol.t = sol.t(end:-1:1);
 sol.y = y(end:-1:1,:);
 end
 
-function dy = my_ode(x,y, sigma, params, base_state)
+function dy = my_ode(x,y, sigma, params)
 
 alpha = params.r;
 a = params.a; % == sqrt(2tau)
@@ -308,7 +320,7 @@ g1 = 1-alpha;
 D =  alpha+(1-alpha)*a;
 Dx = alpha+(1-alpha)*x;
 z = z_of_x(x, params);
-C2 = base_state.C2;
+C2 = params.C2;
 
 f = zeros(2,2);
 f(1,1) = g1/Dx;
