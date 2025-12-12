@@ -13,9 +13,10 @@ dz0dt = params.dz0dt;
 C1 = params.C1;
 C2 = params.C2;
 % sigma = sol.sigma;
+xi0 = params.xi0;
 
 
-psi0 = g0*a*dz0dt - (g0+g1)/C1*(C2 + (1+sigma)*(1-xi0));
+psi0 = -(g1+g0*(1-xi0))*a*dz0dt - (1+sigma)*a0/a; %xi0*g0*a*dz0dt - (g0+g1)/C1*(C2 + (1+sigma)*(1-xi0));
 b0 = 1;
 
 D = alpha+(1-alpha)*a;
