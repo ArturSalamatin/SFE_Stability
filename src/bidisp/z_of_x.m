@@ -19,7 +19,7 @@ else
     % and two sections within the extraction zone exist
     mask = x <= a0;
     out(mask) = (a0 - x(mask))/g0 + z0(params);
-        
+
     mask = (x > a0) & (x <= 1);
     out(mask) = (a-x(mask)+...
         r/(1-r)*log((r+(1-r)*x(mask))/(r+(1-r)*a)))/(1-r);

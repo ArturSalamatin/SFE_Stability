@@ -1,7 +1,9 @@
 function [tau0, a0, out] = calc_sigma_R_zero(...
-    N, alpha, tau0, a0, pens)
+    solver, N, alpha, tau0, a0, pens)
+global xBarLeft
+R = 0;
 %% calculate sigma
-out = -1.8911;% -2 + alpha./(alpha+(1-alpha).*a0);
+out = -2 + alpha./(alpha+(1-alpha).*a0);
 guess = out(1,1);
 for j = 1:size(out, 1)
     j
@@ -14,16 +16,14 @@ for j = 1:size(out, 1)
             out(j,i) = NaN;
             guess = -2 + alpha/(alpha+(1-alpha)*A0);
         else
-            params = poly_case(A0, alpha, Tau0);
+            params = poly_case(A0, alpha, Tau0, R);
             params.marker = 's';
             params.pen = set_pen(...
                 pens.lc{min(1, numel(pens.lc))}, ...
                 pens.style{min(j, numel(pens.style))});
-            params.R = 0;
-            mesh = quasiuniform_mesh_Frobenius(...
-                1e-5, N, params);
+            mesh = set_left_mesh(N, params, xBarLeft);
             starter = @(sigma, params) starter_R_zero_X_Psi(...
-                sigma, params, mesh);
+                solver, sigma, params, mesh);
             % dust fraction has been extracted at the inlet
             sigma = fit_sigma(starter, params, guess);
             %% save sigma to the output matrix

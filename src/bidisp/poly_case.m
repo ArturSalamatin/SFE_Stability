@@ -1,4 +1,7 @@
-function params = poly_case(a0, alpha, t)
+function params = poly_case(a0, alpha, t, R)
+if(nargin == 3)
+    R = 0;
+end
 %% set the packed bed
 params.a0 = a0;
 params.r = alpha; % dust volume fraction
@@ -17,11 +20,14 @@ if(t < a0*a0/2)
     error("Time moment is too small!");
 end
 params.t = t;
-params.a = sqrt(2*params.t);
+params.R = R;
 %% set dependent vars
+params.a = sqrt(2*t);
 params.z0 = z0(params);
 params.z2 = z2(params);
+params.xi0 = params.z0/params.z2;
 params.dz2dt = dz2dt(params);
+params.dz0dt = dz0dt(params);
 params.C1 = params.a./params.z2;
 params.C2 = params.C1*params.a.*params.dz2dt;
 end
