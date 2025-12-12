@@ -49,12 +49,13 @@ C2 = params.C2;
 sigma = sol.sigma;
 xi0 = params.xi0;
 psi0 = -g1*a*dz0dt - (1+sigma)*a0/a;
+psi_out = -(g1+g0)*C2/C1;
 
 figure(fig_id+1)
 hold on
 plot(xi0, psi0, 'ks', 'markerfacecolor', 'k')
+plot(1, psi_out, 'k^', 'markerfacecolor', 'k')
 
-factor = 1;
 for i = [1,2] %,5,6]% 1:6%numel(names)
     if(i > size(y,2))
         break
@@ -62,7 +63,7 @@ for i = [1,2] %,5,6]% 1:6%numel(names)
     my_figure(fig_id+i)
     box on
     %     axis([0 1 -Inf Inf])
-    plot(t,y(:,i)/factor...
+    plot(t,y(:,i)...
         , 'LineWidth', 1 ...
         , 'Color', pen.lc ...
         , 'LineStyle', '-'... pen.style{1}(1) ...

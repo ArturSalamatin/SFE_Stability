@@ -1,6 +1,6 @@
 clc
 clear all
-close all
+% close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -67,15 +67,15 @@ a0 = 0.1;
 tau0 = 0.47;
 R = 0;
 sigma = -2.031115;
-sigma = -2.31524;
+sigma = -1.9194-0.0088-0.0083-0.0077-.0072;
 %%
 %%
-alpha = 0.5;
-a0 = 0.2;
-tau0 = 0.35;
-R = 0;
-sigma = -1.6338658;
-sigma = -1.6338658;
+% alpha = 0.5;
+% a0 = 0.2;
+% tau0 = 0.35;
+% R = 0;
+% sigma = -1.6338658;
+% sigma = -1.6338658;
 %%
 params = poly_case(a0, alpha, tau0, R);
 mesh = set_left_mesh(7000, params, xBarLeft);
@@ -84,24 +84,24 @@ mesh = set_left_mesh(7000, params, xBarLeft);
 solver = @(problem, mesh) solver_RK(problem, mesh, params);
 % starter = @(sigma, params) starter_R_zero_X_Psi(...
 %     solver, sigma, params, mesh);
-starter = @(sigma, params) tr_starter_R_zero_X_Psi(...
+starter = @(sigma, params) starter_R_zero_X_Psi(...
     solver, sigma, params, mesh);
 sol = starter(sigma, params);
 % sol.y(end,2)
-pen = set_pen('r', '--');
+pen = set_pen('k', '--');
 plot_solution(pen, params, sol)
 accuracy = (sol.condition/sol.y(end,1)-1)
 
-solver = @(problem, mesh) solver_RK_back(...
-    problem, mesh, params);
-% starter = @(sigma, params) starter_R_zero_X_Psi(...
+% solver = @(problem, mesh) solver_RK_back(...
+%     problem, mesh, params);
+% % starter = @(sigma, params) starter_R_zero_X_Psi(...
+% %     solver, sigma, params, mesh);
+% starter = @(sigma, params) tr_starter_R_zero_X_Psi(...
 %     solver, sigma, params, mesh);
-starter = @(sigma, params) tr_starter_R_zero_X_Psi(...
-    solver, sigma, params, mesh);
-sol = starter(sigma, params);
-% sol.y(end,2)
-pen = set_pen('b', '--');
-plot_solution(pen, params, sol)
+% sol = starter(sigma, params);
+% % sol.y(end,2)
+% pen = set_pen('b', '--');
+% plot_solution(pen, params, sol)
 % 
 % % sigma = -1.99754;
 % solver = @(problem, mesh) solver_KellerBox(...
