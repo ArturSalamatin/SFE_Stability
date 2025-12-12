@@ -317,17 +317,17 @@ function dy = my_ode(x,y, sigma, params)
 alpha = params.r;
 a = params.a; % == sqrt(2tau)
 g1 = 1-alpha;
-D =  alpha+(1-alpha)*a;
+Da =  alpha+(1-alpha)*a;
 Dx = alpha+(1-alpha)*x;
 z = z_of_x(x, params);
 C2 = params.C2;
 
 f = zeros(2,2);
 f(1,1) = g1/Dx;
-f(1,2) = g1*a/(x*D);
+f(1,2) = g1*a/(x*Da);
 
 f(2,1) = -a/(Dx*z*C2);
-f(2,2) = -(a*a/(x*D) + x*(1+sigma)/Dx)/(z*C2);
+f(2,2) = -(a*a/(x*Da) + x*(1+sigma)/Dx)/(z*C2);
 
 dy = f*y;
 end
