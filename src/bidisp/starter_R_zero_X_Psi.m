@@ -13,22 +13,11 @@ problem.ids = 1:problem.eqN; % iterator for rows/cols within a block
 
 problem.base_state = set_base_state(mesh, params);
 
-% c = problem.base_state.mid_c;
-% xBar = problem.base_state.mid_x/params.a;
-% mid_x = problem.base_state.mid_x;
-% mid_xi = z_of_x(mid_x, params)/params.z2;
-% figure(80)
-% plot(mid_xi, (1-c)./(xBar.*xBar))
-% figure(81)
-% plot(mid_xi, (1-c))
-% figure(82)
-% plot(mid_xi, (1-c)./xBar)
-
 problem.M = problem.eqN * mesh.N; % nmbr of discrete unknows
-problem.block_matrix = @(xL, xR, segm_i)block(...
-    xL, xR, segm_i, sigma, problem);
-problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
-problem.BC = @()BC_Psi_LR(params, problem.base_state, sigma, problem.eqN, mesh);
+% problem.block_matrix = @(xL, xR, segm_i)block(...
+%     xL, xR, segm_i, sigma, problem);
+% problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
+% problem.BC = @()BC_Psi_LR(params, problem.base_state, sigma, problem.eqN, mesh);
 problem.BC_L = @()BC_L(params, problem.base_state, sigma, problem.eqN, mesh);
 problem.BC_R = @()BC_R(params, problem.base_state, sigma, problem.eqN, mesh);
 problem.JC = @()JC(params, problem.base_state, problem.eqN);
@@ -313,21 +302,21 @@ sol.y = y(end:-1:1,:);
 end
 
 function dy = my_ode(x,y, sigma, params)
-
-alpha = params.r;
+% [Psi, X]
 a = params.a; % == sqrt(2tau)
-g1 = 1-alpha;
-Da =  alpha+(1-alpha)*a;
-Dx = alpha+(1-alpha)*x;
 z = z_of_x(x, params);
 C2 = params.C2;
 
-f = zeros(2,2);
-f(1,1) = g1/Dx;
-f(1,2) = g1*a/(x*Da);
+gx = g(x, params);
+Gx = G_of_x(x, params);
+Ga = G_of_x(a, params);
 
-f(2,1) = -a/(Dx*z*C2);
-f(2,2) = -(a*a/(x*Da) + x*(1+sigma)/Dx)/(z*C2);
+f = zeros(2,2);
+f(1,1) = gx/Gx;
+f(1,2) = gx*a/(x*Ga);
+
+f(2,1) = -a/(Gx*z*C2);
+f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Dx)/(z*C2);
 
 dy = f*y;
 end
