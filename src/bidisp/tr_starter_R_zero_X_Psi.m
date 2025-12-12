@@ -79,7 +79,7 @@ right = eye(eqN,eqN);
 % left*y(0) + right*y(1) = rhs
 out.left = left;
 out.right = right;
-Phi_right = -((g1+g0*(1-xi0))*a*dz0dt + (1+sigma)*a0/a)/(a-a0);
+Phi_right = -(g1*a*dz0dt + (1+sigma)*a0/a)/(a-a0);
 Z_right = 1;
 out.rhs = [Phi_right, Z_right];
 end

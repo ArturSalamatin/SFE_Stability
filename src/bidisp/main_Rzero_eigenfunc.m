@@ -70,12 +70,12 @@ sigma = -2.031115;
 sigma = -2.31524;
 %%
 %%
-% alpha = 0.5;
-% a0 = 0.2;
-% tau0 = 0.35;
-% R = 0;
-% sigma = -1.6338658;
-% sigma = -1.6338658;
+alpha = 0.5;
+a0 = 0.2;
+tau0 = 0.35;
+R = 0;
+sigma = -1.6338658;
+sigma = -1.6338658;
 %%
 params = poly_case(a0, alpha, tau0, R);
 mesh = set_left_mesh(7000, params, xBarLeft);

@@ -48,7 +48,7 @@ C1 = params.C1;
 C2 = params.C2;
 sigma = sol.sigma;
 xi0 = params.xi0;
-psi0 = -(g1+g0*(1-xi0))*a*dz0dt - (1+sigma)*a0/a;
+psi0 = -g1*a*dz0dt - (1+sigma)*a0/a;
 
 figure(fig_id+1)
 hold on
