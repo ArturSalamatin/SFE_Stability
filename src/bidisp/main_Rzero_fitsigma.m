@@ -1,6 +1,6 @@
 clc
 clear all
-close all
+% close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -61,9 +61,33 @@ R = 0;
 sigma = -2.031115;
 sigma = 2.151615819264947;
 
+alpha = 0.2;
+a0 = 0.1;
+tau0 = 0.2864;
+R = 0;
+sigma_guess = 1.458503275213755;
+
+alpha = 0.2;
+a0 = 0.05;
+tau0 = 0.2864;
+R = 0;
+sigma_guess = 2.276089956284676;
+
+alpha = 0.2;
+a0 = 0.03;
+tau0 = 0.2864;
+R = 0;
+sigma_guess = 2.826374592543163;
+
+alpha = 0.2;
+a0 = 0.01;
+tau0 = 0.2864;
+R = 0;
+sigma_guess = 3.652738419309777;
+
 params = poly_case(a0, alpha, tau0, R);
-params.pen = set_pen('b', '-');
-mesh = set_left_mesh(500, params, xBarLeft);
+params.pen = set_pen('m', '-');
+mesh = set_left_mesh(100, params, xBarLeft);
 solver = @(problem, mesh) solver_RK(problem, mesh, params);
 starter = @(sigma, params) starter_R_zero_X_Psi(...
                 solver, sigma, params, mesh);

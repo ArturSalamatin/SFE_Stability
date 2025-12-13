@@ -14,7 +14,7 @@ for j = 1:size(out, 1)
         if(A0*A0/2 >= Tau0)
             % dust fraction is not extrcted yet
             out(j,i) = NaN;
-            guess = -2 + alpha/(alpha+(1-alpha)*A0);
+            guess = -1 + (1-alpha*A0)/(alpha+(1-alpha)*A0);
         else
             params = poly_case(A0, alpha, Tau0, R);
             params.marker = 's';
@@ -23,7 +23,7 @@ for j = 1:size(out, 1)
                 pens.style{min(j, numel(pens.style))});
             mesh = set_left_mesh(N, params, xBarLeft);
             starter = @(sigma, params) starter_R_zero_X_Psi(...
-                solver, sigma, params, mesh);
+                @(problem, mesh)solver(problem, mesh, params), sigma, params, mesh);
             % dust fraction has been extracted at the inlet
             sigma = fit_sigma(starter, params, guess);
             %% save sigma to the output matrix

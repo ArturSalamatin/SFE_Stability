@@ -1,6 +1,6 @@
 clc
 clear all
-% close all
+close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -76,6 +76,13 @@ sigma = 1.264900506177209;
 % R = 0;
 % sigma = -1.6338658; % if minus
 % sigma = -0.124996446878894; % if plus
+%%
+alpha = 0.2;
+a0 = 0.1;
+tau0 = 0.2864;
+R = 0;
+sigma = -1.6338658; % if minus
+sigma = 40; % if plus
 %%
 params = poly_case(a0, alpha, tau0, R);
 mesh = set_left_mesh(7000, params, xBarLeft);

@@ -4,17 +4,15 @@ close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
-sigma_max_limit = -1;
-sigma_min_limit = -3;
+sigma_max_limit = 5;
+sigma_min_limit = -2;
 q = 1.008;
 xBarLeft = 1e-3;
 xBarRight = 0*4e-2;
-           
-            
-    
-solver = @(problem, mesh) solver_KellerBox(problem, mesh);        
+
+solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
 label = '';
-N = 1000;
+N = 200;
 for alpha = 0.2 % 0.2:0.2:0.8
     num = 2200+alpha*10;
     clc
@@ -22,17 +20,15 @@ for alpha = 0.2 % 0.2:0.2:0.8
     style = {'-'};
     pen = set_pen(col, style);
     %% make calculation grid
-    eps = 10e-3;
-    a0 = 0.04;
-    tau0 = 0.35;
-        tau0 = linspace(eps, 0.5 - eps, 80);
-        a0 = linspace(eps,1-eps, 80);
+    eps = 5e-2;
+    tau0 = linspace(eps, 1 - eps, 40);
+    a0 = linspace(eps,1-eps, 40);
     [tau0, a0] = meshgrid(tau0, a0);
     %% run calculations
     [tau0, a0, sigma] = ...
         calc_sigma_R_zero(solver, N, alpha, tau0, a0, pen);
-        save(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
-            'tau0', 'a0', 'sigma', 'alpha')
+    save(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
+        'tau0', 'a0', 'sigma', 'alpha')
     
         figure(num)
         hold on
@@ -46,8 +42,8 @@ for alpha = 0.2 % 0.2:0.2:0.8
         y = sqrt(2*x);
         plot(x,y, 'k-', 'linewidth', 1)
     
-        x = -2:0.1:-1;
-        y = 1/(1-alpha)*(alpha./(x+2)-alpha);
+        x = -1:0.1:0;
+        y = -(1+x)*alpha./(x*(1-alpha));%1/(1-alpha)*(alpha./(x+2)-alpha);
         z = y.*y/2;
         plot(z,y,'ks', 'MarkerFaceColor', 'black')
     
