@@ -8,7 +8,7 @@ sigma_max_limit = -1;
 sigma_min_limit = -3;
 q = 1.003;
 xBarLeft = 3e-3;
-xBarRight = 0*4e-2;
+xBarRight = 0;
 %% packed bed params
 % a0 = 0.2;
 % alpha = [0, 0.1, 0.3, 0.5, 0.7];
@@ -81,8 +81,8 @@ alpha = 0.2;
 a0 = 0.1;
 tau0 = 0.2864;
 R = 0;
-sigma = -1.6338658; % if minus
-sigma = 40; % if plus
+sigma = -1.6338658;
+sigma = -1.87;
 %%
 params = poly_case(a0, alpha, tau0, R);
 mesh = set_left_mesh(7000, params, xBarLeft);
@@ -97,7 +97,7 @@ sol = starter(sigma, params);
 % sol.y(end,2)
 pen = set_pen('k', '--');
 plot_solution(pen, params, sol)
-accuracy = (sol.condition/sol.y(end,1)-1)
+accuracy = (sol.condition/sol.y(sol.id,1)-1)
 
 % solver = @(problem, mesh) solver_RK_back(...
 %     problem, mesh, params);

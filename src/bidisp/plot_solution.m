@@ -48,12 +48,12 @@ C1 = params.C1;
 C2 = params.C2;
 sigma = sol.sigma;
 xi0 = params.xi0;
-psi0 = -g1*a*dz0dt + (1+sigma)*a0/a;
+psi0 = -g1*a*dz0dt - (1+sigma)*a0/a;
 
 figure(fig_id+1)
 hold on
-plot(xi0, psi0, 'ks', 'markerfacecolor', 'k')
-plot(1, psi_out, 'k^', 'markerfacecolor', 'k')
+plot(xi0, psi0*y(sol.id,2), 'ks', 'markerfacecolor', 'k')
+% plot(1, psi_out, 'k^', 'markerfacecolor', 'k')
 
 for i = [1,2] %,5,6]% 1:6%numel(names)
     if(i > size(y,2))

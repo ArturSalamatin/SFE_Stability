@@ -21,8 +21,9 @@ if(mesh.x(end) < 0)
 end
 
 [t2,y2] = ode15s(@(x,y) problem.RK(x,y), ...
-    [mesh.x(end), 1e-10], y0, options);
+    [mesh.x(end), 5e-2], y0, options);
 
 sol.t = z_of_x([t;t2]', params)/params.z2;
 sol.y = [y;y2];
+sol.id = numel(t);
 end
