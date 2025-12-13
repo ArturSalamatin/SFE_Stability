@@ -38,44 +38,51 @@ alpha = 0.2;
 a0 = 0.2;
 tau0 = 0.47;
 R = 0;
-sigma = -1.986683;
+sigma = 1.162932030910141;
 %%
 %%
 alpha = 0.1;
 a0 = 0.2;
 tau0 = 0.47;
 R = 0;
-sigma = -2.022512;
+sigma = 1.717977418539169;
 %%
 %%
 alpha = 0.17;
 a0 = 0.2;
 tau0 = 0.47;
 R = 0;
-sigma = -2.0107;
+sigma = 1.317466186083304;
 %%
 %%
 alpha = 0.18;
 a0 = 0.2;
 tau0 = 0.47;
 R = 0;
-sigma = -1.998;
+sigma = 1.264900506177209;
 %%
 %%
-alpha = 0.2;
-a0 = 0.1;
-tau0 = 0.47;
-R = 0;
-sigma = -2.031115;
-sigma = -1.9194-0.0088-0.0083-0.0077-.0072;
+% alpha = 0.2;
+% a0 = 0.1;
+% tau0 = 0.47;
+% R = 0;
+% sigma = -2.031115;
+% sigma = 2.151615819264947;
 %%
 %%
 % alpha = 0.5;
 % a0 = 0.2;
 % tau0 = 0.35;
 % R = 0;
-% sigma = -1.6338658;
-% sigma = -1.6338658;
+% sigma = -1.6338658; % if minus
+% sigma = -0.124996446878894; % if plus
+%%
+alpha = 0.2;
+a0 = 0.1;
+tau0 = 0.2864;
+R = 0;
+sigma = -1.6338658; % if minus
+sigma = 40; % if plus
 %%
 params = poly_case(a0, alpha, tau0, R);
 mesh = set_left_mesh(7000, params, xBarLeft);
@@ -96,7 +103,7 @@ accuracy = (sol.condition/sol.y(end,1)-1)
 %     problem, mesh, params);
 % % starter = @(sigma, params) starter_R_zero_X_Psi(...
 % %     solver, sigma, params, mesh);
-% starter = @(sigma, params) tr_starter_R_zero_X_Psi(...
+% starter = @(sigma, params) starter_R_zero_X_Psi(...
 %     solver, sigma, params, mesh);
 % sol = starter(sigma, params);
 % % sol.y(end,2)

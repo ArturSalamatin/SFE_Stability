@@ -110,19 +110,21 @@ end
 function [out_I, L, R] = make_guess(starter, params)
 global sigma_min_limit sigma_max_limit
 %% crude mesh for localization of F(sigma)=0 point
-sigma = linspace(sigma_min_limit,sigma_max_limit,151);
+sigma = linspace(sigma_min_limit,5,151);
+sigma = linspace(3.5,3.6,51);
 out = zeros(size(sigma));
+val = zeros(size(sigma));
 for i = 1:numel(sigma)
-    sol = starter(sigma(i), params);
-    out(i) = sol.condition;
+    [out(i), sol] = func_to_min(starter, sigma(i), params);
+    val(i) = sol.condition;
 end
 %% do not plot jumps
-for i = 2:numel(sigma)
-    if(out(i) < out(i-1))
-        out(i-1) = NaN;
-        break;
-    end
-end
+% for i = 2:numel(sigma)
+%     if(out(i) < out(i-1))
+%         out(i-1) = NaN;
+%         break;
+%     end
+% end
 %% plot F(sigma)
 figure(3000)
 hold on

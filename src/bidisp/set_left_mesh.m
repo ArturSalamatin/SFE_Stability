@@ -45,7 +45,7 @@ function out = logMesh0(xL, xR, N)
 global q
 N = ceil(N/2);
 xC = (xR+xL)/2;
-h = (xC - xL)*(q-1)/(q^N-1)
+h = (xC - xL)*(q-1)/(q^N-1);
 
 i = 0:(N-1);
 steps = h*q.^(i);
