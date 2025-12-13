@@ -21,7 +21,7 @@ for alpha = 0.2 % 0.2:0.2:0.8
     pen = set_pen(col, style);
     %% make calculation grid
     eps = 5e-2;
-    tau0 = linspace(eps, 1 - eps, 40);
+    tau0 = linspace(eps, 0.5 - eps, 40);
     a0 = linspace(eps,1-eps, 40);
     [tau0, a0] = meshgrid(tau0, a0);
     %% run calculations
@@ -34,7 +34,7 @@ for alpha = 0.2 % 0.2:0.2:0.8
         hold on
         axis([0 0.5 0 1])
         contour(tau0, a0, sigma, ...
-            linspace(-2,-1,11),...
+            ...linspace(-2,-1,11),...
             'ShowText','on',...
             'linecolor', 'black')
     
