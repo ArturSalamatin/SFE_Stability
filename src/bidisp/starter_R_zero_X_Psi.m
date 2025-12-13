@@ -163,7 +163,7 @@ right = eye(eqN,eqN);
 % left*y(0) + right*y(1) = rhs
 out.left = left;
 out.right = right;
-out.rhs = [-g1*a*dz0dt - (1+sigma)*a0/a, 1];
+out.rhs = [-g1*a*dz0dt + (1+sigma)*a0/a, 1];
 end
 
 function out = JC(params, base_state, eqN)
@@ -241,12 +241,12 @@ dz0dt = params.dz0dt;
 xi0 = params.xi0;
 % sol.condition = Psi(1); % Psi(xi=0) == 0
 sol.condition = ...
-    -g1*a*dz0dt - (1+sigma)*a0/a; % Psi(xi=xi0) == -(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)))
+    -g1*a*dz0dt + (1+sigma)*a0/a; % Psi(xi=xi0) == -(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)))
 
 % x_right = a0*(1+a0/5);
 % [x,xi, Psi, X] = calc_solution_assymptotics(...
 %     x_right, params, sigma);
-sol.condition = Psi_r;
+% sol.condition = Psi_r;
 %% RK integration to the left from the jump point
 % C2 = base_state.C2;
 % C1 = base_state.C1;
@@ -316,7 +316,7 @@ f(1,1) = gx/Gx;
 f(1,2) = gx*a/(x*Ga);
 
 f(2,1) = -a/(Gx*z*C2);
-f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Dx)/(z*C2);
+f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
 
 dy = f*y;
 end
