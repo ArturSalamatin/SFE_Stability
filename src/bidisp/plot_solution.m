@@ -71,9 +71,9 @@ for i = [1,2] %,5,6]% 1:6%numel(names)
 %     plot(t([1,end]), y([1,end],i)/factor, 'o', 'MarkerFaceColor', 'black')
     xlabel('{\xi}')
     ylabel(names{i})
-    if(i == 2)
-        axis([0 1 0 1])
-    end
+%     if(i == 2)
+%         axis([0 1 0 1])
+%     end
 end
 
 C1 = params.C1;

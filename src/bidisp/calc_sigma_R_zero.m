@@ -14,7 +14,7 @@ for j = 1:size(out, 1)
         if(A0*A0/2 >= Tau0)
             % dust fraction is not extrcted yet
             out(j,i) = NaN;
-            guess = -1 + (1-alpha*A0)/(alpha+(1-alpha)*A0);
+            guess = -2 + alpha/(alpha+(1-alpha)*A0);
         else
             params = poly_case(A0, alpha, Tau0, R);
             params.marker = 's';

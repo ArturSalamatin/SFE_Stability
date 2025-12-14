@@ -5,7 +5,7 @@ clear all
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
 sigma_max_limit = 3;
-sigma_min_limit = -2;
+sigma_min_limit = -2.1;
 q = 1.008;
 xBarLeft = 5e-3;
 xBarRight = 0*4e-2;
@@ -83,10 +83,28 @@ alpha = 0.2;
 a0 = 0.01;
 tau0 = 0.2864;
 R = 0;
-sigma_guess = 3.652738419309777;
+sigma_guess = -2.031672191741087;
+
+alpha = 0.2;
+a0 = 0.01;
+tau0 = 0.47;
+R = 0;
+sigma_guess = -2.031672191741087;
+
+% alpha = 0.2;
+% a0 = 0.1;
+% tau0 = 0.2864;
+% R = 0;
+% sigma_guess = -1.990654452314103;
+
+% alpha = 0.2;
+% a0 = 0.05;
+% tau0 = 0.2864;
+% R = 0;
+% sigma_guess = -2.017528213766199;
 
 params = poly_case(a0, alpha, tau0, R);
-params.pen = set_pen('m', '-');
+params.pen = set_pen('b', '-');
 mesh = set_left_mesh(100, params, xBarLeft);
 solver = @(problem, mesh) solver_RK(problem, mesh, params);
 starter = @(sigma, params) starter_R_zero_X_Psi(...
@@ -98,7 +116,7 @@ sigma = linspace(sigma_min_limit,sigma_max_limit,81);
 out = zeros(size(sigma));
 for i = 1:numel(sigma)
     sol = starter(sigma(i), params);
-    out(i) = sol.condition/sol.y(end,1)-1;
+    out(i) = sol.condition/sol.y(sol.id,1)-1;
 end
 %% do not plot jumps
 % for i = 2:numel(sigma)

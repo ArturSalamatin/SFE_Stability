@@ -4,24 +4,30 @@ problem = set_problem(mesh, sigma, params);
 %% solve problem
 % sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
 sol = transform(...
-    solver(problem, mesh), params, sigma, problem.base_state);
+    solver(problem, mesh), params, sigma, [] ...problem.base_state
+    );
 end
 
 function problem = set_problem(mesh, sigma, params)
 problem.eqN = 2; % number of equations
 problem.ids = 1:problem.eqN; % iterator for rows/cols within a block
 
-problem.base_state = set_base_state(mesh, params);
+% problem.base_state = set_base_state(mesh, params);
 
 problem.M = problem.eqN * mesh.N; % nmbr of discrete unknows
 % problem.block_matrix = @(xL, xR, segm_i)block(...
 %     xL, xR, segm_i, sigma, problem);
 % problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
 % problem.BC = @()BC_Psi_LR(params, problem.base_state, sigma, problem.eqN, mesh);
-problem.BC_L = @()BC_L(params, problem.base_state, sigma, problem.eqN, mesh);
-problem.BC_R = @()BC_R(params, problem.base_state, sigma, problem.eqN, mesh);
-problem.JC = @()JC(params, problem.base_state, problem.eqN);
+problem.BC_L = @()BC_L(params, [] ...problem.base_state
+    , sigma, problem.eqN, mesh);
+problem.BC_R = @()BC_R(params, [] ...problem.base_state
+    , sigma, problem.eqN, mesh);
+problem.JC = @()JC(params, [] ...problem.base_state
+    , problem.eqN);
 problem.RK = @(x,y)my_ode(x,y, sigma, params);
+
+problem.sigma = sigma;
 end
 
 function base_state = set_base_state(mesh, params)
@@ -174,29 +180,29 @@ function out = JC(params, base_state, eqN)
 % - 1*Psi(left) + 1*Psi(right) + a*dz0dt*g0*X(right) = 0
 % - 1*X(left)   + 1*X(right) = 0
 a = params.a; % a == sqrt(2*t)
-g0 = base_state.params.g0-base_state.params.g1;
-dz0dt = base_state.params.dz0dt;
+g0 = params.g0-params.g1;
+dz2dt = params.dz2dt;
 out.left = -eye(eqN,eqN);
 out.right = eye(eqN,eqN);
-out.right(1,2) = a*dz0dt*g0;
+out.right(1,2) = a*dz2dt*g0;
 out.rhs = [0;0];
 end
 
 function sol = transform(sol, params, sigma, base_state)
-global xBarRight
+% global xBarRight
 t = reshape(sol.t, numel(sol.t), 1);% sol.t';
 a0 = params.a0;
 a = params.a;
 dz0dt = params.dz0dt;
 g1 = params.g1;
-x_right = a0*(1+xBarRight);
+x_right = a0;
 
 [x,xi, Psi_r, X_r] = calc_solution_assymptotics(...
     x_right, params, sigma);
 
 %% normalize
 ff = sol.y(end,2)/X_r;
-sol.factor = ff;% sol.y(end,2)/X_r
+sol.factor = 1;% ff;
 sol.y = sol.y/sol.factor;
 %% input
 %[Psi, X]
@@ -236,7 +242,7 @@ dz0dt = params.dz0dt;
 xi0 = params.xi0;
 % sol.condition = Psi(1); % Psi(xi=0) == 0
 sol.condition = ...
-    (-g1*a*dz0dt - (1+sigma)*a0/a)*X(sol.id); % Psi(xi=xi0) == -(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)))
+    -(g1*a*dz0dt + (1+sigma)*a0/a)*X(sol.id); % Psi(xi=xi0) == -(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)))
 
 % x_right = a0*(1+a0/5);
 % [x,xi, Psi, X] = calc_solution_assymptotics(...
@@ -262,7 +268,7 @@ sol.condition = ...
 % [Psi_left, X_left] = ...
 %     calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
 % sol.BC = Psi_left/X_left - Psi(1)/X(1);
-sol.base_state = base_state;
+% sol.base_state = base_state;
 sol.sigma = sigma;
 end
 
@@ -286,4 +292,24 @@ f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
 dy = f*y;
 end
 
+function dy = my_ode_right(x,y, sigma, params)
+% [Psi, X]
+a = params.a; % == sqrt(2tau)
+z = z_of_x(x, params);
+C2 = params.C2;
+
+g0 = params.g0;
+gx = g(x, params);
+Gx = G_of_x(x, params);
+Ga = G_of_x(a, params);
+
+f = zeros(2,2);
+f(1,1) = gx/Gx;
+f(1,2) = gx*a/(x*Ga);
+
+f(2,1) = -a/(Gx*z*C2);
+f(2,2) = -(a*a/(x*Ga) + (1+sigma)/g0)/(z*C2);
+
+dy = f*y;
+end
 

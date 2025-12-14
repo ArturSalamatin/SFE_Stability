@@ -1,11 +1,11 @@
 clc
 clear all
-close all
+% close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
-sigma_max_limit = 5;
-sigma_min_limit = -2;
+sigma_max_limit = 0;
+sigma_min_limit = -2.2;
 q = 1.008;
 xBarLeft = 1e-3;
 xBarRight = 0*4e-2;
@@ -13,16 +13,16 @@ xBarRight = 0*4e-2;
 solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
 label = '';
 N = 200;
-for alpha = 0.2 % 0.2:0.2:0.8
+for alpha = [0.5, 0.2:0.2:0.8]
     num = 2200+alpha*10;
     clc
     col = {'k'};
     style = {'-'};
     pen = set_pen(col, style);
     %% make calculation grid
-    eps = 5e-2;
-    tau0 = linspace(eps, 0.5 - eps, 40);
-    a0 = linspace(eps,1-eps, 40);
+    eps = 1e-2;
+    tau0 = linspace(eps, 0.5 - eps, 300);
+    a0 = linspace(eps,1-eps, 300);
     [tau0, a0] = meshgrid(tau0, a0);
     %% run calculations
     [tau0, a0, sigma] = ...

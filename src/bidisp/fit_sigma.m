@@ -42,7 +42,7 @@ end
 
 function [out, sol] = func_to_min(starter, sigma, params)
 sol = starter(sigma, params);
-out = sol.condition/sol.y(end,1)-1;
+out = sol.condition/sol.y(sol.id,1)-1;
 end
 
 %%

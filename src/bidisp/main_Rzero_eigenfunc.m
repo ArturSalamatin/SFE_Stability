@@ -1,6 +1,6 @@
 clc
 clear all
-% close all
+close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -82,7 +82,7 @@ a0 = 0.1;
 tau0 = 0.2864;
 R = 0;
 sigma = -1.6338658;
-sigma = -1.87;
+sigma = -1.9906507;
 %%
 params = poly_case(a0, alpha, tau0, R);
 mesh = set_left_mesh(7000, params, xBarLeft);
@@ -123,10 +123,12 @@ accuracy = (sol.condition/sol.y(sol.id,1)-1)
 % (sol.condition/sol.y(end,1)-1)
 % 
 
+xi0 = params.z0/params.z2;
+v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
+figure(701)
+plot(xi0, v, 'd')
 
-
-
-
+s=0;
 
 
 
