@@ -51,10 +51,10 @@ for A0 = [3]
         y = [0,1];
         plot(x,y, 'k-', 'linewidth', 1)
     
-%         x = -1:0.1:0;
-%         y = -(1+x)*alpha./(x*(1-alpha));%1/(1-alpha)*(alpha./(x+2)-alpha);
-%         z = y.*y/2;
-%         plot(z,y,'ks', 'MarkerFaceColor', 'black')
+        x = -2:0.1:-1;
+        y = a0*(x+2)./(a0*(x+2)-1-x);
+        z = a0*a0/2 + 0*y;
+        plot(z,y,'ks', 'MarkerFaceColor', 'black')
     
         label = '';
         switch A0
