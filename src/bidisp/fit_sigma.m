@@ -22,13 +22,13 @@ if((abs(val) > 2e-5) ...|| (sigma < -2)
         fzero(@(s) func_to_min(starter, s, params), guess);
 end
 
-if((sigma < -2) || isnan(sigma))
-    sol = starter(sigma, params);
-    plot_solution(params.pen, params, sol)
-    warning(['sigma is ', num2str(sigma)...
-        , '; val is ', num2str(val)...
-        ])
-end
+% if((sigma < -2) || isnan(sigma))
+%     sol = starter(sigma, params);
+%     plot_solution(params.pen, params, sol)
+%     warning(['sigma is ', num2str(sigma)...
+%         , '; val is ', num2str(val)...
+%         ])
+% end
 
 % figure(3000)
 % hold on

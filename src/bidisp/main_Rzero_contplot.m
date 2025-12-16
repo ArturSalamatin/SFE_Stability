@@ -1,6 +1,6 @@
 clc
 clear all
-% close all
+close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -13,7 +13,8 @@ xBarRight = 0*4e-2;
 solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
 label = '';
 N = 200;
-for alpha = [0.5, 0.2:0.2:0.8]
+for Alpha = [5, 2, 4, 6, 8]
+    alpha = Alpha/10;
     num = 2200+alpha*10;
     clc
     col = {'k'};
@@ -25,16 +26,24 @@ for alpha = [0.5, 0.2:0.2:0.8]
     a0 = linspace(eps,1-eps, 300);
     [tau0, a0] = meshgrid(tau0, a0);
     %% run calculations
-    [tau0, a0, sigma] = ...
-        calc_sigma_R_zero(solver, N, alpha, tau0, a0, pen);
-    save(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
+%     [tau0, a0, sigma] = ...
+%         calc_sigma_R_zero(solver, N, alpha, tau0, a0, pen);
+%     save(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
+%         'tau0', 'a0', 'sigma', 'alpha')
+load(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
         'tau0', 'a0', 'sigma', 'alpha')
     
+    
+    levels = linspace(-2,-1,21);
+    switch Alpha
+            case 2
+            levels = linspace(-2,-1,11);
+    end
         figure(num)
         hold on
         axis([0 0.5 0 1])
         contour(tau0, a0, sigma, ...
-            ...linspace(-2,-1,11),...
+            levels,...
             'ShowText','on',...
             'linecolor', 'black')
     
@@ -47,14 +56,15 @@ for alpha = [0.5, 0.2:0.2:0.8]
         z = y.*y/2;
         plot(z,y,'ks', 'MarkerFaceColor', 'black')
     
-        switch alpha
-            case 0.2
+        label = '';
+        switch Alpha
+            case 2
                 label = 'A';
-            case 0.4
+            case 4
                 label = 'B';
-            case 0.6
+            case 6
                 label = 'C';
-            case 0.8
+            case 8
                 label = 'D';
         end
     
