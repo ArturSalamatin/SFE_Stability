@@ -13,7 +13,7 @@ xBarRight = 0*4e-2;
 solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
 label = '';
 N = 200;
-for A0 = [3]
+for A0 = [1,2,3,4]
     a0 = A0/10;
     num = 2200+a0*10;
     clc
@@ -29,8 +29,8 @@ for A0 = [3]
     %% run calculations
     [tau0, a0, sigma] = ...
         calc_sigma_R_zero_contour_alpha_tau(solver, N, alpha, tau0, a0, pen);
-%     save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
-%         'tau0', 'a0', 'sigma', 'alpha')
+    save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
+        'tau0', 'a0', 'sigma', 'alpha')
 % load(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
 %         'tau0', 'a0', 'sigma', 'alpha')
 
