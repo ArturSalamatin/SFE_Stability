@@ -22,13 +22,13 @@ for A0 = [3]
     pen = set_pen(col, style);
     %% make calculation grid
     eps = 1e-2;
-    tau0 = linspace(a0*a0/2 + eps, 0.5 - eps, 10);
-    alpha = linspace(eps,1-eps, 10);
+    tau0 = linspace(a0*a0/2, 0.5 - eps, 50);
+    alpha = linspace(eps,1-eps, 50);
     [tau0, alpha] = meshgrid(tau0, alpha);
     sigma = 0*tau0 -2;
     %% run calculations
-%     [tau0, a0, sigma] = ...
-%         calc_sigma_R_zero(solver, N, alpha, tau0, a0, pen);
+    [tau0, a0, sigma] = ...
+        calc_sigma_R_zero_contour_alpha_tau(solver, N, alpha, tau0, a0, pen);
 %     save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
 %         'tau0', 'a0', 'sigma', 'alpha')
 % load(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
