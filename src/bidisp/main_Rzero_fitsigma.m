@@ -102,6 +102,12 @@ sigma_guess = -2.031672191741087;
 % tau0 = 0.2864;
 % R = 0;
 % sigma_guess = -2.017528213766199;
+%%
+alpha = 0.1;
+a0 = 0.1;
+tau0 = 0.4;
+R = 0;
+sigma = -2.0317;
 
 params = poly_case(a0, alpha, tau0, R);
 params.pen = set_pen('b', '-');
@@ -112,7 +118,7 @@ starter = @(sigma, params) starter_R_zero_X_Psi(...
 
 
 %% plot functional
-sigma = linspace(sigma_min_limit,sigma_max_limit,81);
+sigma = linspace(-2,-1,1001);
 out = zeros(size(sigma));
 for i = 1:numel(sigma)
     sol = starter(sigma(i), params);
@@ -128,11 +134,17 @@ end
 %% plot F(sigma)
 figure(3000)
 hold on
-axis([sigma_min_limit sigma_max_limit -1 1])
-plot(sigma, out, 'b-', 'LineWidth', 1)
+% axis([sigma_min_limit sigma_max_limit -1 1])
+plot(sigma, out, 'r-', 'LineWidth', 1)
 hold on
 grid on
 %% fit sigma
 [sigma, sol] = fit_sigma(starter, params, sigma_guess);
 
 plot_solution(params.pen, params, sol)
+
+
+xi0 = params.z0/params.z2;
+v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
+figure(701)
+plot(xi0, v, 'd')

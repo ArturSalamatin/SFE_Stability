@@ -1,6 +1,6 @@
 clc
 clear all
-close all
+% close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -8,12 +8,12 @@ sigma_max_limit = 0;
 sigma_min_limit = -2.2;
 q = 1.008;
 xBarLeft = 1e-3;
-xBarRight = 0*4e-2;
+xBarRight = 0;
 
 solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
 label = '';
-N = 200;
-for A0 = [1,2,3,4]
+N = 100;
+for A0 = [1]
     a0 = A0/10;
     num = 2200+a0*10;
     clc
@@ -22,16 +22,16 @@ for A0 = [1,2,3,4]
     pen = set_pen(col, style);
     %% make calculation grid
     eps = 1e-2;
-    tau0 = linspace(a0*a0/2, 0.5 - eps, 50);
-    alpha = linspace(eps,1-eps, 50);
+    tau0 = linspace(a0*a0/2, 0.5 - eps, 80);
+    alpha = linspace(eps,1-eps, 80);
     [tau0, alpha] = meshgrid(tau0, alpha);
     sigma = 0*tau0 -2;
     %% run calculations
     [tau0, a0, sigma] = ...
         calc_sigma_R_zero_contour_alpha_tau(solver, N, alpha, tau0, a0, pen);
-    save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
-        'tau0', 'a0', 'sigma', 'alpha')
-% load(['R_zero_data/alpha_', num2str(alpha*100), '.mat'], ...
+%     save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
+%         'tau0', 'a0', 'sigma', 'alpha')
+% load(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
 %         'tau0', 'a0', 'sigma', 'alpha')
 
 %     levels = linspace(-2,-1,21);
