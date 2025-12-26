@@ -90,6 +90,7 @@ a0 = 0.01;
 tau0 = 0.47;
 R = 0;
 sigma_guess = -2.031672191741087;
+% sigma_guess = -15.588081024788260;
 
 % alpha = 0.2;
 % a0 = 0.1;
@@ -107,18 +108,20 @@ alpha = 0.1;
 a0 = 0.1;
 tau0 = 0.4;
 R = 0;
-sigma = -2.0317;
+sigma_guess = -2.055860009887601;
+
 
 params = poly_case(a0, alpha, tau0, R);
-params.pen = set_pen('b', '-');
+params.pen = set_pen('r', '-');
 mesh = set_left_mesh(100, params, xBarLeft);
 solver = @(problem, mesh) solver_RK(problem, mesh, params);
+% solver = @(problem, mesh) solver_BVP(problem, mesh, params);
 starter = @(sigma, params) starter_R_zero_X_Psi(...
                 solver, sigma, params, mesh);
 
 
 %% plot functional
-sigma = linspace(-2,-1,1001);
+sigma = linspace(-4,-1.5,101);
 out = zeros(size(sigma));
 for i = 1:numel(sigma)
     sol = starter(sigma(i), params);

@@ -13,24 +13,25 @@ xBarRight = 0;
 solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
 label = '';
 N = 100;
-for A0 = [1]
-    a0 = A0/10;
-    num = 2200+a0*10;
+for A0 = [15]
+    a0 = A0/1000;
+    num = 2200+A0;
     clc
     col = {'k'};
     style = {'-'};
     pen = set_pen(col, style);
     %% make calculation grid
     eps = 1e-2;
-    tau0 = linspace(a0*a0/2, 0.5 - eps, 80);
-    alpha = linspace(eps,1-eps, 80);
+    tau0 = [linspace(a0*a0/2, 0.026, 300), ...
+        linspace(0.026001, 0.5 - eps, 100)];
+    alpha = linspace(eps,1-eps, 300);
     [tau0, alpha] = meshgrid(tau0, alpha);
     sigma = 0*tau0 -2;
     %% run calculations
     [tau0, a0, sigma] = ...
         calc_sigma_R_zero_contour_alpha_tau(solver, N, alpha, tau0, a0, pen);
-%     save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
-%         'tau0', 'a0', 'sigma', 'alpha')
+    save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
+        'tau0', 'a0', 'sigma', 'alpha')
 % load(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
 %         'tau0', 'a0', 'sigma', 'alpha')
 
