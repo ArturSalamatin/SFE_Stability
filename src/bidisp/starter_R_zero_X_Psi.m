@@ -27,6 +27,10 @@ problem.JC = @()JC(params, [] ...problem.base_state
     , problem.eqN);
 problem.RK = @(x,y)my_ode(x,y, sigma, params);
 
+problem.BVP_f = @(u,y) sing_bvp_ode(u,y,sigma,params);
+problem.BVP_S = @() S(sigma,params.C2);
+problem.BVP_bc = @(ya,yb) bvp_bc_fcn(ya,yb, mesh, sigma, params);
+
 problem.sigma = sigma;
 end
 
@@ -292,24 +296,27 @@ f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
 dy = f*y;
 end
 
-function dy = my_ode_right(x,y, sigma, params)
-% [Psi, X]
-a = params.a; % == sqrt(2tau)
-z = z_of_x(x, params);
-C2 = params.C2;
+function out = S(sigma, C2)
 
-g0 = params.g0;
-gx = g(x, params);
-Gx = G_of_x(x, params);
-Ga = G_of_x(a, params);
+out = [0, 0; -[1, 2+sigma]/C2];
 
-f = zeros(2,2);
-f(1,1) = gx/Gx;
-f(1,2) = gx*a/(x*Ga);
-
-f(2,1) = -a/(Gx*z*C2);
-f(2,2) = -(a*a/(x*Ga) + (1+sigma)/g0)/(z*C2);
-
-dy = f*y;
 end
+
+function dy = sing_bvp_ode(u,y, sigma, params)
+% [Psi, X]
+dy = -my_ode(params.a - u,y, sigma, params);
+end
+
+function out = bvp_bc_fcn(ya,yb, mesh, sigma, params)
+global xBarLeft
+
+x_left = mesh.x(1);
+
+[~,~, Psi, X] = calc_inlet_solution_assymptotics(...
+    x_left, params, sigma);
+
+out = [ya(1)*X-ya(2)*Psi, yb(2)-1];
+% out = [ya(1) - Psi, ya(2) - X];
+end
+
 
