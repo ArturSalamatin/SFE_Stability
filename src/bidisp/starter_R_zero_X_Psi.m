@@ -97,7 +97,7 @@ x_left = mesh.xBarL*params.a;
 
 % [~, X_left] = ...
 %     calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
-[~,~, Psi_left, X_left] = calc_inlet_solution_assymptotics(...
+[~,~, Psi_left, X_left] = inlet_solution_asymptotics(...
     x_left, params, sigma);
 %% BC at the left end
 left = eye(eqN,eqN);
@@ -127,7 +127,7 @@ g1 = params.g1;
 dz0dt = params.dz0dt;
 
 x_left = mesh.xBarL*params.a;
-[~,~, Psi_left, ~] = calc_inlet_solution_assymptotics(...
+[~,~, Psi_left, ~] = inlet_solution_asymptotics(...
     x_left, params, sigma);
 
 
@@ -312,7 +312,7 @@ global xBarLeft
 
 x_left = mesh.x(1);
 
-[~,~, Psi, X] = calc_inlet_solution_assymptotics(...
+[~,~, Psi, X] = inlet_solution_asymptotics(...
     x_left, params, sigma);
 
 out = [ya(1)*X-ya(2)*Psi, yb(2)-1];

@@ -21,15 +21,15 @@ problem.M = problem.eqN * mesh.N; % nmbr of discrete unknows
 % problem.BC = @()BC_Psi_LR(params, problem.base_state, sigma, problem.eqN, mesh);
 problem.BC_L = @()BC_L(params, [] ...problem.base_state
     , sigma, problem.eqN, mesh);
-problem.BC_R = @()BC_R(params, [] ...problem.base_state
-    , sigma, problem.eqN, mesh);
+% problem.BC_R = @()BC_R(params, [] ...problem.base_state
+%     , sigma, problem.eqN, mesh);
 problem.JC = @()JC(params, [] ...problem.base_state
     , problem.eqN);
 problem.RK = @(x,y)my_ode(x,y, sigma, params);
 
-problem.BVP_f = @(u,y) sing_bvp_ode(u,y,sigma,params);
-problem.BVP_S = @() S(sigma,params.C2);
-problem.BVP_bc = @(ya,yb) bvp_bc_fcn(ya,yb, mesh, sigma, params);
+% problem.BVP_f = @(u,y) sing_bvp_ode(u,y,sigma,params);
+% problem.BVP_S = @() S(sigma,params.C2);
+% problem.BVP_bc = @(ya,yb) bvp_bc_fcn(ya,yb, mesh, sigma, params);
 
 problem.sigma = sigma;
 end
@@ -97,7 +97,7 @@ x_left = mesh.xBarL*params.a;
 
 % [~, X_left] = ...
 %     calculate_X_Psi(xi_left, tau, alpha, C1, C2, zeta2, sigma);
-[~,~, Psi_left, X_left, Phi_left, Gamma_left] = calc_full_inlet_solution_assymptotics(...
+[~,~, Psi_left, X_left, Phi_left, Gamma_left] = calc_full_inlet_solution_asymptotics(...
     x_left, params, sigma);
 %% BC at the left end
 left = eye(eqN,eqN);
