@@ -176,7 +176,6 @@ out.rhs = [-g1*a*dz0dt - (1+sigma)*a0/a, 1];
 end
 
 function out = JC(params, base_state, eqN)
-error('The method is not set')
 % [Psi, X, Phi, Gamma]
 
 % left*y(left) + right*y(right) = rhs
