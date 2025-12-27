@@ -16,21 +16,15 @@ xBarRight = 0;
 %
 % params = poly_case(a0, 0.3, (a0*a0/2)*1.1005);
 % params.marker = marker(2);
-%
-% N = 150;
-% % q = 1.06;
-% % mesh = log_mesh(q, N, params);
-% mesh = quasiuniform_mesh_Frobenius(1e-16, N, params);
-% starter = @(sigma, params) starter_R_zero_X_Psi(...
-%     sigma, params, mesh);
 
 alpha = 0.4;
 a0 = 0.1;
 tau0 = 0.4;
-R = 0;
+R = 10;
+h = 0;
 sigma = -1.821098878268054;
 
-params = poly_case(a0, alpha, tau0, R);
+params = poly_case(a0, alpha, tau0, R, h);
 mesh = set_left_mesh(300, params, xBarLeft);
 
 % solver = @(problem, mesh) solver_KellerBox(problem, mesh);

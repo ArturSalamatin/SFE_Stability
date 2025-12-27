@@ -3,17 +3,24 @@ function plot_solution(...
 global xBarLeft
 fig_id = 700;
 
+x_L = (1-xBarLeft)*params.a;
+
 t = sol.t;
 y = sol.y;
 
 names = {'{\Psi}','X','{\Phi}','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
 % plot_solution_assymptotics(fig_id, pen, params, sol.sigma);
 x_left = linspace(1,1-xBarLeft*2,1001)*params.a;
-[~,xi, Psi, X] = calc_inlet_solution_assymptotics(...
+[~,xi, Psi, X, Phi, Gamma] = calc_full_inlet_solution_asymptotics(...
     x_left, params, sol.sigma );
+[~,~, ~, X_sc, ~, ~] = calc_full_inlet_solution_asymptotics(...
+    x_L, params, sol.sigma );
 
-Psi = Psi/sol.factor;
-X = X/sol.factor;
+factor = X_sc/sol.y(1,2);
+Psi = Psi/factor;
+X = X/factor;
+Phi = Phi/factor;
+Gamma = Gamma/factor;
 
 figure(fig_id+1)
 hold on
@@ -26,12 +33,24 @@ hold on
 plot(xi, X ...
         , 'Color', pen.lc ...
         , 'LineStyle', '-.')
-
-my_figure(fig_id+10)
+    
+figure(fig_id+3)
 hold on
-    plot(xi, Psi./X ...
+plot(xi, Phi ...
         , 'Color', pen.lc ...
         , 'LineStyle', '-.')
+
+figure(fig_id+4)
+hold on
+plot(xi, Gamma ...
+        , 'Color', pen.lc ...
+        , 'LineStyle', '-.')
+
+% my_figure(fig_id+10)
+% hold on
+%     plot(xi, Psi./X ...
+%         , 'Color', pen.lc ...
+%         , 'LineStyle', '-.')
 
 
 
@@ -55,7 +74,7 @@ hold on
 plot(xi0, psi0*y(sol.id,2), 'ks', 'markerfacecolor', 'k')
 % plot(1, psi_out, 'k^', 'markerfacecolor', 'k')
 
-for i = [1,2] %,5,6]% 1:6%numel(names)
+for i = [1,2,3,4] %,5,6]% 1:6%numel(names)
     if(i > size(y,2))
         break
     end
@@ -81,27 +100,26 @@ C2 = params.C2;
 alpha = params.r;
 factor = (1-alpha)*C2/(C1*(2+sigma+C2));
 
-my_figure(fig_id+10)
-hold on
-plot(t, y(:,1)./y(:,2)./(t')/factor...
-        , 'LineWidth', 1 ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-'... pen.style{1}(1) ...
-        )
-
+% my_figure(fig_id+10)
+% hold on
+% plot(t, y(:,1)./y(:,2)./(t')/factor...
+%         , 'LineWidth', 1 ...
+%         , 'Color', pen.lc ...
+%         , 'LineStyle', '-'... pen.style{1}(1) ...
+%         )
 
 % figure(fig_id+8)
 % axis([-Inf Inf -Inf 5])
 
-my_figure(fig_id+20)
-hold on
-plot(y(:,1), y(:,2)...
-        , 'LineWidth', 1 ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-'... pen.style{1}(1) ...
-        )
-    xlabel(names{1})
-    ylabel(names{2})
+% my_figure(fig_id+20)
+% hold on
+% plot(y(:,1), y(:,2)...
+%         , 'LineWidth', 1 ...
+%         , 'Color', pen.lc ...
+%         , 'LineStyle', '-'... pen.style{1}(1) ...
+%         )
+%     xlabel(names{1})
+%     ylabel(names{2})
 
-figure(701)
+figure(702)
 end

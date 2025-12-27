@@ -1,5 +1,8 @@
-function params = poly_case(a0, alpha, t, R)
-if(nargin == 3)
+function params = poly_case(a0, alpha, t, R, h)
+if(nargin < 5)
+    h = 0;
+end
+if(nargin < 4)
     R = 0;
 end
 %% set the packed bed
@@ -21,6 +24,7 @@ if(t < a0*a0/2)
 end
 params.t = t;
 params.R = R;
+params.h = h;
 %% set dependent vars
 params.a = sqrt(2*t);
 params.z0 = z0(params);

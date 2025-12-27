@@ -169,6 +169,7 @@ function dy = my_ode(x,y, sigma, params)
 % [Psi, X, Phi, Gamma]
 a = params.a; % == sqrt(2tau)
 z = z_of_x(x, params);
+C1 = params.C1;
 C2 = params.C2;
 z2 = params.z2;
 h = params.h;
