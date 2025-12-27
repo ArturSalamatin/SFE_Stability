@@ -34,52 +34,6 @@ problem.RK = @(x,y)my_ode(x,y, sigma, params);
 problem.sigma = sigma;
 end
 
-function base_state = set_base_state(mesh, params)
-a = params.a;
-
-I = 1:(mesh.N-1);
-nodes_xBar = mesh.xBar; % mesh nodes
-mid_nodes_xBar = (nodes_xBar(I)+nodes_xBar(I+1))/2; % centers of mesh segments
-
-base_state.params = params;
-
-base_state.mid_x = mid_nodes_xBar*a;
-base_state.mid_c = c_of_x(base_state.mid_x, params);
-base_state.mid_g = g(base_state.mid_x, params);
-base_state.mid_dcdz = dcdz(base_state.mid_x, params);
-base_state.mid_dxBardt = dxBardt(base_state.mid_x, params);
-end
-
-function out = block(xiL, xiR, segm_i, sigma, problem)
-% [Psi, X]
-eqN = problem.eqN;
-a = problem.base_state.params.a;
-%% set params
-% def: C1(t) == sqrt(2t)/zeta2
-C1 = problem.base_state.params.C1;
-% def: C2(t) == 2t*dzeta2dt/zeta2
-C2 = problem.base_state.params.C2;
-
-c = problem.base_state.mid_c(segm_i);
-g = problem.base_state.mid_g(segm_i);
-xBar = problem.base_state.mid_x(segm_i)/a;
-
-% segm_nmbr = numel(segm_i);
-
-xiMid  =(xiL+xiR)/2;
-%% set out
-out = zeros(eqN,eqN);
-out(1,1) = -g/C1./xBar;
-out(1,2) = -g/C1*(1-c)./(xBar.^2);
-
-out(2,1) = 1./(C2.*xBar.*xiMid);
-out(2,2) = ((1-c)./(xBar.^2)+1+sigma)./(xiMid*C2);
-end
-
-function out = Diag(~, eqN, ~)
-out = sparse(1:eqN, 1:eqN, ones(1,eqN), eqN, eqN, eqN);
-end
-
 function out = BC_L(params, base_state, sigma, eqN, mesh)
 % [Psi, X, Phi, Gamma]
 % d_zeta -- small value close to zeta = 0,
@@ -113,39 +67,6 @@ right = zeros(eqN,eqN);
 out.left = left;
 out.right = right;
 out.rhs = [Psi_left; X_left; Phi_left; Gamma_left];
-end
-
-function out = BC_Psi_LR(params, base_state, sigma, eqN, mesh)
-% [Psi, X]
-% d_zeta -- small value close to zeta = 0,
-% it is used to cut the singular point zeta = 0
-a = params.a;
-a0 = params.a0;
-g1 = params.g1;
-dz0dt = params.dz0dt;
-
-x_left = mesh.xBarL*params.a;
-[~,~, Psi_left, ~] = calc_inlet_solution_assymptotics(...
-    x_left, params, sigma);
-
-
-left = zeros(eqN,eqN);
-right = zeros(eqN,eqN);
-rhs = zeros(eqN,1);
-%% BC at the left end
-% 1*Psi(left) +0*Psi(right) = 0
-left(1,:) = [1,0];
-right(1,:) = [0,0];
-rhs(1) = Psi_left;
-%% BC at the right end
-% 0*Psi(left) + 1*Psi(right) = Psi_r == = -g1*a*dz0dt - (1+sigma)*a0/a
-left(2,:) = [0,0];
-right(2,:) = [1,g1*a*dz0dt + (1+sigma)*a0/a];
-rhs(2) = 0;
-
-out.left = left;
-out.right = right;
-out.rhs = rhs;
 end
 
 function out = BC_R(params, base_state, sigma, eqN, mesh)
