@@ -113,7 +113,6 @@ out.rhs = [0;0;0;0];
 end
 
 function sol = transform(sol, params, sigma, base_state)
-error('The method is not set')
 % global xBarRight
 t = reshape(sol.t, numel(sol.t), 1);% sol.t';
 a0 = params.a0;
@@ -122,12 +121,8 @@ dz0dt = params.dz0dt;
 g1 = params.g1;
 x_right = a0;
 
-[x,xi, Psi_r, X_r] = calc_solution_assymptotics(...
-    x_right, params, sigma);
-
 %% normalize
-ff = sol.y(end,2)/X_r;
-sol.factor = 1;% ff;
+sol.factor = 1;
 sol.y = sol.y/sol.factor;
 %% input
 % [Psi, X, Phi, Gamma]
@@ -154,7 +149,7 @@ P = (grad_p(I)+grad_p(I+1))/2.*(t(I+1)-t(I));
 P = [0; cumsum(P)];
 dP = grad_p;
 %% form return variable
-sol.y = [Psi, X, Phi, Gamma, Omega, Y, 0*(Psi+X), 0*Q, 0*P, 0*dP];
+sol.y = [Psi, X, Phi, Gamma, Omega, Y, (Psi+X), Q, P, dP];
 %% Keller-box scheme behind the jump point
 C2 = params.C2;
 C1 = params.C1;
@@ -166,7 +161,7 @@ dz0dt = params.dz0dt;
 xi0 = params.xi0;
 % sol.condition = Psi(1); % Psi(xi=0) == 0
 sol.condition = ...
-    -(g1*a*dz0dt + (1+sigma)*a0/a)*X(sol.id); % Psi(xi=xi0) == -(g0*a*dz0dt - (g0+g1)/C1*(C2+(1+sigma)*(1-xi0)))
+    -(g1*a*dz0dt + (1+sigma)*a0/a)*X(sol.id);
 sol.sigma = sigma;
 end
 
@@ -198,27 +193,6 @@ f(4,3) = -h*h*x/(z2*Gx);
 f(4,4) = a*R*gx/(C1*z2*Ga);
 
 dy = f*y;
-end
-
-function out = S(sigma, C2)
-% singular term, y' = S/x + f(x,y)
-out = [0, 0; -[1, 2+sigma]/C2];
-end
-
-function dy = sing_bvp_ode(u,y, sigma, params)
-% [Psi, X, Phi, Gamma]
-dy = -my_ode(params.a - u,y, sigma, params);
-end
-
-function out = bvp_bc_fcn(ya,yb, mesh, sigma, params)
-
-x_left = mesh.x(1);
-
-[~,~, Psi, X] = calc_inlet_solution_assymptotics(...
-    x_left, params, sigma);
-
-out = [ya(1)*X-ya(2)*Psi, yb(2)-1];
-% out = [ya(1) - Psi, ya(2) - X];
 end
 
 
