@@ -36,11 +36,11 @@ y0 = y0/y0(2);
 if(mesh.x(end) < 0)
     error('Wrong mesh!');
 end
-% 
-% [t2,y2] = ode45(@(x,y) problem.RK(x,y), ...
-%     [mesh.x(end)-1e-10, params.a0/5], y0, options);
-% 
-% sol.x = [sol.x, t'];
-% sol.t = [sol.t, z_of_x(t2', params)/params.z2];
-% sol.y = [sol.y;y2];
+
+[t2,y2] = ode45(@(x,y) problem.RK(x,y), ...
+    [mesh.x(end)-1e-10, params.a0/520], y0, options);
+
+sol.x = [sol.x, t'];
+sol.t = [sol.t, z_of_x(t2', params)/params.z2];
+sol.y = [sol.y;y2];
 end

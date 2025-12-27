@@ -188,10 +188,11 @@ f(2,1) = -a/(Gx*z*C2);
 f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
 
 f(3,4) = -x/(z2*Gx);
+h2 = h*h;
 
-f(4,1) = -h*h*R*x/(z2*Gx);
-f(4,3) = -h*h*x/(z2*Gx);
-f(4,4) = a*R*gx/(C1*z2*Ga);
+f(4,1) = -h2*R/(z2*G_div_X(x,params));
+f(4,3) = -h2/(z2*G_div_X(x,params));
+f(4,4) = R*gx/Ga;
 
 dy = f*y;
 end

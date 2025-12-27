@@ -10,7 +10,8 @@ y = sol.y;
 
 names = {'{\Psi}','X','{\Phi}','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
 % plot_solution_assymptotics(fig_id, pen, params, sol.sigma);
-x_left = linspace(1,1-xBarLeft*2,1001)*params.a;
+x_left = [params.a, sol.x(1:round(end/4))];
+% x_left = linspace(1,1-xBarLeft*2,1001)*params.a;
 [~,xi, Psi, X, Phi, Gamma] = calc_full_inlet_solution_asymptotics(...
     x_left, params, sol.sigma );
 [~,~, ~, X_sc, ~, ~] = calc_full_inlet_solution_asymptotics(...
