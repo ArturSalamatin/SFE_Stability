@@ -31,19 +31,21 @@ R = 0.0001;
 h = 5;
 sigma = -1.62442043;
 
-alpha = 0.2;
-a0 = 0.01;
-tau0 = 0.47;
-R = 0.0001;
-h = 5;
-sigma = -2.061672191741087;
+% alpha = 0.2;
+% a0 = 0.01;
+% tau0 = 0.47;
+% R = 0.000001;
+% h = 5;
+% sigma = -2;
 
 for Sigma = [sigma]
     sigma = Sigma;
+    
 
 params = poly_case(a0, alpha, tau0, R, h);
 mesh = set_left_mesh(700, params, xBarLeft);
 
+    (2+sigma)/params.C2
 % solver = @(problem, mesh) solver_KellerBox(problem, mesh);
 % solver = @(problem, mesh) solver_BVP(problem, mesh, params);
 
