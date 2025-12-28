@@ -1,12 +1,12 @@
 clc
-% close all
+close all
 clear all
 
 [params, sigma] = case_1();
 N = 3001;
 mesh = quasiuniform_mesh(N, params);
 
-sol = starter_Y(sigma, params, N);
+sol = starter_Y(sigma, params, mesh);
 
 pen.lc = 'black';
 pen.style = '-';
