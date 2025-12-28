@@ -31,6 +31,13 @@ R = 0.0001;
 h = 5;
 sigma = -1.62442043;
 
+alpha = 0.2;
+a0 = 0.01;
+tau0 = 0.47;
+R = 0.0001;
+h = 5;
+sigma = -2.061672191741087;
+
 for Sigma = [sigma]
     sigma = Sigma;
 
