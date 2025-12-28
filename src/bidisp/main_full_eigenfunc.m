@@ -24,7 +24,14 @@ R = 2;
 h = 0.001;
 sigma = -1.821098878268054;
 
-for Sigma = [-2]
+alpha = 0.5;
+a0 = 0.3;
+tau0 = 0.4;
+R = 0.0001;
+h = 5;
+sigma = -1.62442043;
+
+for Sigma = [sigma]
     sigma = Sigma;
 
 params = poly_case(a0, alpha, tau0, R, h);
