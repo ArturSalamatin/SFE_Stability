@@ -79,7 +79,7 @@ out(3,3) = (2+sigma +C2+B33)/y/C2;
 
 out(4,1) = h2;
 out(4,2) = h2*R;
-out(4,4) = -R*dcdz;
+out(4,4) = -R*dcdz*params.z2;
 end
 
 function out = Diag(i, eqN, base_state)
