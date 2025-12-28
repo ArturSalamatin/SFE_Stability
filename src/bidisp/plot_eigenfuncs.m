@@ -27,5 +27,5 @@ params.a = sqrt(2*params.t);
 params.z0 = z0(params);
 params.z2 = z2(params);
 
-sigma = -1.67;
+sigma = -1.62442043;
 end

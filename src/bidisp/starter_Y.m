@@ -71,11 +71,11 @@ out = zeros(4,4);
 
 out(1,4) = 1;
 
-out(2,1) = -B21;
+out(2,1) = -g_of_x*B21;
 out(2,3) = (1+sigma+C2)*g_of_x/y;
 
 out(3,2) = 1/xBar/C2;
-out(3,3) = (3+sigma+B33)/y/C2;
+out(3,3) = (2+sigma +C2+B33)/y/C2;
 
 out(4,1) = h2;
 out(4,2) = h2*R;
