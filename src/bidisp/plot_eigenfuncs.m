@@ -4,12 +4,12 @@ clear all
 
 [params, sigma] = case_1();
 N = 7001;
-% mesh = quasiuniform_mesh(N, params);
-mesh = log_mesh(1.0005, N, params);
+mesh = quasiuniform_mesh(N, params);
+% mesh = log_mesh(1.0005, N, params);
 
 sol = starter_Y(sigma, params, mesh);
 
-pen.lc = 'blue';
+pen.lc = 'r';
 pen.style = '-';
 plot_solution(sol.t,sol.y,pen);
 
@@ -27,5 +27,5 @@ params.a = sqrt(2*params.t);
 params.z0 = z0(params);
 params.z2 = z2(params);
 
-sigma = -2.22;
+sigma = -1.67;
 end
