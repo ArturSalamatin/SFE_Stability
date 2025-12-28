@@ -3,7 +3,7 @@ function mesh = log_mesh(q, N, params)
 
 xL = 1.0;
 xR = 0.0;
-xMid = params.a0;
+xMid = params.a0/params.a;
 
 if(xMid > xL || xMid < xR)
     error('Wrong mesh stencils!');

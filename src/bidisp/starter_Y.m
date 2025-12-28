@@ -108,7 +108,7 @@ end
 function out = JC(params, base_state, eqN)
 %% JC at the left end
 left = eye(eqN,eqN);
-left(2, 3) = base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
+left(2, 3) = -base_state.dz0dt*(params.g0-params.g1); % [Psi] + dz0dt*g0*X = 0
 %% rhs for BC eqns
 % assign JC at the left end
 out.left = left;
