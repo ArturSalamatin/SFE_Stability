@@ -17,14 +17,14 @@ xBarRight = 1e-3;
 % params = poly_case(a0, 0.3, (a0*a0/2)*1.1005);
 % params.marker = marker(2);
 
-alpha = 0.4;
+alpha = 0.0;
 a0 = 0.1;
 tau0 = 0.4;
 R = 2;
-h = 1;
+h = 0.001;
 sigma = -1.821098878268054;
 
-for Sigma = [-1.821098878268054]
+for Sigma = [-2]
     sigma = Sigma;
 
 params = poly_case(a0, alpha, tau0, R, h);
