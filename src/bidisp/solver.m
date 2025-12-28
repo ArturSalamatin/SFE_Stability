@@ -35,5 +35,6 @@ A(block_pos+ids, block_pos+eqN+ids) = jc.right;
 %% solution
 sol.y = reshape(A\b, problem.eqN, mesh.N)';
 sol.t = mesh.t;
+sol.jump_id = mesh.left.N-1;
 % A = full(A);
 end

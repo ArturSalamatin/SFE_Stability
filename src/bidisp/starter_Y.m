@@ -43,7 +43,7 @@ out.B33 = (a^3)./out.x.*out.dxBardt;
 end
 
 function out = block(xiL, xiR, i, sigma, params, base_state)
-%[Phi, Psi, Y, Gamma]
+%[R*Phi, Psi, Y, R*Gamma]
 % if(nargin == 3)
 %     sigma = params.sigma;
 % end
@@ -71,14 +71,14 @@ out = zeros(4,4);
 
 out(1,4) = 1;
 
-out(2,1) = -g_of_x*B21;
+out(2,1) = -R*g_of_x*B21;
 out(2,3) = (1+sigma+C2)*g_of_x/y;
 
 out(3,2) = 1/xBar/C2;
 out(3,3) = (2+sigma +C2+B33)/y/C2;
 
 out(4,1) = h2;
-out(4,2) = h2*R;
+out(4,2) = h2;
 out(4,4) = -R*dcdz*params.z2;
 end
 
@@ -120,7 +120,10 @@ end
 
 function sol = transform(sol, params, base_state)
 t = sol.t';
+xi0 = params.z0/params.z2;
 %% in
+factor = sol.y(sol.jump_id+1,3)/xi0;
+sol.y = sol.y/factor;
 %[Phi, Psi, Y, Gamma]
 Phi = sol.y(:,1);
 Psi = sol.y(:,2);

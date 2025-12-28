@@ -1,8 +1,8 @@
 clc
-% close all
+close all
 clear all
 
-[params, sigma] = case_2();
+[params, sigma] = case_1();
 N = 7001;
 mesh = quasiuniform_mesh(N, params);
 % mesh = log_mesh(1.0005, N, params);
