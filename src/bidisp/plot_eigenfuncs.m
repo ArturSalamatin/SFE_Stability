@@ -94,3 +94,35 @@ params.z2 = z2(params);
 
 sigma = -1.0;
 end
+
+function [params, sigma] = case_6
+params.a0 = 0.1;
+params.a1 = 1.0;
+params.r = 0.1; % dust volume fraction
+params.g1 = (1-params.r)/params.a1;
+params.g0 = params.g1 + params.r/params.a0;
+params.R = 0.1;
+params.h = 50;
+params.t = 0.4;
+params.a = sqrt(2*params.t);
+params.z0 = z0(params);
+params.z2 = z2(params);
+
+sigma = -1.8715;
+end
+
+function [params, sigma] = case_7
+params.a0 = 0.1;
+params.a1 = 1.0;
+params.r = 0.1; % dust volume fraction
+params.g1 = (1-params.r)/params.a1;
+params.g0 = params.g1 + params.r/params.a0;
+params.R = 0*0.00000001;
+params.h = 11115;
+params.t = 0.4;
+params.a = sqrt(2*params.t);
+params.z0 = z0(params);
+params.z2 = z2(params);
+
+sigma = -2.061672191741087;
+end
