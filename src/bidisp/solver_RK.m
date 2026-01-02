@@ -40,7 +40,7 @@ end
 [t2,y2] = ode45(@(x,y) problem.RK(x,y), ...
     [mesh.right.x(1), params.a0/520], y0, options);
 
-sol.x = [sol.x, t'];
+sol.x = [sol.x, t2'];
 sol.t = [sol.t, z_of_x(t2', params)/params.z2];
 sol.y = [sol.y;y2];
 end
