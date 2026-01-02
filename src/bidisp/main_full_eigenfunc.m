@@ -1,6 +1,6 @@
 clc
 clear all
-close all
+% close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -27,7 +27,7 @@ sigma = -1.821098878268054;
 alpha = 0.5;
 a0 = 0.3;
 tau0 = 0.4;
-R = 0.0001;
+R = 0.0000000001;
 h = 5;
 sigma = -1.62442043;
 
@@ -39,29 +39,33 @@ sigma = -1.62442043;
 % sigma = -2;
 
 for Sigma = [sigma]
+    %% set parameters
     sigma = Sigma;
     
-
-params = poly_case(a0, alpha, tau0, R, h);
-mesh = set_left_mesh(700, params, xBarLeft);
-
+    params = poly_case(a0, alpha, tau0, R, h);
+%       mesh = set_left_mesh(700, params, xBarLeft);
+    mesh = set_full_mesh(400, params, 0);
+    
+    xBarC = params.a0/params.a
     (2+sigma)/params.C2
-% solver = @(problem, mesh) solver_KellerBox(problem, mesh);
-% solver = @(problem, mesh) solver_BVP(problem, mesh, params);
-
-solver = @(problem, mesh) solver_RK(problem, mesh, params);
-starter = @(sigma, params) starter_full(...
-    solver, sigma, params, mesh);
-sol = starter(sigma, params);
-% sol.y(end,2)
-pen = set_pen('r', '--');
-plot_solution(pen, params, sol)
-accuracy = (sol.condition/sol.y(sol.id,1)-1)
-
-h_phi_div_gamma = sol.y(end, 3)*h/sol.y(end,4)
-
-xi0 = params.z0/params.z2;
-v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
-figure(701)
-plot(xi0, v, 'd')
+    %% choose a solver
+    solver = @(problem, mesh) solver_KellerBox(problem, mesh, params);
+    % solver = @(problem, mesh) solver_BVP(problem, mesh, params);
+%     solver = @(problem, mesh) solver_RK(problem, mesh, params);
+    %% solve the problem
+    starter = @(sigma, params) starter_full(...
+        solver, sigma, params, mesh);
+    sol = starter(sigma, params);
+    % sol.y(end,2)
+    %% plot the problem solution
+    pen = set_pen('k', '--');
+    plot_solution(pen, params, sol)
+    accuracy = (sol.condition/sol.y(sol.id,1)-1)
+    
+    h_phi_div_gamma = sol.y(end, 3)*h/sol.y(end,4)
+    
+    xi0 = params.z0/params.z2;
+    v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
+    figure(701)
+    plot(xi0, v, 'd')
 end
