@@ -12,13 +12,13 @@ function problem = set_problem(mesh, sigma, params)
 problem.eqN = 4; % number of equations
 problem.ids = 1:problem.eqN; % iterator for rows/cols within a block
 
-% problem.base_state = set_base_state(mesh, params);
+problem.base_state = set_base_state(mesh, params);
 
 problem.M = problem.eqN * mesh.N; % nmbr of discrete unknows
-% problem.block_matrix = @(xL, xR, segm_i)block(...
-%     xL, xR, segm_i, sigma, problem);
-% problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
-% problem.BC = @()BC_Psi_LR(params, problem.base_state, sigma, problem.eqN, mesh);
+problem.block_matrix = @(segm_i)block_matrix(...
+    segm_i, sigma, problem.base_state, problem.eqN);
+problem.diag = @(i)Diag(i, problem.eqN, problem.base_state);
+problem.BC_Keller = @()BC_Keller(params, problem.eqN);
 problem.BC_L = @()BC_L(params, [] ...problem.base_state
     , sigma, problem.eqN, mesh);
 % problem.BC_R = @()BC_R(params, [] ...problem.base_state
@@ -32,6 +32,91 @@ problem.RK = @(x,y)my_ode(x,y, sigma, params);
 % problem.BVP_bc = @(ya,yb) bvp_bc_fcn(ya,yb, mesh, sigma, params);
 
 problem.sigma = sigma;
+end
+
+function base_state = set_base_state(mesh, params)
+a = params.a;
+
+I = 1:(mesh.N-1);
+nodes_xBar = mesh.xBar; % mesh nodes
+nodes_xi = mesh.xi; % mesh nodes
+mid_nodes_xBar = (nodes_xBar(I)+nodes_xBar(I+1))/2; % centers of mesh segments
+mid_nodes_xi = (nodes_xi(I)+nodes_xi(I+1))/2; % centers of mesh segments
+
+base_state.params = params;
+
+base_state.mid_xBar = mid_nodes_xBar;
+base_state.mid_x = mid_nodes_xBar*a;
+base_state.mid_xi = mid_nodes_xi;
+base_state.mid_c = c_of_x(base_state.mid_x, params);
+base_state.mid_g = g(base_state.mid_x, params);
+base_state.mid_dcdz = dcdz(base_state.mid_x, params);
+end
+
+function out = block_matrix(segm_i, sigma, base_state, eqN)
+% [Psi, X, Phi, Gamma]
+%% set params
+% def: C1(t) == sqrt(2t)/zeta2
+C1 = base_state.params.C1;
+
+R = base_state.params.R;
+h = base_state.params.h;
+h2 = h*h;
+
+c = base_state.mid_c(segm_i);
+g = base_state.mid_g(segm_i);
+xBar = base_state.mid_xBar(segm_i);
+
+%% set out
+out = zeros(eqN,eqN);
+out(1,1) = -g;
+out(1,2) = -g*(1-c)./xBar;
+out(1,3) = -R*g*(1-c);
+
+out(2,1) = 1;
+out(2,2) = (1-c)./xBar+xBar*(1+sigma);
+
+out(3,4) = 1;
+
+out(4,1) = h2;
+out(4,3) = h2;
+out(4,4) = -R*g/C1*(1-c)./xBar;
+end
+
+function out = Diag(segm_i, eqN, base_state)
+% def: C1(t) == sqrt(2t)/zeta2
+C1 = base_state.params.C1;
+% def: C2(t) == 2t*dzeta2dt/zeta2
+C2 = base_state.params.C2;
+
+xBar = base_state.mid_xBar(segm_i);
+xiMid = base_state.mid_xi(segm_i);
+
+out = sparse(1:eqN, 1:eqN, ...
+    [xBar*C1, xBar*C2*xiMid, 1, 1], eqN, eqN, eqN);
+end
+
+function out = BC_Keller(params, eqN)
+% [Psi, X, Phi, Gamma]
+% d_zeta -- small value close to zeta = 0,
+% it is used to cut the singular point zeta = 0
+h = params.h;
+
+left = zeros(eqN,eqN);
+right = zeros(eqN,eqN);
+out.rhs = [0; 0; 0; -1];
+%% Psi(0) = 0;
+left(1,1) = 1;
+%% Phi(0) = 0;
+left(2,3) = 1;
+%% Gamma(1)+h*Phi(1) = 0
+right(3,3) = h;
+right(3,4) = 1;
+%% Gamma(1) = -1 --- set the scale
+right(4,4) = 1;
+%% set data
+out.left = left;
+out.right = right;
 end
 
 function out = BC_L(params, base_state, sigma, eqN, mesh)
@@ -101,8 +186,10 @@ function out = JC(params, base_state, eqN)
 
 % left*y(left) + right*y(right) = rhs
 % [Psi] + a*dz0dt*g0*X = 0, Y = xi0*X
-% - 1*Psi(left) + 1*Psi(right) + a*dz0dt*g0*X(right) = 0
-% - 1*X(left)   + 1*X(right) = 0
+% - 1*Psi(left)   + 1*Psi(right) + a*dz0dt*g0*X(right) = 0
+% - 1*X(left)     + 1*X(right) = 0
+% - 1*Phi(left)   + 1*Phi(right) = 0
+% - 1*Gamma(left) + 1*Gamma(right) = 0
 a = params.a; % a == sqrt(2*t)
 g0 = params.g0-params.g1;
 dz2dt = params.dz2dt;
