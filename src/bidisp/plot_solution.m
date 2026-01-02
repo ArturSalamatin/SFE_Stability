@@ -3,7 +3,7 @@ function plot_solution(...
 global xBarLeft
 fig_id = 700;
 
-x_L = (1-xBarLeft)*params.a;
+x_L = sol.x(2);
 
 t = sol.t;
 y = sol.y;
@@ -17,7 +17,7 @@ x_left = [params.a, sol.x(1:round(end/4))];
 [~,~, ~, X_sc, ~, ~] = calc_full_inlet_solution_asymptotics(...
     x_L, params, sol.sigma );
 
-factor = X_sc/sol.y(1,2);
+factor = X_sc/sol.y(2,2);
 Psi = Psi/factor;
 X = X/factor;
 Phi = Phi/factor;
