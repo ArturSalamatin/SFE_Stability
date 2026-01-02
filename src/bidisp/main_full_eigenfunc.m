@@ -7,7 +7,7 @@ sigma_fig = 9;
 sigma_max_limit = -1;
 sigma_min_limit = -3;
 q = 1.005;
-xBarLeft = 1e-4;
+xBarLeft = 1e-5;
 xBarRight = 1e-4;
 %% packed bed params
 % a0 = 0.2;
@@ -43,13 +43,14 @@ sigma = -2.055860009887601;
 % R = 0.000001;
 % h = 5;
 % sigma = -2;
-
+N = 1000;
 for Sigma = [sigma]
     %% set parameters
     sigma = Sigma;
     params = poly_case(a0, alpha, tau0, R, h);
     %% choose RK method
-    mesh = set_full_mesh(1500, params, xBarLeft);
+    disp('RK solver:');
+    mesh = set_full_mesh(N, params, xBarLeft);
 %     solver = @(problem, mesh) solver_KellerBox(problem, mesh, params);
     % solver = @(problem, mesh) solver_BVP(problem, mesh, params);
     solver = @(problem, mesh) solver_RK(problem, mesh, params);
@@ -58,12 +59,15 @@ for Sigma = [sigma]
         solver, sigma, params, mesh);
     sol = starter(sigma, params);
     % plot the problem solution
-    pen = set_pen('b', '--');
+    pen = set_pen('k', '--');
     plot_solution(pen, params, sol)
-    accuracy = (sol.condition/sol.y(sol.id,1)-1)
+    accuracy = (sol.condition/sol.y(sol.id,1)-1);
+    disp(['accuracy = ', num2str(accuracy)]);
     
     %% solve by KellerBox method
-    mesh = set_full_mesh(700, params, 0);
+    disp(' ');
+    disp('Keller Box solver:');
+    mesh = set_full_mesh(N, params, 0);
     solver = @(problem, mesh) solver_KellerBox(problem, mesh, params);
     % solver = @(problem, mesh) solver_BVP(problem, mesh, params);
 %     solver = @(problem, mesh) solver_RK(problem, mesh, params);
@@ -72,13 +76,11 @@ for Sigma = [sigma]
         solver, sigma, params, mesh);
     sol = starter(sigma, params);
     % plot the problem solution
-    pen = set_pen('r', '--');
+    pen = set_pen('m', '--');
     plot_solution(pen, params, sol)
+    accuracy = (sol.condition/sol.y(sol.id,1)-1);
+    disp(['accuracy = ', num2str(accuracy)]);
     
-    
-    
-    
-    h_phi_div_gamma = sol.y(end, 3)*h/sol.y(end,4)
     
     xi0 = params.z0/params.z2;
     v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
