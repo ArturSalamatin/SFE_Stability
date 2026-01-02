@@ -246,14 +246,18 @@ g1 = params.g1;
 g0 = params.g0 - g1;
 dz0dt = params.dz0dt;
 xi0 = params.xi0;
-% sol.condition = Psi(1); % Psi(xi=0) == 0
-sol.condition = ...
-    -(g1*a*dz0dt + (1+sigma)*a0/a)*X(sol.id);
+sol.jump_condition = ...
+    (-(g1*a*dz0dt + (1+sigma)*a0/a)*X(sol.id))/Psi(sol.id)-1;
 sol.sigma = sigma;
 
-sol.rhs = Psi(end) + X(end)*a*(g0+g1)*dz0dt;
-disp(['rhs_diff = ', num2str(sol.rhs)]);
+sol.rhs_condition = (Psi(end) + X(end)*a*(g0+g1)*dz0dt)/X(end);
+disp(['rhs_diff  = ', num2str(sol.rhs_condition)]);
+disp(['jump_diff = ', num2str(sol.jump_condition)]);
+disp(['sigma     = ', num2str(sigma)]);
 
+
+sol.condition = ...
+    sol.rhs_condition;
 end
 
 function dy = my_ode(x,y, sigma, params)
