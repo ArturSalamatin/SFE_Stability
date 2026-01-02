@@ -40,7 +40,7 @@ A(block_pos+ids, ids) = bc.left;
 A(block_pos+ids, block_pos+ids) = bc.right;
 b(block_pos+ids) = bc.rhs;
 %% solution
-sol.id = mesh.left.N-1;
+sol.id = mesh.left.N;
 sol.y = reshape(A\b, problem.eqN, mesh.N)';
 sol.t = mesh.xi;
 sol.x = mesh.x;
