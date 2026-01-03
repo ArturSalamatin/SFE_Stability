@@ -14,10 +14,15 @@ for i = 1:numel(h_vals)
         params.pen = set_pen(...
             pens.lc{min(1, numel(pens.lc))}, ...
             pens.style{min(j, numel(pens.style))});
+        %% guess
+%         mesh = set_full_mesh(300, params, 0);
+%         starter = @(sigma, params) starter_full(...
+%             @(problem, mesh)solver(problem, mesh, params), sigma, params, mesh);
+%         guess = fit_sigma(starter, params, guess);
+        %% exact
         mesh = set_full_mesh(N, params, 0);
         starter = @(sigma, params) starter_full(...
             @(problem, mesh)solver(problem, mesh, params), sigma, params, mesh);
-        % dust fraction has been extracted at the inlet
         sigma = fit_sigma(starter, params, guess);
         %% save sigma to the output matrix
         out(j,i) = sigma;
