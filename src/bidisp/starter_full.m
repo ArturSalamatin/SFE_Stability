@@ -4,8 +4,7 @@ problem = set_problem(mesh, sigma, params);
 %% solve problem
 % sol = transform(solver(problem, mesh), params, problem.base_state, sigma);
 sol = transform(...
-    solver(problem, mesh), params, sigma, [] ...problem.base_state
-    );
+    solver(problem, mesh), params, sigma);
 end
 
 function problem = set_problem(mesh, sigma, params)
@@ -23,7 +22,7 @@ problem.BC_L = @()BC_L(params, [] ...problem.base_state
     , sigma, problem.eqN, mesh);
 % problem.BC_R = @()BC_R(params, [] ...problem.base_state
 %     , sigma, problem.eqN, mesh);
-problem.JC = @()JC(params, [] ...problem.base_state
+problem.JC = @()JC(params ...
     , problem.eqN);
 problem.RK = @(x,y)my_ode(x,y, sigma, params);
 
@@ -181,7 +180,7 @@ out.right = right;
 out.rhs = [-g1*a*dz0dt - (1+sigma)*a0/a, 1];
 end
 
-function out = JC(params, base_state, eqN)
+function out = JC(params, eqN)
 % [Psi, X, Phi, Gamma]
 
 % left*y(left) + right*y(right) = rhs
@@ -199,14 +198,15 @@ out.right(1,2) = a*dz2dt*g0;
 out.rhs = [0;0;0;0];
 end
 
-function sol = transform(sol, params, sigma, base_state)
+function sol = transform(sol, params, sigma)
 % global xBarRight
 t = reshape(sol.t, numel(sol.t), 1);% sol.t';
 a0 = params.a0;
+g1 = params.g1;
+g0 = params.g0-g1;
+dz2dt = params.dz2dt;
 a = params.a;
 dz0dt = params.dz0dt;
-g1 = params.g1;
-x_right = a0;
 
 %% normalize
 sol.factor = 1;
@@ -221,9 +221,7 @@ Gamma = sol.y(:,4);
 %[Psi, X, Phi, Gamma, Omega, Y, Psi+X]
 Y = X.*t;
 % Omega
-g0 = params.g0;
-dz2dt = params.dz2dt;
-Omega = Psi + Y*a*g0*dz2dt;
+Omega = Psi + Y*a*(g0+g1)*dz2dt;
 %% flux Q, pressure P
 Q = (Phi+Psi)./(1-t);
 % calc P
@@ -237,27 +235,15 @@ P = [0; cumsum(P)];
 dP = grad_p;
 %% form return variable
 sol.y = [Psi, X, Phi, Gamma, Omega, Y, (Psi+X), Q, P, dP];
-%% Keller-box scheme behind the jump point
-C2 = params.C2;
-C1 = params.C1;
-% r = 1+(2+sigma)/C2;
-a = params.a;
-g1 = params.g1;
-g0 = params.g0 - g1;
-dz0dt = params.dz0dt;
-xi0 = params.xi0;
+%% condition that constrains sigma
 sol.jump_condition = ...
     (-(g1*a*dz0dt + (1+sigma)*a0/a)*X(sol.id))/Psi(sol.id)-1;
-sol.sigma = sigma;
-
 sol.rhs_condition = (Psi(end) + X(end)*a*(g0+g1)*dz0dt)/X(end);
 disp(['rhs_diff  = ', num2str(sol.rhs_condition)]);
 disp(['jump_diff = ', num2str(sol.jump_condition)]);
 disp(['sigma     = ', num2str(sigma)]);
-
-
-sol.condition = ...
-    sol.rhs_condition;
+sol.condition = sol.rhs_condition;
+sol.sigma = sigma;
 end
 
 function dy = my_ode(x,y, sigma, params)
