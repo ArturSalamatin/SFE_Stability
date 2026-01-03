@@ -12,13 +12,13 @@ xBarRight = 0*4e-2;
 
 solver = @(problem, mesh, params) solver_KellerBox(problem, mesh, params);
 label = '';
-N = 200;
+N = 1000;
 
-R_vals = linspace(0,3,31);
+R_vals = linspace(0,3,101);
 h_vals = [0.1, 0.5, 1, 2, 3, 5, 10];
 
 A0_vals = 0.2;
-Alpha_vals = [0.1, 0.3, 0.5, 0.7];
+Alpha_vals = 0.1; % [0.1, 0.3, 0.5, 0.7];
 Tau0_vals = 0.2;
 
 for i = 1:numel(Tau0_vals)
@@ -26,6 +26,10 @@ for i = 1:numel(Tau0_vals)
     tau0 = Tau0_vals(i);
     num = 5200+tau0*100;
     my_figure(num)
+    set(gcf, 'units', 'centimeters', 'OuterPosition', [10.42 6.27 8.5 9])
+    set(gca, 'FontSize', 10, 'Position', [0.16, 0.2, 0.78, 0.74])
+    ylabel(['{\it\sigma}_0, ' char(8211)])
+    xlabel(['{\itR}_0, ' char(8211)])
     
     for j = 1:numel(Alpha_vals)
         alpha = Alpha_vals(j);
@@ -34,8 +38,11 @@ for i = 1:numel(Tau0_vals)
         style = {'-'};
         pen = set_pen(col, style);
         %% run calculations
-        %     [tau0, a0, sigma] = ...
-        %         calc_sigma_R_zero(solver, N, alpha, tau0, a0, pen);
+        [tau0, a0, sigma] = ...
+            calc_sigma_full(solver, N, alpha, tau0, a0, R_vals, h_vals, pen);
+        
+        plot(R_vals, sigma, 'r')
+        
         %     save(['full_data/alpha_', num2str(alpha*100), '.mat'], ...
         %         'tau0', 'a0', 'sigma', 'alpha')
     end
