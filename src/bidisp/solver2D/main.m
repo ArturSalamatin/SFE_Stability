@@ -18,3 +18,6 @@ mesh = set_mesh(Nr, Nz, params);
 L = linear_index(mesh.J, mesh.I, mesh);
 %% set initial conditions
 IC = initial_conditions(mesh, params);
+state = make_state(IC);
+
+

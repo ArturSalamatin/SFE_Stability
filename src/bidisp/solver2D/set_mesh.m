@@ -26,5 +26,6 @@ z_mid = [mesh.z(1); (mesh.z(mesh.J_l)+mesh.z(mesh.J_r))/2; mesh.z(end)];
 mesh.z_area = z_mid(2:end) - z_mid(1:end-1);
 mesh.V = mesh.r_area.*mesh.z_area;
 
+mesh.size = Nr*Nz;
 end
 
