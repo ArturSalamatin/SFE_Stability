@@ -16,3 +16,5 @@ Nz = 50;
 params = set_params(a0, alpha, B, H);
 %% set mesh
 mesh = set_mesh(Nr, Nz, params);
+%% set initial conditions
+IC = initial_conditions(mesh, params);

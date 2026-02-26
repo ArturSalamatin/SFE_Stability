@@ -4,6 +4,9 @@ function mesh = set_mesh(Nr, Nz, params)
 
 H = params.H;
 
+mesh.Nr = Nr;
+mesh.Nz = Nz;
+
 mesh.I = 1:Nr;
 mesh.I_l = 1:(Nr-1);
 mesh.I_r = 2:Nr;
