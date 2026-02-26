@@ -1,0 +1,118 @@
+clc
+clear all
+close all
+
+global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
+sigma_fig = 9;
+sigma_max_limit = 0;
+sigma_min_limit = -2.2;
+q = 1.008;
+xBarLeft = 1e-3;
+xBarRight = 0;
+
+solver = @(problem, mesh, params) solver_RK(problem, mesh, params);        
+label = '';
+N = 100;
+for A0 = [100, 200, 300, 400, 15]
+    a0 = A0/1000;
+    num = 2200+A0;
+    clc
+    col = {'k'};
+    style = {'-'};
+    pen = set_pen(col, style);
+    %% make calculation grid
+    eps = 1e-2;
+    tau0 = [linspace(a0*a0/2, 0.026, 300), ...
+        linspace(0.026001, 0.5 - eps, 100)];
+    alpha = linspace(eps,1-eps, 300);
+    [tau0, alpha] = meshgrid(tau0, alpha);
+    sigma = 0*tau0 -2;
+    %% run calculations
+%     [tau0, a0, sigma] = ...
+%         calc_sigma_R_zero_contour_alpha_tau(solver, N, alpha, tau0, a0, pen);
+%     save(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
+%         'tau0', 'a0', 'sigma', 'alpha')
+load(['R_zero_data/a0_', num2str(a0*100), '.mat'], ...
+        'tau0', 'a0', 'sigma', 'alpha')
+
+%     levels = linspace(-2,-1,21);
+%     switch Alpha
+%             case 2
+%             levels = linspace(-2,-1,11);
+%     end
+        figure(num)
+        hold on
+        axis([floor((a0*a0/2)*10)/10 0.5 0 1])
+        contour(tau0, alpha, sigma, ...
+            ...levels,...
+            'ShowText','on',...
+            'linecolor', 'black')
+    
+        x = [1,1]*a0*a0/2;
+        y = [0,1];
+        plot(x,y, 'k-', 'linewidth', 1)
+    
+        x = -2:0.1:-1;
+        y = a0*(x+2)./(a0*(x+2)-1-x);
+        z = a0*a0/2 + 0*y;
+        plot(z,y,'ks', 'MarkerFaceColor', 'black')
+    
+        label = '';
+        switch A0
+            case 100
+                label = 'A';
+                annotation('textbox',...
+    [0.178795331790118 0.809174691245016 0.115740738211223 0.141129029253798],...
+    'String',{label},...
+    'LineStyle','none',...
+    'FontSize',16,...
+    'FontName','Times New Roman',...
+    'FitBoxToText','off');
+            case 200
+                label = 'B';
+                annotation('textbox',...
+    [0.207441165123452 0.805979803066102 0.115740738211223 0.141129029253798],...
+    'String',{label},...
+    'LineStyle','none',...
+    'FontSize',16,...
+    'FontName','Times New Roman',...
+    'FitBoxToText','off');
+            case 300
+                label = 'C';
+                annotation('textbox',...
+    [0.238691165123452 0.802784914887188 0.115740738211223 0.141129029253798],...
+    'String',{label},...
+    'LineStyle','none',...
+    'FontSize',16,...
+    'FontName','Times New Roman',...
+    'FitBoxToText','off');
+            case 400
+                label = 'D';
+                annotation('textbox',...
+    [0.170982831790118 0.802784914887189 0.115740738211223 0.141129029253798],...
+    'String',{label},...
+    'LineStyle','none',...
+    'FontSize',16,...
+    'FontName','Times New Roman',...
+    'FitBoxToText','off');
+        end
+    
+        box on
+%         set(gca, 'xTick', [0:0.1:0.5])
+        set(gca, 'yTick', [0:0.2:1.0])
+        set(gcf, 'units', 'centimeters', 'OuterPosition', [10.42 6.27 8.5 9])
+        set(gca, 'FontSize', 10, 'Position', [0.16, 0.2, 0.78, 0.74])
+        ylabel(['{\it\alpha}, ' char(8211)])
+        xlabel(['{\it\tau}_0, ' char(8211)])
+    
+        hFig = findobj('Type', 'figure', 'Number', num);
+        path = 'R_zero_data/Figs/';
+        if(~isempty(hFig))
+            saveas(num, [path, 'fig5', label], 'emf');
+            saveas(num, [path, 'fig5', label], 'eps');
+            saveas(num, [path, 'fig5', label], 'fig');
+            saveas(num, [path, 'fig5', label], 'png');
+        end
+end
+            
+            
