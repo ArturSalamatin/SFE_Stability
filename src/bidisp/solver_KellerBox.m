@@ -12,7 +12,7 @@ b = zeros(M, 1); % rhs
 segmIds = mesh.segmIds; % jump node is skipped
 for i = segmIds
     block_pos = (i-1)*eqN;
-    step = (xi(i+1) - xi(i))/2.0; % (!)trapezoidal rule
+    step = (xi(i+1) - xi(i))/2.0; % (!)centered Euler scheme, deHoog1976
     block = problem.block_matrix(i);
     Diag = problem.diag(i);
     % coef at y_i
