@@ -1,4 +1,4 @@
-function params = set_params(a0, alpha, B, H)
+function params = set_params(a0, alpha, R, B, H)
 % size of dust particles
 params.a0 = a0;
 % volume fraction of dust particles
@@ -13,5 +13,7 @@ params.g0 = params.g1 + params.r/params.a0;
 params.B = B;
 % dimensionless vessel height
 params.H = H;
+% exponent for viscosity
+params.R = R;
 end
 
