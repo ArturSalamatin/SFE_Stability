@@ -2,7 +2,6 @@ clc
 close all
 clear all
 
-
 % scripts and functions from other folder can be run
 % addpath('../')
 
@@ -16,5 +15,6 @@ Nz = 50;
 params = set_params(a0, alpha, B, H);
 %% set mesh
 mesh = set_mesh(Nr, Nz, params);
+L = linear_index(mesh.J, mesh.I, mesh);
 %% set initial conditions
 IC = initial_conditions(mesh, params);
