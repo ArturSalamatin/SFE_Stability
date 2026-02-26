@@ -4,9 +4,15 @@ clear all
 
 
 % scripts and functions from other folder can be run
-addpath('../')
+% addpath('../')
 
+H = 10;
+B = 50;
 a0 = 0.1;
 alpha = 0.5;
-t = 0.25;
-params = poly_case(a0, alpha, t);
+Nr = 20;
+Nz = 50;
+params = set_params(a0, alpha, B, H);
+
+
+mesh = set_mesh(Nr, Nz, params);
