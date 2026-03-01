@@ -24,9 +24,15 @@ r_mid = [mesh.r(1), (mesh.r(mesh.I_l)+mesh.r(mesh.I_r))/2, mesh.r(end)];
 mesh.r_area = pi*(r_mid(2:end).^2 - r_mid(1:end-1).^2);
 z_mid = [mesh.z(1); (mesh.z(mesh.J_l)+mesh.z(mesh.J_r))/2; mesh.z(end)];
 dz = (z_mid(2:end) - z_mid(1:end-1));
-mesh.V = mesh.r_area.*mesh.z_area;
+mesh.V = mesh.r_area.*dz;
+% mesh.V([1,end],:) = mesh.V([1,end],:)/2;
+% mesh.V(:,[1,end]) = mesh.V(:,[1,end])/2;
 mesh.z_area = 2*pi*dz.*r_mid(2:end-1);
 
 mesh.size = Nr*Nz;
+
+mesh.D_z = mesh.z_area/mesh.dr;
+mesh.D_r = mesh.r_area/mesh.dz;
+mesh.DBB_z = (params.B*params.B)*mesh.D_z;
 end
 
