@@ -22,6 +22,6 @@ L = linear_index(mesh.J, mesh.I, mesh);
 IC = initial_conditions(mesh, params);
 state = make_state(IC);
 
-single_iteration(state, state, mesh, params, tau);
+state_s = single_iteration(state, state, mesh, params, tau);
 
 
