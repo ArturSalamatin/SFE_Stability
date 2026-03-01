@@ -25,7 +25,7 @@ mesh.r_area = pi*(r_mid(2:end).^2 - r_mid(1:end-1).^2);
 z_mid = [mesh.z(1); (mesh.z(mesh.J_l)+mesh.z(mesh.J_r))/2; mesh.z(end)];
 mesh.z_area = (z_mid(2:end) - z_mid(1:end-1));
 mesh.V = mesh.r_area.*mesh.z_area/(2*pi);
-mesh.z_area = mesh.z_area.*r_mid;
+mesh.z_area = mesh.z_area.*r_mid(2:end-1);
 
 mesh.size = Nr*Nz;
 end
