@@ -1,4 +1,4 @@
-function state_s = single_iteration(...
+function d_s = single_iteration(...
     state_s, state_prev, mesh, params, dt)
 %SINGLE_ITERATION Summary of this function goes here
 %   Detailed explanation goes here
@@ -147,6 +147,19 @@ rhs(L + shift) = -(G - G_of_x(x, params));
 shift = 4*mesh.size;
 L = linear_index(J, I, mesh);
 rhs(L + shift) = -(y(:) - x(:).*x(:)/2);
+%% BC in rhs
+% c_in = 0
+shift = mesh.size;
+L = linear_index(J(1), I, mesh);
+rhs(L + shift) = 0;
+% v_in = 1
+shift = 0;
+L = linear_index(J(1), I, mesh);
+rhs(L + shift) = rhs(L + shift) - mesh.D_r'*dz;
+% p_out = 0
+shift = 0;
+L = linear_index(J(end), I, mesh);
+rhs(L + shift) = 0;
 %% problem matrix
 m = eq_nmbr*mesh.size;
 nnz = 7*mesh.size + 3*5*mesh.size;
@@ -239,5 +252,66 @@ v = [... p-coefs in eq1
 b = [i',j',v'];
 
 A = sparse(i,j,v,m,m,numel(v));
+%% BC in matrix
+% c_in = 0
+L = linear_index(J(1), I, mesh);
+shift_c = mesh.size;
+for l = L(2:end-1)
+    A(l+shift_c, l+shift_c) = 1;
+    A(l+shift_c, l+3*shift_c) = 0;
+    A(l+shift_c, l+1+shift_c) = 0;
+    
+    A(l+shift_c, l-Nz+shift_c) = 0;
+    A(l+shift_c, l+Nz+shift_c) = 0;
+end
+l = L(1);
+    A(l+shift_c, l+shift_c) = 1;
+    A(l+shift_c, l+3*shift_c) = 0;
+    A(l+shift_c, l+1+shift_c) = 0;
+    
+    A(l+shift_c, l+Nz+shift_c) = 0;
+
+l = L(end);
+    A(l+shift_c, l+shift_c) = 1;
+    A(l+shift_c, l+3*shift_c) = 0;
+    A(l+shift_c, l+1+shift_c) = 0;
+    
+    A(l+shift_c, l-Nz+shift_c) = 0;
+% p_out = 0
+L = linear_index(J(end), I, mesh);
+shift_c = mesh.size;
+for l = L(2:end-1)
+    A(l, l) = 1;
+    A(l, l+shift_c) = 0;
+    A(l, l-1) = 0;
+    A(l, l-1+shift_c) = 0;
+    
+    A(l, l-Nz) = 0;
+    A(l, l-Nz+shift_c) = 0;
+    A(l, l+Nz) = 0;
+    A(l, l+Nz+shift_c) = 0;
+end
+l = L(1);
+    A(l, l) = 1;
+    A(l, l+shift_c) = 0;
+    A(l, l-1) = 0;
+    A(l, l-1+shift_c) = 0;
+    
+    A(l, l+Nz) = 0;
+    A(l, l+Nz+shift_c) = 0;
+
+l = L(end);
+    A(l, l) = 1;
+    A(l, l+shift_c) = 0;
+    A(l, l-1) = 0;
+    A(l, l-1+shift_c) = 0;
+    
+    A(l, l-Nz) = 0;
+    A(l, l-Nz+shift_c) = 0;
+
+  A_f = full(A);
+% spy(A)
+% axis([mesh.size+1 2*mesh.size 0 mesh.size])
+d_s = A\rhs;
 end
 
