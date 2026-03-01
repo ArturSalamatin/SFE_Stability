@@ -154,11 +154,40 @@ rhs(L + shift) = -(y(:) - x(:).*x(:)/2);
 %% problem matrix
 m = eq_nmbr*mesh.size;
 nnz = 7*mesh.size + 3*5*mesh.size;
-% 
-% l1 = 
-% 
-% i = []
 
-A = sparse([],[],[],m,m,nnz);
+L1 = linear_index(J_l, I, mesh)';
+L1_p = L1+1;
+L2 = linear_index(J_r, I, mesh)';
+L2_n = L2-1;
+L3 = linear_index(J, I_l, mesh)';
+L3_p = L3+Nz;
+L4 = linear_index(J, I_r, mesh)';
+L4_n = L4-Nz;
+
+%rows
+i = [... p-rows in eq1
+    L1,L2,L3,L4, ...
+    L1,L2,L3,L4, ...
+    ... c-rows in eq1
+    L1,L2,L3,L4, ...
+    L1,L2,L3,L4];
+%cols
+j = [... p-cols in eq1
+    L1,L2,L3,L4, ...
+    L1_p, L2_n, L3_p, L4_n, ...
+    ... c-cols in eq1
+    [L1,L2,L3,L4, ...
+    L1,L2,L3,L4] + mesh.size];
+%vals
+v = [... p-coefs in eq1
+    -S_r(:);-S_r(:);-SBB_z(:);-SBB_z(:); ...
+    S_r(:);S_r(:);SBB_z(:);SBB_z(:); ...
+    ... c-coefs in eq1
+    -P_r(:);-P_r(:);-PBB_z(:);-PBB_z(:); ...
+    P_r(:);P_r(:);PBB_z(:);PBB_z(:) ...
+    
+    ]';
+
+A = sparse(i,j,v,m,m,nnz);
 end
 
