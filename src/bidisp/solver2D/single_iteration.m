@@ -107,38 +107,34 @@ rhs(L + shift) = ...
 %% set rhs eqn: div(v) = 0
 shift = 0;
 % j-1, i
-L = linear_index(J_l, I, mesh);
-rhs(L + shift) = ...
-    rhs(L + shift) - p(L).*S_r(:);
-% j, i
-L = L+1;
-rhs(L + shift) = ...
-    rhs(L + shift) + p(L).*S_r(:);
-%j+1, i
 L = linear_index(J_r, I, mesh);
 rhs(L + shift) = ...
-    rhs(L + shift) - p(L).*S_r(:);
-%j,i
-L = L-1;
+    rhs(L + shift) - p(L-1).*S_r(:);
+% j, i
+rhs(L + shift) = ...
+    rhs(L + shift) + p(L).*S_r(:);
+%j, i
+L = linear_index(J_l, I, mesh);
+rhs(L + shift) = ...
+    rhs(L + shift) - p(L+1).*S_r(:);
+%j+1,i
 rhs(L + shift) = ...
     rhs(L + shift) + p(L).*S_r(:);
 
-%j, i-1
-L = linear_index(J, I_l, mesh);
-rhs(L + shift) = ...
-    rhs(L + shift) - p(L).*SBB_z(:);
 %j, i
-L = L+Nz;
-rhs(L + shift) = ...
-    rhs(L + shift) + p(L).*SBB_z(:);
-%j, i+1
 L = linear_index(J, I_r, mesh);
 rhs(L + shift) = ...
     rhs(L + shift) - p(L).*SBB_z(:);
-%j, i
-L = L-Nz;
+%j, i-1
 rhs(L + shift) = ...
-    rhs(L + shift) + p(L).*SBB_z(:);
+    rhs(L + shift) + p(L-Nz).*SBB_z(:);
+%j, i
+L = linear_index(J, I_l, mesh);
+rhs(L + shift) = ...
+    rhs(L + shift) - p(L).*SBB_z(:);
+%j, i+1
+rhs(L + shift) = ...
+    rhs(L + shift) + p(L+Nz).*SBB_z(:);
 %% set rhs eqn: dy/dt - (1-c) = 0
 shift = 2*mesh.size;
 L = linear_index(J, I, mesh);
