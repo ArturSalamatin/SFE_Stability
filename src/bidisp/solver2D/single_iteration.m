@@ -8,10 +8,6 @@ B = params.B;
 % nmbr of unknowns/equations
 eq_nmbr = 5;
 Nz = mesh.Nz;
-Nr = mesh.Nr;
-
-dr = mesh.dr;
-dz = mesh.dz;
 
 p_id = 0*mesh.size + (1:mesh.size)';
 c_id = 1*mesh.size + (1:mesh.size)';
@@ -155,7 +151,7 @@ rhs(L + shift) = 0;
 % v_in = 1
 shift = 0;
 L = linear_index(J(1), I, mesh);
-rhs(L + shift) = rhs(L + shift) - mesh.D_r'*dz;
+rhs(L + shift) = rhs(L + shift) - mesh.D_r'*mesh.dz;
 % p_out = 0
 shift = 0;
 L = linear_index(J(end), I, mesh);
@@ -249,8 +245,6 @@ v = [... p-coefs in eq1
     -x(:) ...
     ]';
 
-b = [i',j',v'];
-
 A = sparse(i,j,v,m,m,numel(v));
 %% BC in matrix
 % c_in = 0
@@ -309,9 +303,6 @@ l = L(end);
     A(l, l-Nz) = 0;
     A(l, l-Nz+shift_c) = 0;
 
-  A_f = full(A);
-% spy(A)
-% axis([mesh.size+1 2*mesh.size 0 mesh.size])
 d_s = A\rhs;
 end
 
