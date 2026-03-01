@@ -242,6 +242,6 @@ v = [... p-coefs in eq1
 
 b = [i',j',v'];
 
-A = sparse(i,j,v,m,m,nnz);
+A = sparse(i,j,v,m,m,numel(v));
 end
 

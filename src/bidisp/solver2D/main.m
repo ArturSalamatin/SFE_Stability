@@ -11,8 +11,8 @@ B = 50;
 R = 0.1;
 a0 = 0.1;
 alpha = 0.5;
-Nr = 2;
-Nz = 5;
+Nr = 20;
+Nz = 50;
 tau = 0.01;
 params = set_params(a0, alpha, R, B, H);
 %% set mesh
