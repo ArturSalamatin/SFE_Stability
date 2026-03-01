@@ -156,5 +156,9 @@ shift = 4*mesh.size;
 L = linear_index(J, I, mesh);
 L = L(:);
 rhs(L + shift) = -(y(:) - x(:).*x(:)/2);
+%% problem atrix
+m = eq_nmbr*mesh.size;
+nnz = 7*mesh.size + 3*5*mesh.size;
+A = sparse([],[],[],m,m,nnz);
 end
 
