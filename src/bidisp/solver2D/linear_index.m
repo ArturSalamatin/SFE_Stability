@@ -3,5 +3,6 @@ function L = linear_index(J, I, mesh)
 %   Detailed explanation goes here
 
 L = J + (I-1)*mesh.Nz;
+L = L(:);
 end
 

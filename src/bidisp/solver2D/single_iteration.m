@@ -13,11 +13,11 @@ Nr = mesh.Nr;
 dr = mesh.dr;
 dz = mesh.dz;
 
-p_id = 0*mesh.size + (1:mesh.size);
-c_id = 1*mesh.size + (1:mesh.size);
-y_id = 2*mesh.size + (1:mesh.size);
-G_id = 3*mesh.size + (1:mesh.size);
-x_id = 4*mesh.size + (1:mesh.size);
+p_id = 0*mesh.size + (1:mesh.size)';
+c_id = 1*mesh.size + (1:mesh.size)';
+y_id = 2*mesh.size + (1:mesh.size)';
+G_id = 3*mesh.size + (1:mesh.size)';
+x_id = 4*mesh.size + (1:mesh.size)';
 
 I = mesh.I;
 I_l = mesh.I_l;
@@ -35,6 +35,13 @@ y_prev = reshape(state_prev(y_id), rows, cols);
 G = reshape(state_s(G_id), rows, cols);
 G_prev = reshape(state_prev(G_id), rows, cols);
 x = reshape(state_s(x_id), rows, cols);
+% p = state_s(p_id);
+% c = state_s(c_id);
+% y = state_s(y_id);
+% y_prev = state_prev(y_id);
+% G = state_s(G_id);
+% G_prev = state_prev(G_id);
+% x = state_s(x_id);
 
 c_mid_z = (c(J_r,I)+c(J_l,I))/2;
 c_mid_r = (c(J,I_r)+c(J,I_l))/2;
@@ -62,12 +69,10 @@ rhs = zeros(eq_nmbr*mesh.size, 1);
 shift = mesh.size;
 
 L = linear_index(J, I, mesh);
-L = L(:);
 rhs(L + shift) = mesh.V(:).*(G(:) - G_prev(:))/dt;
 
 % j-1, i
 L = linear_index(J_l, I, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) - c(L).*q_z_pos(:);
 % j, i
@@ -76,7 +81,6 @@ rhs(L + shift) = ...
     rhs(L + shift) - c(L).*q_z_neg(:);
 %j+1, i
 L = linear_index(J_r, I, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) + c(L).*q_z_neg(:);
 %j,i
@@ -86,7 +90,6 @@ rhs(L + shift) = ...
 
 %j, i-1
 L = linear_index(J, I_l, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) - c(L).*qB_r_pos(:);
 %j, i
@@ -95,7 +98,6 @@ rhs(L + shift) = ...
     rhs(L + shift) - c(L).*qB_r_neg(:);
 %j, i+1
 L = linear_index(J, I_r, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) + c(L).*qB_r_neg(:);
 %j, i
@@ -106,7 +108,6 @@ rhs(L + shift) = ...
 shift = 0;
 % j-1, i
 L = linear_index(J_l, I, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) - p(L).*S_r(:);
 % j, i
@@ -115,7 +116,6 @@ rhs(L + shift) = ...
     rhs(L + shift) + p(L).*S_r(:);
 %j+1, i
 L = linear_index(J_r, I, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) - p(L).*S_r(:);
 %j,i
@@ -125,7 +125,6 @@ rhs(L + shift) = ...
 
 %j, i-1
 L = linear_index(J, I_l, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) - p(L).*SBB_z(:);
 %j, i
@@ -134,7 +133,6 @@ rhs(L + shift) = ...
     rhs(L + shift) + p(L).*SBB_z(:);
 %j, i+1
 L = linear_index(J, I_r, mesh);
-L = L(:);
 rhs(L + shift) = ...
     rhs(L + shift) - p(L).*SBB_z(:);
 %j, i
@@ -144,21 +142,23 @@ rhs(L + shift) = ...
 %% set rhs eqn: dy/dt - (1-c) = 0
 shift = 2*mesh.size;
 L = linear_index(J, I, mesh);
-L = L(:);
 rhs(L + shift) = -((y(:)-y_prev(:))/dt - (1-c(:)));
 %% set rhs eqn: G(x) - ... = 0
 shift = 3*mesh.size;
 L = linear_index(J, I, mesh);
-L = L(:);
 rhs(L + shift) = -(G - G_of_x(x, params));
 %% set rhs eqn: y - x*x/2 = 0
 shift = 4*mesh.size;
 L = linear_index(J, I, mesh);
-L = L(:);
 rhs(L + shift) = -(y(:) - x(:).*x(:)/2);
 %% problem matrix
 m = eq_nmbr*mesh.size;
 nnz = 7*mesh.size + 3*5*mesh.size;
+% 
+% l1 = 
+% 
+% i = []
+
 A = sparse([],[],[],m,m,nnz);
 end
 
