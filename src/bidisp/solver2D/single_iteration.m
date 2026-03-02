@@ -70,32 +70,32 @@ rhs(L + shift) = mesh.V(:).*(G(:) - G_prev(:))/dt;
 % j-1, i
 L = linear_index(J_r, I, mesh);
 rhs(L + shift) = ...
-    rhs(L + shift) - c(L-1).*q_z_pos(:);
+    rhs(L + shift) + c(L-1).*q_z_pos(:);
 % j, i
 rhs(L + shift) = ...
-    rhs(L + shift) - c(L).*q_z_neg(:);
+    rhs(L + shift) + c(L).*q_z_neg(:);
 %j+1, i
 L = linear_index(J_l, I, mesh);
 rhs(L + shift) = ...
-    rhs(L + shift) + c(L+1).*q_z_neg(:);
+    rhs(L + shift) - c(L+1).*q_z_neg(:);
 %j,i
 rhs(L + shift) = ...
-    rhs(L + shift) + c(L).*q_z_pos(:);
+    rhs(L + shift) - c(L).*q_z_pos(:);
 
 %j, i
 L = linear_index(J, I_r, mesh);
 rhs(L + shift) = ...
-    rhs(L + shift) - c(L).*qB_r_pos(:);
+    rhs(L + shift) + c(L).*qB_r_pos(:);
 %j, i-1
 rhs(L + shift) = ...
-    rhs(L + shift) - c(L-Nz).*qB_r_neg(:);
+    rhs(L + shift) + c(L-Nz).*qB_r_neg(:);
 %j, i
 L = linear_index(J, I_l, mesh);
 rhs(L + shift) = ...
-    rhs(L + shift) + c(L).*qB_r_neg(:);
+    rhs(L + shift) - c(L).*qB_r_neg(:);
 %j, i+1
 rhs(L + shift) = ...
-    rhs(L + shift) + c(L+Nz).*qB_r_pos(:);
+    rhs(L + shift) - c(L+Nz).*qB_r_pos(:);
 %% set rhs eqn: div(v) = 0
 shift = 0;
 % j-1, i
