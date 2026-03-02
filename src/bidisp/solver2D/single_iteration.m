@@ -140,7 +140,7 @@ shift = 4*mesh.size;
 L = linear_index(J, I, mesh);
 rhs(L + shift) = -(y(:) - x(:).*x(:)/2);
 %% BC in rhs
-% c_in = 0
+% c_in = 0 in eq2
 shift = mesh.size;
 L = linear_index(J(1), I, mesh);
 rhs(L + shift) = 0;
