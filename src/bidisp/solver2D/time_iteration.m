@@ -35,7 +35,10 @@ while true
     state_s(c_id) = min(1, state_s(c_id));
     
     s = s+1;
-    if(sum(abs(d_s)) < 1e-10)
+    if(sum(abs(d_s))/numel(d_s) < 1e-10)
+        break;
+    end
+    if(s>1000)
         break;
     end
 end
