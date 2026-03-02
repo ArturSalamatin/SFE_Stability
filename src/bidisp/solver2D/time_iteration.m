@@ -1,4 +1,4 @@
-function state_s = time_iteration(...
+function [state_s, s] = time_iteration(...
     state_prev, mesh, params, dt, t_prev)
 
 global x_tol
@@ -72,9 +72,9 @@ while true
     
     s = s+1;
     if(sum(abs(d_s)) < 1e-10)
-         s
+%         s
         break;
     end
 end
-
+    
 end

@@ -9,9 +9,10 @@ states(:,1) = state;
 
 for t_id = 2:numel(mesh.t)
     dt = mesh.dt;
-    t_id*dt
-    state = time_iteration(...
+    [state, s] = time_iteration(...
         state, mesh, params, dt, (t_id-1)*dt);
     
     states(:,t_id) = state;
+    disp(['Curr  t = ' , num2str((t_id-1)*dt)])
+    disp(['Iters s = ' , num2str(s)])
 end
