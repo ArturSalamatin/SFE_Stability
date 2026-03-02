@@ -9,13 +9,13 @@ global x_tol
 x_tol = 1e-10;
 %% set parameters
 H = 1;
-B = 0;
+B = 1;
 R = 0.0;
 a0 = 0.1;
 alpha = 0.5;
 Nr = 2;
-Nz = 365;
-dt = 0.01;
+Nz = 465;
+dt = 0.003;
 T = 0.5;
 params = set_params(a0, alpha, R, B, H);
 %% set mesh
