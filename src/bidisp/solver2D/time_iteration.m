@@ -13,7 +13,7 @@ y_id = 2*mesh.size + (1:mesh.size)';
 G_id = 3*mesh.size + (1:mesh.size)';
 x_id = 4*mesh.size + (1:mesh.size)';
 
-state_s(y_id) = state_s(y_id) + dt;
+state_s(y_id) = state_s(y_id) + dt*(1-state_s(c_id));
 state_s(x_id) = sqrt(2*state_s(y_id));
 ll = 3*mesh.size + (1:Nz:mesh.size)';
 state_s(G_id) = G_of_x(state_s(x_id), params);
