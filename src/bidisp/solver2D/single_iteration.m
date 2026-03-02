@@ -158,7 +158,7 @@ L = linear_index(J(end), I, mesh);
 rhs(L + shift) = 0;
 %% problem matrix
 m = eq_nmbr*mesh.size;
-nnz = 7*mesh.size + 3*5*mesh.size;
+% nnz = 7*mesh.size + 3*5*mesh.size;
 
 L = linear_index(J, I, mesh)';
 
@@ -171,6 +171,8 @@ L3_p = L3+Nz;
 L4 = linear_index(J, I_r, mesh)';
 L4_n = L4-Nz;
 
+L_out = linear_index(J(end), I, mesh)';
+
 %rows
 i = [... p-rows in eq1
     L1,L2,L3,L4, ...
@@ -181,6 +183,8 @@ i = [... p-rows in eq1
     ... c-rows in eq2
     [L1,L2,L3,L4, ...
     L1,L2,L3,L4] + mesh.size, ...
+    ... c-rows in eq2 for outlet z-flux
+    [L_out] + mesh.size, ...
     ... G-rows in eq2
     L + mesh.size, ...
     ... c-rows in eq3
@@ -205,6 +209,8 @@ j = [... p-cols in eq1
     ... c-cols in eq2
     [L1,L2,L3,L4, ...
     L1_p, L2_n, L3_p, L4_n] + mesh.size, ...
+    ... c-cols in eq2 for outlet z-flux
+    [L_out] + mesh.size, ...
     ... G-cols in eq2
     L + 3*mesh.size, ...
     ... c-cols in eq3
