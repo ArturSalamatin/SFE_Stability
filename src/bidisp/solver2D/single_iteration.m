@@ -144,7 +144,11 @@ rhs(L + shift) = -(y(:) - x(:).*x(:)/2);
 shift = mesh.size;
 L = linear_index(J(1), I, mesh);
 rhs(L + shift) = 0;
-% v_in = 1
+% v*c_out in eq2
+shift = mesh.size;
+L = linear_index(J(end), I, mesh);
+rhs(L + shift) = rhs(L + shift) - c(L).*q_z_pos(J(end-1), I)';
+% v_in = 1 in eq1
 shift = 0;
 L = linear_index(J(1), I, mesh);
 rhs(L + shift) = rhs(L + shift) - mesh.D_r'*mesh.dz;
