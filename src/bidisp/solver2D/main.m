@@ -23,7 +23,7 @@ mesh = set_mesh(Nr, Nz, dt, T, params);
 
 states = solver2D(mesh, params);
 
-L = 1:(mesh.size)/2;
+L = 1:(mesh.size)/mesh.Nr;
 p = states(0*mesh.size+L,:);
 c = states(1*mesh.size+L,:);
 y = states(2*mesh.size+L,:);
