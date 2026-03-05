@@ -1,6 +1,9 @@
 function mesh = set_full_mesh(N, params, delta)
-
+% set mesh 1-delta > xBar > a/sqrt(2t)
+% the mesh is logarithmic
 left_mesh = set_left_mesh(N, params, delta);
+% set mesh a/sqrt(2t) > xBar > delta
+% the mesh is logarithmic
 right_mesh = set_right_mesh(N, params, delta);
 
 mesh.N = left_mesh.N + right_mesh.N;
