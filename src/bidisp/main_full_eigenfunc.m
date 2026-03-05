@@ -13,8 +13,8 @@ sigma_fig = 9;
 sigma_max_limit = -1;
 sigma_min_limit = -3;
 q = 1.005;
-xBarLeft = 1e-2;
-xBarRight = 1e-4;
+xBarLeft = 1e-5;
+xBarRight = 1e-5;
 %% packed bed params
 % a0 = 0.2;
 % alpha = [0, 0.1, 0.3, 0.5, 0.7];
@@ -49,7 +49,7 @@ sigma = -1.62442043;
 % R = 0.000001;
 % h = 5;
 % sigma = -2;
-N = 4000;
+N = 8000;
 for Sigma = [sigma]
     %% set parameters
     sigma = Sigma;
