@@ -62,7 +62,6 @@ for Sigma = [sigma]
     x_left = linspace(params.a, params.a0, 10000);
     %% solve by KellerBox method
     disp(' ');
-    g0 = 0.2577*params.R;
     disp('Keller Box solver:');
     mesh = set_full_mesh(N, params, 0);
     solver = @(problem, mesh) solver_KellerBox(problem, mesh, params);
