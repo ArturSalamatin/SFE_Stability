@@ -264,7 +264,7 @@ Ga = G_of_x(a, params);
 f = zeros(4,4);
 f(1,1) = gx/Gx;
 f(1,2) = gx*a/(x*Ga);
-f(1,3) = gx/Ga;
+f(1,3) = R*gx/Ga;
 
 f(2,1) = -a/(Gx*z*C2);
 f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
@@ -272,9 +272,9 @@ f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
 f(3,4) = -x/(z2*Gx);
 h2 = h*h;
 
-f(4,1) = -h2*R/(z2*G_div_X(x,params));
+f(4,1) = -h2/(z2*G_div_X(x,params));
 f(4,3) = -h2/(z2*G_div_X(x,params));
-f(4,4) = R*gx/Ga;
+f(4,4) = gx/Ga;
 
 dy = f*y;
 end
