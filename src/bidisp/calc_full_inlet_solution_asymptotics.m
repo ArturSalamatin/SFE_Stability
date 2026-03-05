@@ -1,5 +1,5 @@
 function [x,xi, Psi, X, Phi, Gamma] = calc_full_inlet_solution_asymptotics(...
-    x_left, params, sigma)
+    x_left, params, sigma, nterms)
 
 a = params.a;
 alpha= params.r;
@@ -60,13 +60,46 @@ gamma3 = ...
 
 phi4 = (zeta2*y2*(r+3)*phi3+a*gamma3-gamma2)/(zeta2*D*(r+4));
 
+if(nargin == 3)
+    nterms = 10;
+end
 
-Psi = t.^r.*(psi0 + t.*(psi1+t.*psi2));
-X = t.^r.*(b0 + t.*(b1+t.*b2));
-Phi = t.^r.*(phi0 + t.*(phi1+t.*(phi2+t.*(phi3+t.*phi4))));
-Gamma = t.^r.*(gamma0 + t.*(gamma1+t.*(gamma2+t.*gamma3)));
+    Psi = 0;
+    X = 0;
+    Phi = 0;
+    Gamma = 0;
+    
+if(nterms >= 0)
+    Psi = psi0;
+    X = b0;
+    Phi = phi0;
+    Gamma = gamma0;
+end
+if(nterms >= 1)
+    Psi = Psi + t.*psi1;
+    X = X + t.*b1;
+    Phi = Phi + t.*phi1;
+    Gamma = Gamma + t.*gamma1;
+end
+if(nterms >= 2)
+    Psi = Psi + (t.^2).*psi2;
+    X = X + (t.^2).*b2;
+    Phi = Phi + (t.^2).*phi2;
+    Gamma = Gamma + (t.^2).*gamma2;
+end
+if(nterms >= 3)
+    Phi = Phi + (t.^3).*phi3;
+    Gamma = Gamma + (t.^3).*gamma3;
+end
+if(nterms >= 4)
+    Phi = Phi + (t.^4).*phi4;
+end
+
+Psi = t.^r.*Psi;
+X = t.^r.*X;
+Phi = t.^r.*Phi;
+Gamma = t.^r.*Gamma;
 
 x = x_left;
 xi = z_of_x(x,params)/params.z2;
-
 end
