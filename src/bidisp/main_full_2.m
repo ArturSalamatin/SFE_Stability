@@ -45,8 +45,8 @@ for i = 1:numel(R_vals)
     xlabel(['{\ith}, ' char(8211)])
     
     Sigma = zeros(numel(Alpha_vals), numel(Tau0_vals), numel(h_vals));
-        load(['full_data/R_', num2str(R*100), '.mat'], ...
-            'R_vals', 'Sigma');
+    load(['full_data/R_', num2str(R*100), '.mat'], ...
+        'R_vals', 'Sigma');
     tic
     for j = 1:numel(Alpha_vals)
         alpha = Alpha_vals(j);
@@ -55,16 +55,16 @@ for i = 1:numel(R_vals)
         style = {'-'};
         pens = set_pen(col, style);
         %% run calculations
-%         Sigma(j,:,:) = ...
-%             calc_sigma_full_2(solver, N, alpha, tau0, a0, R, h_vals, pens);
+        %         Sigma(j,:,:) = ...
+        %             calc_sigma_full_2(solver, N, alpha, tau0, a0, R, h_vals, pens);
         sigma = reshape(Sigma(j,:,:), size(Sigma, [2,3]));
         
         plot(h_vals, sigma(1,:), '-',  'Color', cols{j}, 'LineWidth', 1)
         plot(h_vals, sigma(2,:), '--', 'Color', cols{j}, 'LineWidth', 1)
     end
     toc
-%     save(['full_data/R_', num2str(R*100), '.mat'], ...
-%         'R_vals', 'Sigma')
+    %     save(['full_data/R_', num2str(R*100), '.mat'], ...
+    %         'R_vals', 'Sigma')
     
     label = '';
     switch R
@@ -110,15 +110,15 @@ for i = 1:numel(R_vals)
                 'BackgroundColor',[1 1 1]);
     end
     
-%     hFig = findobj('Type', 'figure', 'Number', num);
-%     path = 'full_data/Figs/';
-%     figid = 'fig8';
-%     if(~isempty(hFig))
-%         saveas(num, [path, figid, label], 'emf');
-%         saveas(num, [path, figid, label], 'eps');
-%         saveas(num, [path, figid, label], 'fig');
-%         saveas(num, [path, figid, label], 'png');
-%     end
+    %     hFig = findobj('Type', 'figure', 'Number', num);
+    %     path = 'full_data/Figs/';
+    %     figid = 'fig8';
+    %     if(~isempty(hFig))
+    %         saveas(num, [path, figid, label], 'emf');
+    %         saveas(num, [path, figid, label], 'eps');
+    %         saveas(num, [path, figid, label], 'fig');
+    %         saveas(num, [path, figid, label], 'png');
+    %     end
 end
 
 
