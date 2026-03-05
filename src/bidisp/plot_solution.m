@@ -1,7 +1,9 @@
 function plot_solution(...
-    pen, params, sol)
+    pen, params, sol, x_left, nterms)
 global xBarLeft
 fig_id = 700;
+
+R = params.R;
 
 x_L = sol.x(2);
 
@@ -10,51 +12,55 @@ y = sol.y;
 
 names = {'{\Psi}','X','{\Phi}','{\Gamma}','{\Omega}','Y', '{\Psi}+X', 'Q', 'P', 'P^{\prime}'};
 % plot_solution_assymptotics(fig_id, pen, params, sol.sigma);
-x_left = [params.a, sol.x(1:round(end/4))];
-% x_left = linspace(1,1-xBarLeft*2,1001)*params.a;
-[~,xi, Psi, X, Phi, Gamma] = calc_full_inlet_solution_asymptotics(...
-    x_left, params, sol.sigma );
-[~,~, ~, X_sc, ~, ~] = calc_full_inlet_solution_asymptotics(...
-    x_L, params, sol.sigma );
-
-factor = X_sc/sol.y(2,2);
-Psi = Psi/factor;
-X = X/factor;
-Phi = Phi/factor;
-Gamma = Gamma/factor;
-
-figure(fig_id+1)
-hold on
-plot(xi, Psi ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-
-figure(fig_id+2)
-hold on
-plot(xi, X ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-    
-figure(fig_id+3)
-hold on
-plot(xi, Phi ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-
-figure(fig_id+4)
-hold on
-plot(xi, Gamma ...
-        , 'Color', pen.lc ...
-        , 'LineStyle', '-.')
-
-% my_figure(fig_id+10)
-% hold on
-%     plot(xi, Psi./X ...
-%         , 'Color', pen.lc ...
-%         , 'LineStyle', '-.')
-
-
-
+if(nargin == 5)
+    for i = 0:nterms
+        % x_left = linspace(1,1-xBarLeft*2,1001)*params.a;
+        [~,xi, Psi, X, Phi, Gamma] = calc_full_inlet_solution_asymptotics(...
+            x_left, params, sol.sigma, i);
+        [~,~, ~, X_sc, ~, ~] = calc_full_inlet_solution_asymptotics(...
+            x_L, params, sol.sigma, i);
+        
+        factor = X_sc/sol.y(2,2);
+        Psi = Psi/factor;
+        X = X/factor;
+        Phi = Phi/factor;
+        Gamma = Gamma/factor;
+        
+        figure(fig_id+1)
+        hold on
+        plot(xi, Psi ...
+            , 'Color', 'magenta' ...
+        , 'LineWidth', 1 ...
+            , 'LineStyle', '-.')
+        
+        figure(fig_id+2)
+        hold on
+        plot(xi, X ...
+            , 'Color', 'magenta' ...
+        , 'LineWidth', 1 ...
+            , 'LineStyle', '-.')
+        
+%         figure(fig_id+3)
+%         hold on
+%         plot(xi, Phi/R ...
+%             , 'Color', 'red' ...
+%             , 'LineStyle', '-.')
+%         
+%         figure(fig_id+4)
+%         hold on
+%         plot(xi, Gamma/R ...
+%             , 'Color', 'red' ...
+%         , 'LineWidth', 1 ...
+%         , 'LineWidth', 1 ...
+%             , 'LineStyle', '-.')
+        
+        % my_figure(fig_id+10)
+        % hold on
+        %     plot(xi, Psi./X ...
+        %         , 'Color', pen.lc ...
+        %         , 'LineStyle', '-.')
+    end
+end
 
 a0 = params.a0;
 % x = a0;% linspace(a0, 2*a0, 101);
@@ -88,12 +94,12 @@ for i = [1,2,3,4] %,5,6]% 1:6%numel(names)
         , 'LineStyle', '-'... pen.style{1}(1) ...
         )
     hold on
-%     plot(t([1,end]), y([1,end],i)/factor, 'o', 'MarkerFaceColor', 'black')
+    %     plot(t([1,end]), y([1,end],i)/factor, 'o', 'MarkerFaceColor', 'black')
     xlabel('{\xi}')
     ylabel(names{i})
-%     if(i == 2)
-%         axis([0 1 0 1])
-%     end
+    %     if(i == 2)
+    %         axis([0 1 0 1])
+    %     end
 end
 
 C1 = params.C1;
