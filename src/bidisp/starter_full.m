@@ -251,7 +251,7 @@ function dy = my_ode(x,y, sigma, params)
 % [Psi, X, Phi, Gamma]
 a = params.a; % == sqrt(2tau)
 z = z_of_x(x, params);
-C1 = params.C1;
+% C1 = params.C1;
 C2 = params.C2;
 z2 = params.z2;
 h = params.h;
@@ -279,4 +279,24 @@ f(4,4) = R*gx/Ga;
 dy = f*y;
 end
 
+% function out = S(sigma, C2)
+% % singular term, y' = S/x + f(x,y)
+% out = [0, 0; -[1, 2+sigma]/C2];
+% end
+% 
+% function dy = sing_bvp_ode(u,y, sigma, params)
+% % [Psi, X, Phi, Gamma]
+% dy = -my_ode(params.a - u,y, sigma, params);
+% end
+% 
+% function out = bvp_bc_fcn(ya,yb, mesh, sigma, params)
+% % [Psi, X, Phi, Gamma]
+% x_left = mesh.x(1);
+% 
+% [~,~, Psi, X, Phi, Gamma] = calc_full_inlet_solution_asymptotics(...
+%     x_left, params, sigma);
+% 
+% out = [ya(1)*X-ya(2)*Psi; yb(2)-1; ya(3) - Phi; ya(4) - Gamma];
+% % out = [ya(1) - Psi, ya(2) - X];
+% end
 
