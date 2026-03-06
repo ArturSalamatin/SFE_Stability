@@ -13,8 +13,8 @@ sigma_fig = 9;
 sigma_max_limit = -1;
 sigma_min_limit = -3;
 q = 1.005;
-xBarLeft = 1e-5;
-xBarRight = 1e-5;
+xBarLeft = 1e-3;
+xBarRight = 1e-3;
 %% packed bed params
 % a0 = 0.2;
 % alpha = [0, 0.1, 0.3, 0.5, 0.7];
@@ -49,7 +49,15 @@ sigma = -1.62442043;
 % R = 0.000001;
 % h = 5;
 % sigma = -2;
-N = 8000;
+
+alpha = 0.1;
+a0 = 0.1;
+tau0 = 0.4;
+R = 1;
+h = 500;
+sigma_guess = -0.151878663989612;
+
+N = 4000;
 for Sigma = [sigma]
     %% set parameters
     sigma = Sigma;
@@ -75,18 +83,18 @@ for Sigma = [sigma]
     accuracy = (sol.condition/sol.y(sol.id,1)-1);
     disp(['accuracy = ', num2str(accuracy)]);
     %% solve by RK method
-    disp('RK solver:');
-    mesh = set_full_mesh(N, params, xBarLeft);
-    solver = @(problem, mesh) solver_RK(problem, mesh, params);
-    % solve the problem
-    starter = @(sigma, params) starter_full(...
-        solver, sigma, params, mesh);
-    sol = starter(sigma, params);
-    % plot the problem solution
-    pen = set_pen('k', '--');
-    plot_solution(pen, params, sol)
-    accuracy = (sol.condition/sol.y(sol.id,1)-1);
-    disp(['accuracy = ', num2str(accuracy)]);
+%     disp('RK solver:');
+%     mesh = set_full_mesh(N, params, xBarLeft);
+%     solver = @(problem, mesh) solver_RK(problem, mesh, params);
+%     % solve the problem
+%     starter = @(sigma, params) starter_full(...
+%         solver, sigma, params, mesh);
+%     sol = starter(sigma, params);
+%     % plot the problem solution
+%     pen = set_pen('k', '--');
+%     plot_solution(pen, params, sol)
+%     accuracy = (sol.condition/sol.y(sol.id,1)-1);
+%     disp(['accuracy = ', num2str(accuracy)]);
     
     %% solve by BVP method
 %     disp(' ');
