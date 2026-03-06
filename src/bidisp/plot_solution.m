@@ -77,11 +77,12 @@ sigma = sol.sigma;
 xi0 = params.xi0;
 psi0 = -g1*a*dz0dt - (1+sigma)*a0/a;
 
+if(params.R < 1e-7)
 figure(fig_id+1)
 hold on
 plot(xi0, psi0*y(sol.id,2), 'ks', 'markerfacecolor', 'k')
 % plot(1, psi_out, 'k^', 'markerfacecolor', 'k')
-
+end
 for i = [1,2,3,4] %,5,6]% 1:6%numel(names)
     if(i > size(y,2))
         break
