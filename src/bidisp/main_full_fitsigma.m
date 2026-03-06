@@ -1,6 +1,6 @@
 clc
 clear all
-% close all
+close all
 
 global sigma_fig sigma_max_limit sigma_min_limit q xBarLeft xBarRight
 sigma_fig = 9;
@@ -154,41 +154,54 @@ sigma_guess = -0.125215532909594;
 % h = 65;
 % sigma_guess = 1.794832507640907;
 
+
+alpha = 0.1;
+a0 = 0.1;
+tau0 = 0.4;
+R = 1;
+h = 500;
+sigma_guess = -0.151878663989612;
+
 params = poly_case(a0, alpha, tau0, R, h);
-params.pen = set_pen('r', '-');
-mesh = set_full_mesh(500, params, 0);
+params.pen = set_pen('k', '-');
+mesh = set_full_mesh(3500, params, 0);
 solver = @(problem, mesh) solver_KellerBox(problem, mesh, params);
+% solver = @(problem, mesh) solver_RK(problem, mesh, params);
 % solver = @(problem, mesh) solver_BVP(problem, mesh, params);
 starter = @(sigma, params) starter_full(...
-                solver, sigma, params, mesh);
+    solver, sigma, params, mesh);
 %% plot functional
-sigma = linspace(-3,1,81);
-out = zeros(size(sigma));
-for i = 1:numel(sigma)
-    sol = starter(sigma(i), params);
-    out(i) = sol.condition;
-end
-%% do not plot jumps
-for i = 2:numel(sigma)
-    if(out(i) < out(i-1))
-        out(i-1) = NaN;
-        break;
-    end
-end
-%% plot F(sigma)
-figure(3000)
-hold on
-% axis([sigma_min_limit sigma_max_limit -1 1])
-plot(sigma, out, 'r-', 'LineWidth', 1)
-hold on
-grid on
+% sigma = linspace(-3,1,81);
+% out = zeros(size(sigma));
+% for i = 1:numel(sigma)
+%     sol = starter(sigma(i), params);
+%     out(i) = sol.condition;
+% end
+% %% do not plot jumps
+% for i = 2:numel(sigma)
+%     if(out(i) < out(i-1))
+%         out(i-1) = NaN;
+%         break;
+%     end
+% end
+% %% plot F(sigma)
+% figure(3000)
+% hold on
+% % axis([sigma_min_limit sigma_max_limit -1 1])
+% plot(sigma, out, 'r-', 'LineWidth', 1)
+% hold on
+% grid on
 %% fit sigma
 [sigma, sol] = fit_sigma(starter, params, sigma_guess);
 
-plot_solution(params.pen, params, sol)
+x_left = linspace(params.a, params.a0, 10001);
+plot_solution(params.pen, params, sol, x_left, 4)
+accuracy = (sol.condition/sol.y(sol.id,1)-1);
+disp(['accuracy = ', num2str(accuracy)]);
 
-
-xi0 = params.z0/params.z2;
-v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
-figure(701)
-plot(xi0, v, 'd')
+if(params.R < 1e-7)
+    xi0 = params.z0/params.z2;
+    v = -params.g0/params.C1*(params.C2 + (1+sigma)*(1-xi0));
+    figure(701)
+    plot(xi0, v, 'd')
+end
