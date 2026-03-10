@@ -10,7 +10,6 @@ q = 1.008;
 xBarLeft = 5e-3;
 xBarRight = 0*4e-2;
 
-
 sigma_guess = 1;
 alpha = 0.5;
 a0 = 0.2;
