@@ -47,8 +47,8 @@ for i = 1:numel(R_vals)
     xlabel(['{\it\tau}_0, ' char(8211)])
     
     Sigma = zeros(numel(Alpha_vals), numel(B_vals), numel(Tau0_vals));
-            load(['full_data/fixed_B/R_', num2str(R*100), '.mat'], ...
-                'R_vals', 'Sigma');
+    load(['full_data/fixed_B/R_', num2str(R*100), '.mat'], ...
+        'R_vals', 'Sigma');
     tic
     for j = 1:numel(Alpha_vals)
         alpha = Alpha_vals(j);
