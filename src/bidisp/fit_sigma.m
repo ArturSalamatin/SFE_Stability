@@ -6,29 +6,35 @@ if(nargin == 2)
 end
 sigma = guess;
 
-%     make_guess(starter, params);
+%      make_guess(starter, params);
 
-[sigma, val, ~, ~] = ...
-    fzero(@(s) func_to_min(starter, s, params), guess);
-if((abs(val) > 2e-5) ...|| (sigma < -2) 
-        || isnan(sigma) || isnan(val))
-    if(nargin == 3)
-        % if no guess was constructed internally
-        [~, L, R] = make_guess2(starter, params);
-        guess = [L,R];
-    end
+% [sigma, val, ~, ~] = ...
+%     fzero(@(s) func_to_min(starter, s, params), guess);
+% if((abs(val) > 2e-5) || (sigma < -2.2) ...
+%         || isnan(sigma) || isnan(val))
+    
+    [~, L, R] = make_guess(starter, params);
+    
+    
+%     if(nargin == 3)
+%         % if no guess was constructed internally
+%         [~, L, R] = make_guess2(starter, params);
+%         guess = [L,R];
+%     end
     % use segment division by half method
+    guess = [L, R];
     [sigma, val] = ...
         fzero(@(s) func_to_min(starter, s, params), guess);
-end
-
-% if((sigma < -2) || isnan(sigma))
-%     sol = starter(sigma, params);
-%     plot_solution(params.pen, params, sol)
-%     warning(['sigma is ', num2str(sigma)...
-%         , '; val is ', num2str(val)...
-%         ])
+%     close 3000;
 % end
+
+if((sigma < -2) || isnan(sigma))
+    sol = starter(sigma, params);
+    plot_solution(params.pen, params, sol)
+    warning(['sigma is ', num2str(sigma)...
+        , '; val is ', num2str(val)...
+        ])
+end
 
 % figure(3000)
 % hold on
@@ -50,10 +56,14 @@ function out = right_monotone(y)
 % identify monotone interval in y-values
 i = numel(y);
 flag = (y(i) > y(i-1));
-while (i > 1) && ((y(i) > y(i-1)) == flag)
+while (i > 1) && ((y(i) > y(i-1)) == flag) && (y(i) * y(i-1) > 0)
     i = i-1;
 end
-out = i;
+if((i>1) && (y(i-1) < 0))
+    out = i-1;
+else
+    out = i;
+end
 end
 
 function out = sign_change(y)
@@ -107,17 +117,22 @@ R = sigma_R;
 out_I = (L+R)/2;
 end
 
-function [out_I, L, R] = make_guess(starter, params)
+function [out_I, L, R] = make_guess(starter, params, min_s, max_s, count)
 global sigma_min_limit sigma_max_limit
+if(nargin == 2)
+min_s = sigma_min_limit;
+max_s = sigma_max_limit;
+count = 15;
+end
 %% crude mesh for localization of F(sigma)=0 point
-sigma = linspace(sigma_min_limit,5,151);
-sigma = linspace(3.5,3.6,51);
+sigma = linspace(min_s,max_s,count);
 out = zeros(size(sigma));
 val = zeros(size(sigma));
 for i = 1:numel(sigma)
     [out(i), sol] = func_to_min(starter, sigma(i), params);
     val(i) = sol.condition;
 end
+% if(nargin == 2)
 %% do not plot jumps
 % for i = 2:numel(sigma)
 %     if(out(i) < out(i-1))
@@ -126,14 +141,19 @@ end
 %     end
 % end
 %% plot F(sigma)
-figure(3000)
-hold on
-axis([sigma_min_limit sigma_max_limit -1 1])
-plot(sigma, out, 'b-', 'LineWidth', 1)
-hold on
-grid on
+% figure(3000)
+% hold on
+% axis([sigma_min_limit sigma_max_limit -1 1])
+% plot(sigma, out, 'b-', 'LineWidth', 1)
+% hold on
+% grid on
+% end
 %% localize the root
 idx = right_monotone(out);
+if(idx == 1)
+    [out_I, L, R] = make_guess(starter, params, min_s, max_s, 2*count+1);
+    return;    
+end
 % figure(3000)
 % plot(sigma(idx:end), out(idx:end), 'r-', 'LineWidth', 1)
 % identify interval of monotonicity
@@ -147,29 +167,31 @@ if(out_R*out(end) < 0)
     R = sigma(I);
     L = sigma(I+1);
     out_I = (L + R)/2;
-    return
+else
+[out_I, L, R] = make_guess(...
+    starter, params, ...
+    sigma(idx-1), sigma(min(idx+1, numel(sigma))), 15);
 end
-
 % otherwise, better approx near singular point required
-I = [idx-1, idx];
-[s, o] = get_sign_change(...
-    sigma(I), out(I), starter, params);
-sigma = sigma(idx:end);
-out = out(idx:end);
-sigma = [s,sigma];
-out = [o,out];
-
-% figure(3000)
-% hold on
-% axis([-Inf Inf -5 5])
-% plot(sigma, out, 'k-', 'LineWidth', 1)
-% plot(sigma_min, 0, 'ok', 'MarkerFaceColor', 'black')
-
-I = sign_change(out);
-
-R = sigma(I);
-L = sigma(I+1);
-out_I = (L + R)/2;
+% I = [idx-1, idx];
+% [s, o] = get_sign_change(...
+%     sigma(I), out(I), starter, params);
+% sigma = sigma(idx:end);
+% out = out(idx:end);
+% sigma = [s,sigma];
+% out = [o,out];
+% 
+% % figure(3000)
+% % hold on
+% % axis([-Inf Inf -5 5])
+% % plot(sigma, out, 'k-', 'LineWidth', 1)
+% % plot(sigma_min, 0, 'ok', 'MarkerFaceColor', 'black')
+% 
+% I = sign_change(out);
+% 
+% R = sigma(I);
+% L = sigma(I+1);
+% out_I = (L + R)/2;
 end
 
 

@@ -2,9 +2,15 @@ clc
 clear all
 close all
 
-params.a0 = 0.2;
+fntSize = 14;
+set(0,'defaultAxesFontName', 'Times New Roman')
+set(0,'DefaultAxesFontSize', fntSize);
+set(0,'defaultTextFontName', 'Times New Roman')
+set(0,'defaultTextFontSize', fntSize)
+
+params.a0 = 0.3;
 params.a1 = 1.0;
-params.r = 0.2; % dust volume fraction
+params.r = 0.25; % dust volume fraction
 params.g1 = (1-params.r)/params.a1;
 params.g0 = params.g1 + params.r/params.a0;
 
@@ -34,8 +40,15 @@ my_figure(100)
 hold on
 axis([0 0.8 0 1])
 % box on
-xlabel('\zeta')
-ylabel('{\itx}_0')
+xlabel(['\zeta, ' char(8211)])
+ylabel(['{x}_0, ' char(8211)])
+box on
+
+set(gcf, 'units', 'centimeters', 'OuterPosition', [10.42 6.27 8.5 9])
+set(gca, 'FontSize', 10, 'Position', [0.16, 0.2, 0.78, 0.74])
+
+
+
 plot([0 1], params.a0*[1 1], 'k--')
 
 
@@ -99,16 +112,20 @@ function verify_c(params, t)
 my_figure(200)
 hold on
 axis([0 0.8 0 1])
-xlabel('\zeta')
-ylabel('{\itc}_0')
-% plot([0 0.7], params.a0*[1 1], 'k--')
+xlabel(['\zeta, ' char(8211)])
+ylabel(['{c}_0, ' char(8211)])
+
+box on
+
+set(gcf, 'units', 'centimeters', 'OuterPosition', [10.42 6.27 8.5 9])
+set(gca, 'FontSize', 10, 'Position', [0.16, 0.2, 0.78, 0.74])
 
 
 my_figure(210)
 hold on
 axis([0 1 0 1])
-xlabel('\xi')
-ylabel('{\itc}_0')
+xlabel(['\zeta, ' char(8211)])
+ylabel(['{c}_0, ' char(8211)])
 
 % t = linspace(1E-2, 0.5, 11);
 for i = 1:numel(t)
