@@ -315,5 +315,10 @@ l = L(end);
 %     spy(A);
 %     Bb = full(A);
 d_s = A\rhs;
+
+% setup.type = 'ilutp';
+% setup.droptol = 1e-4;
+% [L_ilu, U_ilu] = ilu(A, setup);
+% [d_s, ~] = gmres(A, rhs, 50, 1e-10, 200, L_ilu, U_ilu);
 end
 
