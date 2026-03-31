@@ -1,5 +1,5 @@
 function d_s = single_iteration(...
-    state_s, state_prev, mesh, params, dt)
+    state_s, state_prev, mesh, params, dt, v_in)
 %SINGLE_ITERATION Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -61,7 +61,7 @@ PBB_z = mesh.DBB_z.*(p(J,I_r)-p(J,I_l)).*dk_mid_r/2;
 P_r = mesh.D_r.*(p(J_r,I)-p(J_l,I)).*dk_mid_z/2;
 
 rhs = zeros(eq_nmbr*mesh.size, 1);
-%% set rhs eqn: div(v*c) = dG/dt
+%% set rhs eqn: div(v*c) - dG/dt = 0
 shift = mesh.size;
 
 L = linear_index(J, I, mesh);
@@ -151,11 +151,12 @@ rhs(L + shift) = rhs(L + shift) - c(L).*q_z_pos(J(end-1), I)';
 % v_in = 1 in eq1
 shift = 0;
 L = linear_index(J(1), I, mesh);
-rhs(L + shift) = rhs(L + shift) - mesh.D_r'*mesh.dz;
+rhs(L + shift) = rhs(L + shift) - (v_in').* ...
+    (mesh.D_r')*mesh.dz;
 % p_out = 0 in eq1
 shift = 0;
 L = linear_index(J(end), I, mesh);
-rhs(L + shift) = 0;
+rhs(L + shift) = -p(L);
 %% problem matrix
 m = eq_nmbr*mesh.size;
 % nnz = 7*mesh.size + 3*5*mesh.size;
@@ -279,7 +280,7 @@ l = L(end);
     A(l+shift_c, l+1+shift_c) = 0;
     
     A(l+shift_c, l-Nz+shift_c) = 0;
-% p_out = 0
+% p_out = prescribed value
 L = linear_index(J(end), I, mesh);
 shift_c = mesh.size;
 for l = L(2:end-1)'
@@ -311,6 +312,8 @@ l = L(end);
     A(l, l-Nz) = 0;
     A(l, l-Nz+shift_c) = 0;
 
+%    spy(A);
+%    B = full(A);
 d_s = A\rhs;
 end
 
