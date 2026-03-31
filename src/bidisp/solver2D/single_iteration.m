@@ -96,7 +96,7 @@ rhs(L + shift) = ...
 %j, i+1
 rhs(L + shift) = ...
     rhs(L + shift) - c(L+Nz).*qB_r_neg(:);
-%% set rhs eqn: div(v) = 0
+%% set rhs eqn: div(K*grad(p)) = 0
 shift = 0;
 % j-1, i
 L = linear_index(J_r, I, mesh);
@@ -148,15 +148,15 @@ rhs(L + shift) = 0;
 shift = mesh.size;
 L = linear_index(J(end), I, mesh);
 rhs(L + shift) = rhs(L + shift) - c(L).*q_z_pos(J(end-1), I)';
-% v_in = 1 in eq1
+% v_in = prescribed value in eq1
 shift = 0;
 L = linear_index(J(1), I, mesh);
 rhs(L + shift) = rhs(L + shift) - (v_in').* ...
     (mesh.D_r')*mesh.dz;
-% p_out = 0 in eq1
+% p_out = prescribed value in eq1
 shift = 0;
 L = linear_index(J(end), I, mesh);
-rhs(L + shift) = -p(L);
+rhs(L + shift) = -(p(L)-p_out');
 %% problem matrix
 m = eq_nmbr*mesh.size;
 % nnz = 7*mesh.size + 3*5*mesh.size;
@@ -312,8 +312,8 @@ l = L(end);
     A(l, l-Nz) = 0;
     A(l, l-Nz+shift_c) = 0;
 
-%    spy(A);
-%    B = full(A);
+%     spy(A);
+%     Bb = full(A);
 d_s = A\rhs;
 end
 
