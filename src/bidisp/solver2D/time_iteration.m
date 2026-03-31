@@ -16,13 +16,15 @@ state_s(G_id) = G_of_x(state_s(x_id), params);
 
 eps = 1e-1;
 % v_in = 1+eps*(2*rand(1, numel(mesh.I))-1);
-v_in = ones(size(mesh.r));
-v_in(1:end/2) = 0;
+v_in = ones(size(mesh.r))+eps*(2*rand(1, numel(mesh.I))-1);
+%v_in(1:end/2) = 0.5;
+
+p_out = 0*eps*(2*rand(1, numel(mesh.I))-1);
 
 s = 0;
 while true
     d_s = single_iteration(...
-        state_s, state_prev, mesh, params, dt, v_in);
+        state_s, state_prev, mesh, params, dt, v_in, p_out);
     d_s(x_id) = min(dt, max(d_s(x_id), -state_s(x_id)));
     d_s(y_id) = max(d_s(y_id), -state_s(y_id));
     d_s(G_id) = max(d_s(G_id), -state_s(G_id));
