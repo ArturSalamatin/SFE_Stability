@@ -12,7 +12,7 @@ zn = numel(z);
 
 out = zeros(size(z));
 
-parfor ti = 1:tn
+for ti = 1:tn
     Z0 = z0(t(1,ti),params);
     Z2 = z2(t(1,ti),params);
     for zj = 1:zn
@@ -36,7 +36,8 @@ parfor ti = 1:tn
                 out(zj,ti) = A;
             else % 0 < z < z0
                 % non-linear dependence
-                out(zj,ti) = fzero(@(X) fun(X, A, z(zj,ti), r), (a0+A)/2);
+                out(zj,ti) = fzero(@(X) fun(X, A, z(zj,ti), r), out(zj-1,ti) ...(a0+A)/2
+                    );
             end
         end
     end
