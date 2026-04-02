@@ -1,0 +1,90 @@
+function sol = starter_omega_Y(sigma, params, mesh)
+%% problem descriptor
+problem = set_problem(mesh, sigma, params);
+%% solve problem
+sol = transform(solver(problem, mesh), params);
+end
+
+function problem = set_problem(mesh, sigma, params)
+% number of equations
+problem.eqN = 4;
+problem.ids = 1:problem.eqN; % iterator for block rows/cols
+
+problem.M = problem.eqN * mesh.N;
+problem.block_matrix = @(xL, xR)block(xL, xR, sigma, params);
+problem.BC = @()BC(params, problem.eqN);
+end
+
+function out = block(xiL, xiR, sigma, params)
+if(nargin == 3)
+    sigma = params.sigma;
+end
+
+R = params.R;
+f2 = (params.f)^2;
+
+y  =(xiL+xiR)/2;
+
+out = zeros(4,4);
+
+out(1,4) = 1;
+
+out(2,1) = -1;
+out(2,3) = (2+sigma)/y;
+
+out(3,2) = 1/(1-y);
+out(3,3) = (3+sigma)/y;
+
+out(4,1) = f2;
+out(4,2) = f2*R;
+out(4,3) = -f2*R;
+out(4,4) = -R;
+end
+
+function out = BC(params, eqN)
+f = params.f;
+%% BC at the left end
+left = zeros(eqN,eqN);
+left(1,1) = 1; % Phi(0) = 0
+left(2,2) = 1; % Omega(0) = 0 /* = Psi(0)*/
+% left(3,3) = 1; % Y(0) = 0
+% left(4,4) = 1; % G(0)   = 1
+%% BC at the right end
+right = zeros(eqN,eqN);
+% right(2,2) = 1; % Omega(1) = 0
+right(3,1) = f; % f*Phi(1) + G(1) = 0
+right(3,4) = 1; 
+right(4,4) = 1; % G(1)   = 1
+%% rhs for BC eqns
+out.left = left;
+out.right = right;
+out.rhs = [0;0;0;-1];
+end
+
+function sol = transform(sol, params)
+t = sol.t';
+%% in
+%[Phi, Omega, Y, Gamma]
+Phi = sol.y(:,1);
+Omega = sol.y(:,2);
+Y = sol.y(:,3);
+Gamma = sol.y(:,4);
+%% out
+%[Phi, Psi, X, Gamma, Omega, Y, Psi+X]
+X = Y./t;
+X(1) = 0;
+Psi = Omega - Y;
+%% flux Q, pressure P
+Q = -(Phi+Psi)./(1-t);
+% calc P
+R = params.R;
+mu = exp(R*t); % viscosity
+grad_p = -mu.*(Psi./t + Phi);
+grad_p(1)=0;
+I = 1:numel(mu)-1;
+P = (grad_p(I)+grad_p(I+1))/2.*(t(I+1)-t(I));
+P = [0; cumsum(P)];
+dP = grad_p;
+%% form return variable
+sol.y = [Phi, Psi, X, Gamma, Omega, Y, Psi+X, Q, P, dP];
+end
