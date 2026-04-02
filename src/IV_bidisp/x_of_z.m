@@ -36,7 +36,7 @@ parfor ti = 1:tn
                 out(zj,ti) = A;
             else % 0 < z < z0
                 % non-linear dependence
-                out(zj,ti) = fzero(@(X) fun(X, A, z(zj,ti), r), [a0, A]);
+                out(zj,ti) = fzero(@(X) fun(X, A, z(zj,ti), r), (a0+A)/2);
             end
         end
     end
