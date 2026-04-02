@@ -8,15 +8,15 @@ clear all
 global x_tol
 x_tol = 1e-10;
 %% set parameters
-B = 1;
+B = 3;
 R = 1.0;
 a0 = 0.2;
-alpha = 0.5;
+alpha = 0.7;
 Nr = 90;
-Nz = 70;
-H = 0.4;
-dt = 0.02;
-T = 0.5;
+Nz = 150;
+H = 1.5;
+dt = 0.01;
+T = 1.5;
 params = set_params(a0, alpha, R, B, H);
 %% set mesh
 mesh = set_mesh(Nr, Nz, dt, T, params);
