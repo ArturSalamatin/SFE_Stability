@@ -16,7 +16,7 @@ state_s(G_id) = G_of_x(state_s(x_id), params);
 
 eps = 1e-1;
 % v_in = 1+eps*(2*rand(1, numel(mesh.I))-1);
-v_in = ones(size(mesh.r))+eps*(2*rand(1, numel(mesh.I))-1);
+v_in = ones(size(mesh.r));%+eps*(2*rand(1, numel(mesh.I))-1);
 %v_in(1:end/2) = 0.5;
 
 p_out = 0*eps*(2*rand(1, numel(mesh.I))-1);
