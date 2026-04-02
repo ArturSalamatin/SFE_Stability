@@ -266,9 +266,9 @@ f(1,2) = gx*a/(x*Ga);
 f(1,3) = gx/Ga;
 
 f(2,1) = -a/(Gx*z*C2);
-f(2,2) = -(a*a/(x*Ga) + x*(1+sigma)/Gx)/(z*C2);
+f(2,2) = -(a*a/(x*Ga) + (1+sigma)/G_div_X(x,params))/(z*C2);
 
-f(3,4) = -x/(z2*Gx);
+f(3,4) = -1/(z2*G_div_X(x,params));
 h2 = h*h;
 
 f(4,1) = -h2*R/(z2*G_div_X(x,params));
