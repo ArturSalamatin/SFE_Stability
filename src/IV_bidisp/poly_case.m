@@ -1,10 +1,5 @@
-function params = poly_case(a0, alpha, R, h)
-if(nargin < 5)
-    h = 0;
-end
-if(nargin < 4)
-    R = 0;
-end
+function params = poly_case(a0, alpha, R, B)
+
 %% set the packed bed
 params.a0 = a0;
 params.r = alpha; % dust volume fraction
@@ -14,5 +9,5 @@ params.g1 = (1-params.r)/params.a1;
 params.g0 = params.g1 + params.r/params.a0;
 
 params.R = R;
-params.h = h;
+params.B = B;
 end
